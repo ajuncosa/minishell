@@ -6,17 +6,35 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/15 13:34:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/17 14:38:39 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	echo(char *str)
+char	*dquote(char *str)
+{
+	char	dquo[1024];
+	char	*joined;
+	char 	*final;
+
+	write(1, "dquote> ", 9);
+	read(0, dquo, 1023);
+	joined = ft_strjoin(str, dquo);
+	if (!ft_strchr(dquo, '"'))
+		final = dquote(joined);
+	else
+		final = ft_strdup(joined);
+	free(joined);
+	return(final);
+}
+
+void	echo(char *str, int type)
 {
 	int	n;
 	int	i;
 	int	end;
+	char *seg;
 
 	n = 0;
 	i = 0;
@@ -29,16 +47,27 @@ void	echo(char *str)
 	}
 	while (str[i] == ' ')												// para saltarse los espacios extra después de echo o después de -n
 		i++;
-	while (str[i] != '\n')
+	while (((str[i] != '\n') && type == 1) || ((str[i] != '\0') && type == 2))
 	{
 		if (str[i] == '"')
 		{
 			i++;
 			end = i;
-			while (str[end] != '"' && str[end] != '\n')
+			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')
 				end++;
 			if (str[end] != '"')
-				write(1, "COMILLA ABIERTA\n", 16);						// fix: qué pasa si se queda la comilla abierta!?
+			{
+				seg = dquote(&str[i]);									// dquote devuelve un char * con todo lo que viene después de una coma que se queda abierta
+				end = 0;
+				while (seg[end] != '"')
+					end++;
+				write(1, seg, end);										// imprime lo que hay en seg hasta que se cierren las " que estaban abiertas
+				end += 2;												// para saltarme las " y el \n
+				if (seg[end] != '\0')
+					echo(&seg[end], 2);									// hace cosas muy raras x ejjemplo si haces varios echos con comillas abiertas seguidos
+				free(seg);
+				break;
+			}
 			write(1, &str[i], end - i);
 			i = end + 1;
 		}
@@ -46,7 +75,7 @@ void	echo(char *str)
 		{
 			i++;
 			end = i;
-			while (str[end] != '\'' && str[end] != '\n')
+			while (str[end] != '\'' && str[end] != '\n' && str[end] != '\0')
 				end++;
 			if (str[end] != '\'')
 				write(1, "COMILLA ABIERTA\n", 16);
@@ -56,7 +85,7 @@ void	echo(char *str)
 		else
 		{
 			end = i;													//para imprimir por palabras con un solo espacio, y teniendo en cuenta que pueden venir strings con comillas después
-			while (str[end] != ' ' && str[end] != '"' && str[end] != '\'' && str[end] != '\n')
+			while (str[end] != ' ' && str[end] != '"' && str[end] != '\'' && str[end] != '\n' && str[end] != '\0')
 				end++;
 			write(1, &str[i], end - i);
 			i = end;
@@ -98,16 +127,20 @@ int		main(int argc, char **argv, char **envp)
 	user_len = ft_strlen(user);
 	while (1)
 	{
+		write(1, "\033[1;37m", 7);
 		write(1, user, user_len);
 		write(1, "> ", 2);
+		write(1, "\033[0m", 4);
 		read(0, str, 1023);
 		if (!ft_strncmp(str, "echo ", 5))
-			echo(&str[5]);
+			echo(&str[5], 1);
 		else if (!ft_strncmp(str, "exit", 4)) 				// to do: check if line is empty after command :D
 			exit(0);
 		else
+		{
 			write(1, "Command not found\n", 18);
-		
+			system("say eres retrasado");
+		}		
 		ft_bzero(str, 1023);
 	}
 
