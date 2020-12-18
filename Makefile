@@ -1,5 +1,5 @@
 GNL		= gnl/get_next_line.c
-SRCS	= ${GNL} main.c
+SRCS	= ${GNL} main.c echo.c
 OBJS	= ${SRCS:.c=.o}
 NAME	= minishell
 CC		= gcc
@@ -10,7 +10,7 @@ SANITIZE = -g -fsanitize=address
 	${CC} -c $< -o $@
 
 ${NAME}:	${OBJS}
-	make -C libft/
+	make bonus -C libft/
 	$(CC) -L libft/ -lft $^ -o ${NAME} 
 
 all:		${NAME}

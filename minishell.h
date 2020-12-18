@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/11 14:25:17 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/18 13:39:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,13 @@
 # include <unistd.h>
 # include "libft/libft.h"
 # include "gnl/get_next_line.h"
+
+typedef struct			s_env
+{
+	char				*id;
+	char				*value;
+}						t_env;
+
+void	echo(char *str);
 
 #endif
