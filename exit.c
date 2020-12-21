@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/21 13:24:15 by ajuncosa         ###   ########.fr       */
+/*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
+/*   Updated: 2020/12/21 14:04:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
-# include <stdio.h>
-# include <unistd.h>
-# include "libft/libft.h"
-# include "gnl/get_next_line.h"
+#include "minishell.h"
 
-typedef struct	s_env
+void	del_lst(void *env)
 {
-	char		*id;
-	char		*value;
-}				t_env;
+	free(((t_env*)env)->id);
+	free(((t_env*)env)->value);
+	free((t_env*)env);
+}
 
-void	ft_echo(char *str);
-void    ft_env(t_list *head);
-void    ft_exit(t_list **head);
-
-#endif
+void	ft_exit(t_list **head)
+{
+	ft_lstclear(head, &del_lst);
+	exit(0);
+}

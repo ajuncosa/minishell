@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/18 13:04:24 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/21 14:24:33 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	echo(char *str)
+void	ft_echo(char *str)
 {
 	int	n;
 	int	i;
@@ -39,7 +39,7 @@ void	echo(char *str)
 				end++;
 			if (str[end] != '"')
 			{
-				write(1, "\nError: open dquote\n", 20);					// FIXME: no hay nada antes de la comilla abierta, hay doble salto de linea
+				write(1, "Error: open dquote\n", 19);
 				return ;
 			}
 			write(1, &str[i], end - i);
@@ -53,7 +53,7 @@ void	echo(char *str)
 				end++;
 			if (str[end] != '\'')
 			{
-				write(1, "\nError: open quote\n", 19);
+				write(1, "Error: open quote\n", 18);
 				return ;
 			}
 			write(1, &str[i], end - i);

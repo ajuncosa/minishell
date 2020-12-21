@@ -1,5 +1,5 @@
 GNL		= gnl/get_next_line.c
-SRCS	= ${GNL} main.c echo.c
+SRCS	= ${GNL} main.c echo.c env.c exit.c
 OBJS	= ${SRCS:.c=.o}
 NAME	= minishell
 CC		= gcc

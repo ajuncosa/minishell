@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/18 13:58:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/21 14:04:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		main(int argc, char **argv, char **envp)
 
 	i = 0;
 	head = NULL;
-	while (envp[i])														// TODO: al final del programa hcer frees a las estructuras y sus contenidos
+	while (envp[i])																	// FIXME: leaks
 	{
 		new = malloc(sizeof(t_list));
 		env = malloc(sizeof(t_env));
@@ -49,7 +49,6 @@ int		main(int argc, char **argv, char **envp)
 		}
 		lst = lst->next;
 	}
-
 	while (1)
 	{
 		write(1, "\033[1;37m", 7);
@@ -58,13 +57,15 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "\033[0m", 4);
 		read(0, str, 1023);
 		if (!ft_strncmp(str, "echo", 4) && (str[4] == '\n' || str[4] == ' '))		// condiciones para que si solo pones "echo" (sin espacio detrás) también entre. Si no pones las condiciones, al poner "echohola" funciona e imprime "hola" cuando debería decir command not found
-			echo(&str[4]);
+			ft_echo(&str[4]);
+		else if (!ft_strncmp(str, "env", 3))
+			ft_env(head);
 		else if (!ft_strncmp(str, "exit", 4)) 										// TODO: check if line is empty after command :D
-			exit(0);
+			ft_exit(&head);
 		else
 			write(1, "Command not found\n", 18);		
 		ft_bzero(str, 1023);
 	}
-
+	ft_exit(&head);
 	return (0);
 }
