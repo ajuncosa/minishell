@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 12:07:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/22 12:56:08 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int		main(int argc, char **argv, char **envp)
 		{
 			user = ((t_env*)lst->content)->value;
 			user_len = ft_strlen(user);
+			break;
 		}
 		lst = lst->next;
 	}

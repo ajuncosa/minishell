@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 12:57:54 by ajuncosa         ###   ########.fr       */
+/*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
+/*   Updated: 2020/12/22 12:59:04 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
-# include <stdio.h>
-# include <unistd.h>
-# include "libft/libft.h"
-# include "gnl/get_next_line.h"
+#include "minishell.h"
 
-typedef struct	s_env
+void	ft_pwd(t_list *head)
 {
-	char		*id;
-	char		*value;
-}				t_env;
+	t_list	*lst;
+	char	*pwd;
 
-void	ft_echo(char *str);
-void    ft_env(t_list *head);
-void    ft_exit(t_list **head);
-void    parse_commands(char *str, t_list *head);
-void	ft_pwd(t_list *head);
-
-#endif
+	lst = head;
+	while (lst)
+	{
+		if (!ft_strncmp(((t_env*)lst->content)->id, "PWD", 3))
+		{
+			pwd = ((t_env*)lst->content)->value;
+			write(1, pwd, ft_strlen(pwd));
+			write(1, "\n", 1);
+			return ;
+		}
+		lst = lst->next;
+	}
+}
