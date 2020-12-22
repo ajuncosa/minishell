@@ -6,16 +6,25 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/21 13:24:04 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/22 13:27:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    ft_env(t_list *head)
+void    ft_env(t_list *head, char *str)
 {
     t_list *lst;
+    int		i;
 
+	i = 0;
+	while (str[i] == ' ')
+		i++;
+	if (str[i] != '\n')
+	{
+		write(1, "env: too many arguments\n", 24);
+		return ;
+	}
     lst = head;
 	while (lst)
 	{
