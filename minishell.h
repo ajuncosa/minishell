@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/21 13:24:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/22 11:52:49 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ typedef struct	s_env
 void	ft_echo(char *str);
 void    ft_env(t_list *head);
 void    ft_exit(t_list **head);
+void    parse_commands(char *str, t_list *head);
 
 #endif
