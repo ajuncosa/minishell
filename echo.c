@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/21 14:24:33 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/22 14:02:27 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,34 @@ void	ft_echo(char *str)
 {
 	int	n;
 	int	i;
+	int	j;
 	int	end;
 
 	n = 0;
 	i = 0;
 	while (str[i] == ' ')
 		i++;
-	if (str[i] == '-' && str[i + 1] == 'n' && (str[i + 2] == ' ' || str[i + 2] == '\n'))
+	if (str[i] == '-' && str[i + 1] == 'n')
 	{
-		n = 1;
-		i += 2;
+		j = i + 1;
+		while (str[j] == 'n')											// FIXME: falta por arreglar caso echo -nn -n-n
+		{
+			j++;
+			if (str[j] == ' ' && str[j + 1] == '-' && str[j + 2] == 'n')
+			{
+				n = 1;
+				i = j;
+				j += 2;
+
+			}
+		}
+		if (str[j] == ' ' || str[j] == '\n')
+		{
+			n = 1;
+			i = j;
+		}
 	}
+
 	while (str[i] == ' ')												// para saltarse los espacios extra después de echo o después de -n
 		i++;
 	while (str[i] != '\n')

@@ -6,14 +6,19 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 13:20:41 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/12/22 14:05:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    ft_export(t_list *head, char *str)
+void	ft_export(t_list *head, char *str)
 {
-    
+
+	int		i;
+
+	i = 0;
+	while (str[i] == ' ')
+		i++;
 
 }
