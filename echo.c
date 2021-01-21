@@ -6,11 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 14:24:19 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/21 13:24:47 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+ /* TODO: añadir echo $var con las variables de env */
 
 void	ft_echo(char *str)
 {
