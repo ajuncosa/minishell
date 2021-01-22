@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/14 10:30:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/02/11 12:54:56 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/22 12:12:23 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,18 @@ static size_t	ft_count_pieces(char const *s, char c)
 {
 	size_t	i;
 	size_t	count;
+	size_t	len;
 
 	i = 0;
 	count = 0;
-	while (i < ft_strlen(s))
+	len = ft_strlen(s);
+	while (i < len)
 	{
-		while (s[i] == c && i < ft_strlen(s))
+		while (s[i] == c && i < len)
 			i++;
-		if (i != ft_strlen(s))
+		if (i != len)
 		{
-			while (s[i] != c && i < ft_strlen(s))
+			while (s[i] != c && i < len)
 				i++;
 			count++;
 		}
@@ -38,15 +40,17 @@ static size_t	ft_len_pieces(char const *s, char c, size_t piece)
 	size_t	len;
 	size_t	y;
 	size_t	i;
+	size_t	len_s;
 
 	i = 0;
 	y = 0;
+	len_s = ft_strlen(s);
 	while (y <= piece)
 	{
 		len = 0;
-		while (s[i] == c && i < ft_strlen(s))
+		while (s[i] == c && i < len_s)
 			i++;
-		while (s[i] != c && i < ft_strlen(s))
+		while (s[i] != c && i < len_s)
 		{
 			len++;
 			i++;
@@ -61,21 +65,23 @@ static void		ft_fill_str(char *tab, char const *s, char c, size_t piece)
 	size_t	y;
 	size_t	i;
 	size_t	j;
+	size_t	len;
 
 	i = 0;
 	y = 0;
 	j = 0;
+	len = ft_strlen(s);
 	while (y < piece)
 	{
-		while (s[i] == c && i < ft_strlen(s))
+		while (s[i] == c && i < len)
 			i++;
-		while (s[i] != c && i < ft_strlen(s))
+		while (s[i] != c && i < len)
 			i++;
 		y++;
 	}
-	while (s[i] == c && i < ft_strlen(s))
+	while (s[i] == c && i < len)
 		i++;
-	while (s[i] != c && i < ft_strlen(s))
+	while (s[i] != c && i < len)
 	{
 		tab[j] = s[i];
 		i++;

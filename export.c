@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/21 13:20:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/22 11:57:08 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,19 @@ void	ft_export(t_list *head, char *str)
 	i = 0;
 	while (str[i] == ' ')
 		i++;
+	if (str[i] == '\0' || str[i] == '\n')
+	{
+		list = head;
+		while (list)
+		{
+			write(1, ((t_env*)list->content)->id, ft_strlen(((t_env*)list->content)->id));
+			write(1, "=", 1);
+			write(1, ((t_env*)list->content)->value, ft_strlen(((t_env*)list->content)->value));
+			write(1, "\n", 1);
+			list = list->next;
+		}
+		return ;
+	}
 	start = i;
 	if (!ft_isalpha(str[i]))
 	{
@@ -36,7 +49,7 @@ void	ft_export(t_list *head, char *str)
 	{
 		if (!valid && str[i] == '=')
 			valid = 1;
-		if (str[i] == '=' && str[i - 1] == ' ')
+		if (str[i] == '=' && str[i - 1] == ' ')				/*FIXME: manage space after '=' */
 		{
 			if (str[i + 1] == ' ')
 				write(1, "bad assignment\n", 15);

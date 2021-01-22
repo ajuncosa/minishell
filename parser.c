@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 11:35:29 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 13:27:52 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/22 12:14:21 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ void	parse_commands(char *str, t_list *head)
 		ft_pwd(head, &str[3]);
 	else if (!ft_strncmp(str, "export", 6) && (str[6] == '\n' || str[6] == ' '))
 		ft_export(head, &str[6]);
-	/*else if (!ft_strncmp(str, "cd", 2))
-	else if (!ft_strncmp(str, "unset", 5))*/
+	//else if (!ft_strncmp(str, "cd", 2))
+	else if (!ft_strncmp(str, "unset", 5) && (str[5] == '\n' || str[5] == ' '))
+		ft_unset(head, &str[5]);
 	else if (!ft_strncmp(str, "env", 3) && (str[3] == '\n' || str[3] == ' '))
 		ft_env(head, &str[3]);
 	else if (!ft_strncmp(str, "exit", 4) && str[4] == '\n')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/22 13:21:29 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/22 13:31:36 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,7 @@ void    ft_exit(t_list **head);
 void    parse_commands(char *str, t_list *head);
 void	ft_pwd(t_list *head, char *str);
 void    ft_export(t_list *head, char *str);
+void    ft_unset(t_list *head, char *str);
+void	del_lst(void *env);
 
 #endif
