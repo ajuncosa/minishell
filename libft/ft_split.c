@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/14 10:30:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/22 12:12:23 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/22 14:19:44 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,25 +62,24 @@ static size_t	ft_len_pieces(char const *s, char c, size_t piece)
 
 static void		ft_fill_str(char *tab, char const *s, char c, size_t piece)
 {
-	size_t	y;
 	size_t	i;
 	size_t	j;
 	size_t	len;
 
 	i = 0;
-	y = 0;
 	j = 0;
 	len = ft_strlen(s);
-	while (y < piece)
+	while (j < piece)
 	{
 		while (s[i] == c && i < len)
 			i++;
 		while (s[i] != c && i < len)
 			i++;
-		y++;
+		j++;
 	}
 	while (s[i] == c && i < len)
 		i++;
+	j = 0;
 	while (s[i] != c && i < len)
 	{
 		tab[j] = s[i];
