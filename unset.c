@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/01/22 14:13:23 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/25 12:01:27 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@ void	ft_unset(t_list *head, char *str)
 {
 	t_list	*prev;
 	t_list	*list;
-	t_list	*tmp;
 	char	**items;
 	int		cont;
-	int		del;
 	int		i;
 	int		j;
-	int		k;
+	int		len;
+	int		lenv;
 
 	cont = 0;
 	i = 0;
@@ -33,48 +32,42 @@ void	ft_unset(t_list *head, char *str)
 		write(1, "unset: not enough arguments\n", 28);
 		return ;
 	}
-	k = i;
-	while (str[k] != '\n' && str[k] != '\0')
+	j = i;
+	while (str[j] != '\n' && str[j] != '\0')
 	{
-		while (str[k] != ' ' && str[k] != '\n' && str[k] != '\0')
-			k++;
-		while (str[k] == ' ')
-			k++;
+		while (str[j] != ' ' && str[j] != '\n' && str[j] != '\0')
+			j++;
+		while (str[j] == ' ')
+			j++;
 		cont++;
 	}
-	items = ft_split(&str[i], ' ');																// FIXME: el último item se guarda con '\n' incluido
-	list = head;
-	while (list)																				// TODO: comparar cada item con todos los envs
+	items = ft_split(&str[i], ' ');
+	j = 0;
+	while (j < cont)
 	{
-		j = 0;
-		del = 0;
-		tmp = list;
-	printf("%s\n", ((t_env*)head->content)->id);
-
-		while (j < cont)
+		list = head;
+		len = (j == cont - 1) ? ft_strlen(items[j]) - 1 : ft_strlen(items[j]);
+		while (list)
 		{
-			if (!ft_strncmp(((t_env*)list->content)->id, items[j], ft_strlen(items[j]) - 1 ))	// FIXME: el -1 del strlen es por lo del \n del item, sólo funciona si le pasas sólo un item
-																								// FIXME: hay que comparar con el len del más largo, si hay varios id que empiezan por TERM y unseteas TERM se te borran todos
+			lenv = ft_strlen(((t_env*)list->content)->id);
+			lenv = (lenv < len) ? len : lenv;
+			if (!ft_strncmp(((t_env*)list->content)->id, items[j], lenv))
 			{
 				if (list == head)																// FIXME: este caso da segmentation fault
 				{
-					printf("entro 1\n");
 					head = list->next;
 					ft_lstdelone(list, &del_lst);
 				}
 				else
 				{
-					printf("entro 2\n");
 					prev->next = list->next;
 					ft_lstdelone(list, &del_lst);
 				}
-				del = 1;
 				break ;
 			}
-			j++;
-		}
-		if (!del)
 			prev = list;
-		list = tmp->next;
+			list = list->next;
+		}
+		j++;
 	}
 }

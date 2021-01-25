@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/25 12:51:46 by ajuncosa         ###   ########.fr       */
+/*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
+/*   Updated: 2021/01/25 13:34:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_pwd(char *str)
-{
-	char	*pwd;
-	int		i;
-	char	*buf;
+void    ft_cd(char *str)							/* TODO: cd sin nada después */
+{   
+	char	*trimmed;
+	int 	i;
+	char	*sterr;
 
 	i = 0;
 	while (str[i] == ' ')
 		i++;
-	if (str[i] != '\n')
+	trimmed = ft_strtrim(&str[i], " \n");
+	if (chdir(trimmed) == -1)
 	{
-		write(1, "pwd: too many arguments\n", 24);
-		return ;
+		sterr = strerror(errno);
+		write(1, sterr, ft_strlen(sterr));
+		write(1, "\n", 1);
 	}
-	buf = NULL;
-	buf = getcwd(buf, 0);
-	write(1, buf, ft_strlen(buf));
-	write(1, "\n", 1);
-	free(buf);
 }
