@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/22 11:57:08 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/27 11:55:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_export(t_list *head, char *str)
+void	ft_export(t_list **head, char *str)
 {
 	t_list	*new;
 	t_list	*list;
@@ -28,7 +28,7 @@ void	ft_export(t_list *head, char *str)
 		i++;
 	if (str[i] == '\0' || str[i] == '\n')
 	{
-		list = head;
+		list = *head;
 		while (list)
 		{
 			write(1, ((t_env*)list->content)->id, ft_strlen(((t_env*)list->content)->id));
@@ -75,7 +75,7 @@ void	ft_export(t_list *head, char *str)
 	env = malloc(sizeof(t_env));
 	new->content = env;
 	((t_env *)new->content)->id = ft_substr(str, start, len);
-	list = head;
+	list = *head;
 	while (list)
 	{
 		if (!ft_strncmp(((t_env*)list->content)->id, ((t_env *)new->content)->id, len))
@@ -92,6 +92,6 @@ void	ft_export(t_list *head, char *str)
 	i = len + 2;
 	len = ft_strlen(&str[i]);
 	((t_env *)new->content)->value = ft_substr(str, i, len - 1);
-	ft_lstadd_back(&head, new);
+	ft_lstadd_back(head, new);
 	
 }

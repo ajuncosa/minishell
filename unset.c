@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/01/25 12:01:27 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/27 11:58:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_unset(t_list *head, char *str)
+void	ft_unset(t_list **head, char *str)
 {
 	t_list	*prev;
 	t_list	*list;
@@ -45,7 +45,7 @@ void	ft_unset(t_list *head, char *str)
 	j = 0;
 	while (j < cont)
 	{
-		list = head;
+		list = *head;
 		len = (j == cont - 1) ? ft_strlen(items[j]) - 1 : ft_strlen(items[j]);
 		while (list)
 		{
@@ -53,9 +53,9 @@ void	ft_unset(t_list *head, char *str)
 			lenv = (lenv < len) ? len : lenv;
 			if (!ft_strncmp(((t_env*)list->content)->id, items[j], lenv))
 			{
-				if (list == head)																// FIXME: este caso da segmentation fault
+				if (list == *head)
 				{
-					head = list->next;
+					*head = list->next;
 					ft_lstdelone(list, &del_lst);
 				}
 				else
