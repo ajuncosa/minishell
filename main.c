@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/28 11:41:07 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/28 13:18:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 int		main(int argc, char **argv, char **envp)
 {
 	int		i;
-	char	str[1024];
+	int		ret;
+	char	str[1024];								//FIXME: 1024
+	char	**line;
+	char	*user;
 	t_list	*head;
 	t_list	*new;
-	t_env	*env;
-	char	**line;
 	t_list	*lst;
-	char	*user;
+	t_env	*env;
 	size_t	user_len;
+
 
 	write(1, "\e[1;1H\e[2J", 11);
 	printf("\033[1;36m                                         _       _       \n              _                         (_)     (_)      \n ____   ___ _| |_     ___  ___     ____  _ ____  _       \n|  _ \\ / _ (_   _)   /___)/ _ \\   |    \\| |  _ \\| |      \n| | | | |_| || |_   |___ | |_| |  | | | | | | | | |  _ _ _ \n|_| |_|\\___/  \\__)  (___/ \\___/   |_|_|_|_|_| |_|_| (_|_|_)\033[0m\n\n");
@@ -56,6 +58,7 @@ int		main(int argc, char **argv, char **envp)
 		}
 		lst = lst->next;
 	}
+	ret = 0;
 	while (1)
 	{
 		write(1, "\033[1;37m", 7);
@@ -63,7 +66,7 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		read(0, str, 1023);
-		parse_commands(str, &head, user);
+		ret = parse_commands(str, &head, ret, user);
 		ft_bzero(str, 1023);
 	}
 	ft_exit(&head, user);
