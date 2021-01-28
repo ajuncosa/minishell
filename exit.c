@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/12/21 14:04:05 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/28 11:40:40 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ void	del_lst(void *env)
 	free((t_env*)env);
 }
 
-void	ft_exit(t_list **head)
+void	ft_exit(t_list **head, char *user)
 {
+	free(user);
 	ft_lstclear(head, &del_lst);
 	exit(0);
 }

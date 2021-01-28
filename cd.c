@@ -3,24 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/25 13:34:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/28 12:31:56 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    ft_cd(char *str)							/* TODO: cd sin nada después */
+void    ft_cd(char *str, char *user)
 {   
 	char	*trimmed;
-	int 	i;
 	char	*sterr;
+	char	*path;
+	int 	i;
 
 	i = 0;
 	while (str[i] == ' ')
 		i++;
+	if (str[i] == '\n')
+	{
+		path = ft_strjoin("/Users/", user);
+		chdir(path);
+		free(path);
+		return ;
+	}
 	trimmed = ft_strtrim(&str[i], " \n");
 	if (chdir(trimmed) == -1)
 	{

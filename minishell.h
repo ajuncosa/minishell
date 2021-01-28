@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/27 11:55:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/28 12:25:43 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <errno.h>
+# include <dirent.h>
 # include "libft/libft.h"
 # include "gnl/get_next_line.h"
 
@@ -26,12 +27,13 @@ typedef struct	s_env
 
 void	ft_echo(char *str);
 void    ft_env(t_list **head, char *str);
-void    ft_exit(t_list **head);
-void    parse_commands(char *str, t_list **head);
+void    ft_exit(t_list **head, char *user);
+void    parse_commands(char *str, t_list **head, char *user);
 void	ft_pwd(char *str);
 void    ft_export(t_list **head, char *str);
 void    ft_unset(t_list **head, char *str);
 void	del_lst(void *env);
-void	ft_cd(char *str);
+void	ft_cd(char *str, char *user);
+void    ft_ls(void);
 
 #endif

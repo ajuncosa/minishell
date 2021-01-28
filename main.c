@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/27 11:56:19 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/28 11:41:07 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,13 @@ int		main(int argc, char **argv, char **envp)
 	while (lst)
 	{
 		if (!ft_strncmp(((t_env*)lst->content)->id, "USER", 4))
-		{
-			user = ((t_env*)lst->content)->value;
-			user_len = ft_strlen(user);
+		{	
+			user_len = ft_strlen(((t_env*)lst->content)->value);
+			if (!(user = ft_strdup(((t_env*)lst->content)->value)))
+			{
+				ft_lstclear(&head, &del_lst);
+				exit(0);
+			}
 			break;
 		}
 		lst = lst->next;
@@ -59,9 +63,9 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		read(0, str, 1023);
-		parse_commands(str, &head);
+		parse_commands(str, &head, user);
 		ft_bzero(str, 1023);
 	}
-	ft_exit(&head);
+	ft_exit(&head, user);
 	return (0);
 }
