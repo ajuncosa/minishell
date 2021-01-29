@@ -10,19 +10,19 @@ SANITIZE = -g -fsanitize=address
 	${CC} -c $< -o $@
 
 ${NAME}:	${OBJS}
-	make bonus -C libft/
-	$(CC) -L libft/ -lft $^ -o ${NAME}
+				make -C ft_printf/
+				$(CC) -L ft_printf/ -lftprintf $^ -o ${NAME}
 
 all:		${NAME}
 
 clean:
-	${RM} ${OBJS}
-	make clean -C libft/
+				${RM} ${OBJS}
+				make clean -C ft_printf/
 
 fclean:		clean
-	${RM} ${NAME}
-	make fclean -C libft/
+				${RM} ${NAME}
+				make fclean -C ft_printf/
 
-re:		fclean all
+re:			fclean all
 
 .PHONY:		all clean fclean re

@@ -17,10 +17,14 @@ CFLAGS	= -Wall -Werror -Wextra
 		${CC} ${FLAGS} -c $< -o ${<:.c=.o}
 
 ${NAME}:	${OBJS}
+			make bonus -C ../libft/
+			cp ../libft/libft.a ${NAME}
 			ar rc ${NAME} ${OBJS}
 			ranlib ${NAME}
 
 bonus:		${OBJS_B}
+			make bonus -C ../libft/
+			cp ../libft/libft.a ${NAME}
 			ar rc ${NAME} ${OBJS_B}
 			ranlib ${NAME}
 
@@ -28,9 +32,11 @@ all:		${NAME}
 
 clean:
 			${RM} ${OBJS} ${OBJS_B}
+			make clean -C ../libft/
 
 fclean:		clean
 			${RM} ${NAME}
+			make fclean -C ../libft/
 
 re:			fclean all
 

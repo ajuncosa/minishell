@@ -9,21 +9,15 @@ CFLAGS	= -Wall -Werror -Wextra
 .c.o:
 		${CC} ${FLAGS} -c $< -o ${<:.c=.o}
 ${NAME}:	${OBJS}
-			make -C printf/
-			cp printf/libftprintf.a ${NAME}
 			ar rc  ${NAME} ${OBJS}
 			ranlib ${NAME}
 bonus:		${OBJS} ${OBJS_B}
-			make -C printf/
-			cp printf/libftprintf.a ${NAME}
 			ar rc ${NAME} ${OBJS} ${OBJS_B}
 			ranlib ${NAME}
 all:		${NAME}
 clean:
 			${RM} ${OBJS} ${OBJS_B}
-			make clean -C printf/
 fclean:		clean
 			${RM} ${NAME}
-			make fclean -C printf/
 re:			fclean bonus
 .PHONY:		bonus all clean fclean re

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   libftprintf_bonus.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 18:20:36 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/28 14:07:10 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2020/03/09 12:15:42 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFTPRINTF_BONUS_H
 # define LIBFTPRINTF_BONUS_H
 
-# include "../libft.h"
+# include "libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdarg.h>

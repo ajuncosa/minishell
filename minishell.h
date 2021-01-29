@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/28 13:19:54 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 11:08:17 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <unistd.h>
 # include <errno.h>
 # include <dirent.h>
-# include "libft/libft.h"
 # include "gnl/get_next_line.h"
+# include "ft_printf/libftprintf.h"
 
 typedef struct	s_env
 {
