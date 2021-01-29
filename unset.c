@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/01/27 11:58:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:44:35 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_unset(t_list **head, char *str)
+int	ft_unset(t_list **head, char *str)
 {
 	t_list	*prev;
 	t_list	*list;
@@ -30,7 +30,7 @@ void	ft_unset(t_list **head, char *str)
 	if (str[i] == '\n' || str[i] == '\0')
 	{
 		write(1, "unset: not enough arguments\n", 28);
-		return ;
+		return (1);
 	}
 	j = i;
 	while (str[j] != '\n' && str[j] != '\0')
@@ -70,4 +70,5 @@ void	ft_unset(t_list **head, char *str)
 		}
 		j++;
 	}
+	return (0);
 }

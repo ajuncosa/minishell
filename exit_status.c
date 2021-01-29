@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/28 13:20:40 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/28 13:26:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 13:02:01 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_exit_status(int ret)
+int	ft_exit_status(int ret)
 {
-	write(1, "command not found: ", 20);
-	
+	ft_printf("command not found: %d\n", ret);
+	return(127);
 }

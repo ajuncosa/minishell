@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/21 13:24:47 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:53:16 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
  /* TODO: añadir echo $var con las variables de env */
 
-void	ft_echo(char *str)
+int	ft_echo(char *str)
 {
 	int	n;
 	int	i;
@@ -53,7 +53,7 @@ void	ft_echo(char *str)
 			if (str[end] != '"')
 			{
 				write(1, "Error: open dquote\n", 19);
-				return ;
+				return (1);
 			}
 			write(1, &str[i], end - i);
 			i = end + 1;
@@ -67,7 +67,7 @@ void	ft_echo(char *str)
 			if (str[end] != '\'')
 			{
 				write(1, "Error: open quote\n", 18);
-				return ;
+				return (1);
 			}
 			write(1, &str[i], end - i);
 			i = end + 1;
@@ -87,4 +87,5 @@ void	ft_echo(char *str)
 	}
 	if (n == 0)
 		write(1, "\n", 1);
+	return (0);
 }

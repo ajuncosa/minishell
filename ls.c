@@ -6,13 +6,13 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/28 12:09:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/01/28 12:30:52 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:58:38 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    ft_ls(void)
+int ft_ls(void)
 {
     struct dirent   *p_dirent;
     DIR             *pdir;
@@ -24,7 +24,7 @@ void    ft_ls(void)
     if (pdir == NULL) 
     {
         printf ("Cannot open directory\n");
-        return ;
+        return (1);
     }
     while ((p_dirent = readdir(pdir)) != NULL)
     {
@@ -34,4 +34,5 @@ void    ft_ls(void)
     write(1, "\n", 1);
     closedir(pdir);
     free(buf);
+    return (0);
 }

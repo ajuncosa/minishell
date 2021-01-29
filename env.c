@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/27 11:55:39 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:53:44 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(t_list **head, char *str)
+int	ft_env(t_list **head, char *str)
 {
 	t_list	*lst;
 	int		i;
@@ -23,7 +23,7 @@ void	ft_env(t_list **head, char *str)
 	if (str[i] != '\n')
 	{
 		write(1, "env: too many arguments\n", 24);
-		return ;
+		return (1);
 	}
 	lst = *head;
 	while (lst)
@@ -36,4 +36,5 @@ void	ft_env(t_list **head, char *str)
 		write(1, "\n", 1);
 		lst = lst->next;
 	}
+	return (0);
 }

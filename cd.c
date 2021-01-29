@@ -6,15 +6,15 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/28 12:31:56 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:43:41 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void    ft_cd(char *str, char *user)
+int    ft_cd(char *str, char *user)
 {   
-	char	*trimmed;
+	char	*trimmed;						//TODO: return $?
 	char	*sterr;
 	char	*path;
 	int 	i;
@@ -25,9 +25,14 @@ void    ft_cd(char *str, char *user)
 	if (str[i] == '\n')
 	{
 		path = ft_strjoin("/Users/", user);
-		chdir(path);
+		if (chdir(path) == -1)
+		{
+			sterr = strerror(errno);
+			write(1, sterr, ft_strlen(sterr));
+			write(1, "\n", 1);
+		}
 		free(path);
-		return ;
+		return (0);
 	}
 	trimmed = ft_strtrim(&str[i], " \n");
 	if (chdir(trimmed) == -1)
@@ -35,5 +40,9 @@ void    ft_cd(char *str, char *user)
 		sterr = strerror(errno);
 		write(1, sterr, ft_strlen(sterr));
 		write(1, "\n", 1);
+		free (trimmed);
+		return (1);
 	}
+	free (trimmed);
+	return (0);
 }

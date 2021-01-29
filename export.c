@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/27 11:55:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/01/29 12:57:38 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_export(t_list **head, char *str)
+int	ft_export(t_list **head, char *str)							//TODO: returns para $?
 {
 	t_list	*new;
 	t_list	*list;
@@ -37,13 +37,13 @@ void	ft_export(t_list **head, char *str)
 			write(1, "\n", 1);
 			list = list->next;
 		}
-		return ;
+		return (0);
 	}
 	start = i;
 	if (!ft_isalpha(str[i]))
 	{
 		write(1, "Error: not an identifier\n", 25);
-		return ;
+		return (1);
 	}
 	while (str[i])
 	{
@@ -52,17 +52,22 @@ void	ft_export(t_list **head, char *str)
 		if (str[i] == '=' && str[i - 1] == ' ')				/*FIXME: manage space after '=' */
 		{
 			if (str[i + 1] == ' ')
+			{
 				write(1, "bad assignment\n", 15);
+				return (0);
+			}
 			else
+			{
 				write(1, "not found\n", 10);			/* TODO: añadir nombre de la var al error */
-			return ;
+				return (1);
+			}
 		}
 		i++;
 	}
 	if (!valid)
 	{
 		write(1, "Error\n", 6);
-		return ;
+		return (1);
 	}
 	i = start;
 	len = 0;
@@ -85,7 +90,7 @@ void	ft_export(t_list **head, char *str)
 			i = len + 2;
 			len = ft_strlen(&str[i]);
 			((t_env *)list->content)->value = ft_substr(str, i, len - 1);
-			return ;
+			return (0);
 		}
 		list = list->next;
 	}
@@ -93,5 +98,5 @@ void	ft_export(t_list **head, char *str)
 	len = ft_strlen(&str[i]);
 	((t_env *)new->content)->value = ft_substr(str, i, len - 1);
 	ft_lstadd_back(head, new);
-	
+	return (0);
 }
