@@ -31,3 +31,28 @@ char	*dquote(char *str)
 				free(seg);
 				break;
 */
+
+int ft_ls(void)
+{
+    struct dirent   *p_dirent;
+    DIR             *pdir;
+    char            *buf;
+
+    buf = NULL;
+	buf = getcwd(buf, 0);
+    pdir = opendir(buf);
+    if (pdir == NULL) 
+    {
+        printf ("Cannot open directory\n");
+        return (1);
+    }
+    while ((p_dirent = readdir(pdir)) != NULL)
+    {
+        write(1, p_dirent->d_name, ft_strlen(p_dirent->d_name));
+        write(1, "    ", 4);
+    }
+    write(1, "\n", 1);
+    closedir(pdir);
+    free(buf);
+    return (0);
+}

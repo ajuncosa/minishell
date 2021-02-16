@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 12:52:38 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/16 11:38:27 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		ft_export(t_list **head, char *str);
 int		ft_unset(t_list **head, char *str);
 void	del_lst(void *env);
 int		ft_cd(char *str, char *user);
-int		ft_ls(void);
 int		ft_exit_status(int ret);
+int 	ft_cmd(char *str);
 
 #endif
