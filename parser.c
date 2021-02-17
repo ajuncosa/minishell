@@ -3,22 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 11:35:29 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/16 11:37:27 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/17 13:58:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char	**parse_line(char *str)
+{
+	
+}
+
 int		parse_commands(char *str, t_list **head, int ret, char *user)
 {
-	int i;
+	int		i;
+	char	**args;
 
 	i = 0;
 	while (str[i] == ' ')
 		i++;
+	args = parse_line(&str[i]);
 	if (!ft_strncmp(&str[i], "echo", 4) && (str[i + 4] == '\n' || str[i + 4] == ' '))		// condiciones para que si solo pones "echo" (sin espacio detrás) también entre. Si no pones las condiciones, al poner "echohola" funciona e imprime "hola" cuando debería decir command not found
 		return (ft_echo(&str[i + 4]));
 	else if (!ft_strncmp(&str[i], "pwd", 3) && (str[i + 3] == '\n' || str[i + 3] == ' '))
