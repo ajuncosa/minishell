@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/02/17 11:41:58 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/02/25 14:25:45 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_cmd(char *str)
 	pid_t pid;
 	char *sterr;
 	char **argv;
-	char *envp[] = {NULL};
+	char *envp[] = {NULL};					//FIXME: norminette acepta esto?
 
 	argv = ft_split(str, ' ');
 	argc = 0;

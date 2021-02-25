@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/25 13:09:11 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/25 14:24:15 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ int		main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			return (1);
+			exit(1);
 		if (!(env = malloc(sizeof(t_env))))
 		{
-			ft_lstclear(head, &del_lst);
-			return (1);
+			ft_lstclear(&head, &del_lst);
+			exit(1);
 		}
 		if (!(line = ft_split(envp[i], '=')))
 		{
-			ft_lstclear(head, &del_lst);
-			return (1);
+			ft_lstclear(&head, &del_lst);
+			exit(1);
 		}
 		new->content = env;
 		((t_env*)new->content)->id = line[0];
@@ -76,7 +76,7 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "\033[0m", 4);
 		if (read(0, str, 1023) == -1)
 			ft_exit(&head, user);
-		ret = parse_commands(str, &head, ret, user);
+		ret = parser(str, &head, ret, user);
 		ft_bzero(str, 1023);
 	}
 	ft_exit(&head, user);

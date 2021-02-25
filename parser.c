@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/25 13:59:26 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/25 14:34:42 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,9 +126,9 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	}
 	return (1);
 }
-								// FIXME: poner retorno int a la función para poder retornar errores
-								// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
-int	parser(char *str, t_list **head, int ret, char *user)		// TODO: liberar: cmd, args (el array y sus strings)
+															// TODO: mejorar los frees y exits de alguna forma ?!?!?
+															// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
+int	parser(char *str, t_list **head, int ret, char *user)	// TODO: liberar: cmd, args (el array y sus strings)
 {
 	int     i;
 	int		j;
@@ -153,31 +153,31 @@ int	parser(char *str, t_list **head, int ret, char *user)		// TODO: liberar: cmd
 			else if (i == 0 && str[i] == '|')
 			{
 				write(1, "parse error near `|'\n", 21);
-				return (2);
+				return (2);									//FIXME: estos valores de retorno están mal
 			}
 			i++;
 			if (str[i] == ';' && str[i - 1] == ';')
 			{
 				write(1, "parse error near `;;'\n", 22);
-				return (130);
+				return (130);								//FIXME: valores de retorno mal
 			}
 		}
 
 		// GUARDAR COMANDO
 		if (!(com.cmd = find_cmd(str, &i)))
-			ft_exit(&head, user);
+			ft_exit(head, user);
 		while (str[i] == ' ')
 			i++;
 		
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		n_args = count_args(&str[i]);
 		if (n_args == -1)
-			return ;
+			return (0);
 		if (n_args > 0)
 			if (!(com.args = malloc(n_args * sizeof(char *))))
 			{
 				free(com.cmd);
-				ft_exit(&head, user);
+				ft_exit(head, user);
 			}
 
 		// GUARDAR ARGUMENTOS
@@ -185,23 +185,23 @@ int	parser(char *str, t_list **head, int ret, char *user)		// TODO: liberar: cmd
 		{
 			free(com.cmd);
 			j = 0;
-			while (i < n_args)
+			while (j < n_args)			//FIXME: este bucle de frees está fatal porque si da error antes de haber alocado todos los argumentos, va a intentar hacer frees a cosas que no están alocadas
 			{
-				free(com.args[i]);
-				i++;
+				free(com.args[j]);
+				j++;
 			}
 			free(com.args);
-			ft_exit(&head, user);
+			ft_exit(head, user);
 		}
-												//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
-		// GUARDAR SEP[1]						//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (¿hay que tenerlo en cuenta o devolver un error como con las comillas?)
+															//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
+		// GUARDAR SEP[1]									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (¿hay que tenerlo en cuenta o devolver un error como con las comillas?)
 		if (str[i] == ';' || str[i] == '|')
 			com.sep[1] = str[i];
-		if (com.sep[0] == '|' && com.sep[1] == '|')		//FIXME: por qué esta condicion???? 
+		/*if (com.sep[0] == '|' && com.sep[1] == '|')		//FIXME: por qué esta condicion???? tal vez quería gestionar || y lo he hecho mal (no es un error real pero es un bonus)
 		{
 			write(1, "parse error near `|'\n", 21);
 			return ;
-		}
+		}*/
 		
 		// PRINTFS
 		printf("_________________________\n");
@@ -218,11 +218,12 @@ int	parser(char *str, t_list **head, int ret, char *user)		// TODO: liberar: cmd
 		//FREES
 		free(com.cmd);
 		j = 0;
-		while (i < n_args)
+		while (j < n_args)
 		{
-			free(com.args[i]);
-			i++;
+			free(com.args[j]);
+			j++;
 		}
 		free(com.args);
 	}
+	return (0);		//TODO: return lo que devuelva la función que haga cada comando
 }
