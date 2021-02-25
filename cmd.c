@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/02/16 13:37:44 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/17 11:41:58 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	ft_cmd(char *str)
 {
 	int i;
 	int	argc;
+	pid_t pid;
 	char *sterr;
 	char **argv;
 	char *envp[] = {NULL};
@@ -34,8 +35,19 @@ int	ft_cmd(char *str)
 	while (argv[argc] != NULL)
 		argc++;
 	ft_chomp(argv[argc - 1]);
-
-	if (execve(argv[0], argv, envp) == -1)
+	pid = fork();
+	if (pid == 0)
+	{
+		if (execve(argv[0], argv, envp) == -1)
+		{
+			sterr = strerror(errno);
+			write(1, sterr, ft_strlen(sterr));
+			write(1, "\n", 1);
+		}
+	}
+	else if (pid > 0)
+		wait(NULL);
+	else 
 	{
 		sterr = strerror(errno);
 		write(1, sterr, ft_strlen(sterr));
