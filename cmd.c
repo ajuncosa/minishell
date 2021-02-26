@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/02/25 14:25:45 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/02/26 11:35:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ int	ft_cmd(char *str)
 		i++;
 	}
 	free(argv);
-	write(1, "command not found\n", 18);								// possible TODO: replicar mensaje
+	write(1, "command not found\n", 18);	// posible TODO: replicar mensaje, FIXME: que solo diga esto cuando no encuentra el comando!!
 	return (127);
 }

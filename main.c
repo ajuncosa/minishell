@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/25 14:24:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/02/26 11:25:35 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ int		main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			exit(1);
+			exit(0);
 		if (!(env = malloc(sizeof(t_env))))
 		{
 			ft_lstclear(&head, &del_lst);
-			exit(1);
+			exit(0);
 		}
 		if (!(line = ft_split(envp[i], '=')))
 		{
 			ft_lstclear(&head, &del_lst);
-			exit(1);
+			exit(0);
 		}
 		new->content = env;
 		((t_env*)new->content)->id = line[0];

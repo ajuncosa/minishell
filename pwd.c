@@ -3,26 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 11:40:38 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/02/26 11:39:08 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_pwd(char *str)
+int	ft_pwd(char *com, char **args)
 {
 	char	*pwd;
-	int		i;
 	char	*buf;
 	pid_t	status;
 
-	i = 0;
-	while (str[i] == ' ')
-		i++;
-	if (str[i] != '\n')
+	if (args != NULL)
 	{
 		write(1, "pwd: too many arguments\n", 24);
 		return (1);
