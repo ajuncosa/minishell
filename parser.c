@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/26 11:38:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/02/26 15:16:23 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,13 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 	int		n_args;
 	int		r;
 
+	int		fd1[2];
+	int		status;
+	int		pid;
+	char 	*sterr;
+
 	i = 0;
+	pipe(fd1);
 	while (str[i] != '\n')
 	{
 		// INICIALIZAR COSAS
@@ -203,10 +209,59 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 		printf("sep[0]: %c, sep[1]: %c\n", com.sep[0], com.sep[1]);*/
 
 		// HACER COMANDO
-		if (!strncmp(com.cmd, "pwd", 4))
-			r = ft_pwd(com.cmd, com.args);
+		
+		if (com.sep[1] == '|')
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				close(fd1[0]);
+				dup2(fd1[1], STDOUT_FILENO);
+				close(fd1[1]);
+				printf("HACER PRIMER COMANDO DEL PIPE\n");
+				ft_cmd(com.cmd);
+				exit(0);
+			}
+			else if (pid > 0)
+			{
+				close(fd1[1]);
+			}
+			else 
+			{
+				sterr = strerror(errno);
+				write(1, sterr, ft_strlen(sterr));
+				write(1, "\n", 1);
+			}
+		}
+		if (com.sep[0] == '|')
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				dup2(fd1[0], STDIN_FILENO);
+				close(fd1[0]);
+				printf("HACER SEGuNDo CoMAndO DEL PIPE\n");
+				ft_cmd(com.cmd);
+				exit(0);
+			}
+			else if (pid > 0)
+			{
+				close(fd1[0]);
+			}
+			else 
+			{
+				sterr = strerror(errno);
+				write(1, sterr, ft_strlen(sterr));
+				write(1, "\n", 1);
+			}
+		}
+		wait(&status); // FIXME: qué pasa si no entra en las condiciones anteriores, por lo que no hay hijos y aún así le digo que espere? 
+		wait(&status);
+
+		/*if (!strncmp(com.cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old, y llamarla dentro y fuera de las condiciones anteriores (en lugar de ft_cmd)
+			r = ft_pwd(com.cmd, com.args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
 		else
-			r = ft_cmd(com.cmd);
+			r = ft_cmd(com.cmd);*/
 
 		//FREES
 		free(com.cmd);
