@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/26 15:16:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/03 13:34:07 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,35 +127,41 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
-{
+int	parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
+{																// FIXME: HAY LEAKS !! :(
 	int     i;
-	int		j;
-	t_cmd	com;
+	t_list	*cmd_head;
+	t_list	*new;
+	t_cmd	*com;
 	int		n;
-	int		n_args;
 	int		r;
 
-	int		fd1[2];
-	int		status;
-	int		pid;
-	char 	*sterr;
-
 	i = 0;
-	pipe(fd1);
+	cmd_head = NULL;
 	while (str[i] != '\n')
 	{
+		if (!(new = malloc(sizeof(t_list))))
+		{
+			ft_free_cmd(&cmd_head);
+			ft_exit(env_head, user);
+		}
+		if (!(com = malloc(sizeof(t_cmd))))
+		{
+			ft_free_cmd(&cmd_head);
+			ft_exit(env_head, user);
+		}
+		new->content = com;
 		// INICIALIZAR COSAS
-		com.sep[0] = '0';
-		com.sep[1] = '0';
-		com.args = NULL;
-		com.cmd = NULL;
+		((t_cmd*)new->content)->sep_0 = '0';
+		((t_cmd*)new->content)->sep_1 = '0';
+		((t_cmd*)new->content)->args = NULL;
+		((t_cmd*)new->content)->cmd = NULL;
 
-		// BUSCAR SEP[0] (el separador de comandos (; o |) que viene antes del comando actual)
+		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
 		if (str[i] == ';' || str[i] == '|')
 		{
 			if (i > 0)
-				com.sep[0] = str[i];
+				((t_cmd*)new->content)->sep_0 = str[i];
 			else if (i == 0 && str[i] == '|')
 			{
 				write(1, "parse error near `|'\n", 21);
@@ -170,27 +176,39 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 		}
 
 		// GUARDAR COMANDO
-		if (!(com.cmd = find_cmd(str, &i)))
-			ft_exit(head, user);
+		if (!(((t_cmd*)new->content)->cmd = find_cmd(str, &i)))
+		{
+			ft_free_cmd(&cmd_head);
+			ft_exit(env_head, user);
+		}
 		while (str[i] == ' ')
 			i++;
 		
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
-		n_args = count_args(&str[i]);
-		if (n_args == -1)
+		((t_cmd*)new->content)->n_args = count_args(&str[i]);
+		if (((t_cmd*)new->content)->n_args == -1)
+		{
+			ft_free_cmd(&cmd_head);
 			return (0);
-		if (n_args > 0)
-			if (!(com.args = malloc(n_args * sizeof(char *))))
-				ft_exit(head, user);
+		}
+		if (((t_cmd*)new->content)->n_args > 0)
+			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
+			{
+				ft_free_cmd(&cmd_head);
+				ft_exit(env_head, user);
+			}
 
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(str, n_args, com.args, &i)))
-			ft_exit(head, user);
+		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
+		{
+			ft_free_cmd(&cmd_head);
+			ft_exit(env_head, user);
+		}
 															//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
-		// GUARDAR SEP[1]									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (¿hay que tenerlo en cuenta o devolver un error como con las comillas?)
+		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (¿hay que tenerlo en cuenta o devolver un error como con las comillas?)
 		if (str[i] == ';' || str[i] == '|')
-			com.sep[1] = str[i];
-		/*if (com.sep[0] == '|' && com.sep[1] == '|')		//FIXME: por qué esta condicion???? tal vez quería gestionar || y lo he hecho mal (no es un error real pero es un bonus)
+			 ((t_cmd*)new->content)->sep_1 = str[i];
+		/*if (com.sep_0 == '|' && com.sep_1 == '|')		//FIXME: por qué esta condicion???? tal vez quería gestionar || y lo he hecho mal (no es un error real pero es un bonus)
 		{
 			write(1, "parse error near `|'\n", 21);
 			return ;
@@ -206,11 +224,40 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 			printf("%s\n", com.args[j]);
 			j++;
 		}
-		printf("sep[0]: %c, sep[1]: %c\n", com.sep[0], com.sep[1]);*/
+		printf("sep_0: %c, sep_1: %c\n", com.sep_0, com.sep_1);*/
 
-		// HACER COMANDO
-		
-		if (com.sep[1] == '|')
+		//GUARDAR COMANDO EN LISTA
+		ft_lstadd_back(&cmd_head, new);
+	}
+
+	//PRINTFS
+	t_list *lst = cmd_head;
+	while (lst)
+	{
+		printf("_________________________\n");
+		printf("comando: %s\n", ((t_cmd*)lst->content)->cmd);
+		printf("n de args: %d\n", ((t_cmd*)lst->content)->n_args);
+		i = 0;
+		while (i < ((t_cmd*)lst->content)->n_args)
+		{
+			printf("arg[%d]: %s\n", i, ((t_cmd*)lst->content)->args[i]);
+			i++;
+		}
+		printf("sep_0: %c, sep_1: %c\n", ((t_cmd*)lst->content)->sep_0, ((t_cmd*)lst->content)->sep_1);
+		lst = lst->next;
+	}
+	ft_free_cmd(&cmd_head);
+	return (r);
+}
+
+/*
+// HACER COMANDO
+	int		fd1[2];
+	int		status;
+	int		pid;
+	char 	*sterr;
+		pipe(fd1);
+		if (com.sep_1 == '|')
 		{
 			pid = fork();
 			if (pid == 0)
@@ -218,13 +265,17 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 				close(fd1[0]);
 				dup2(fd1[1], STDOUT_FILENO);
 				close(fd1[1]);
-				printf("HACER PRIMER COMANDO DEL PIPE\n");
-				ft_cmd(com.cmd);
+				//printf("HACER PRIMER COMANDO DEL PIPE\n");
+				if (!strncmp(com.cmd, "pwd", 4))
+					r = ft_pwd(com.cmd, com.args);
+				else
+					r = ft_cmd(com.cmd);
 				exit(0);
 			}
 			else if (pid > 0)
 			{
 				close(fd1[1]);
+				printf("ret wait1: %d\n", wait(&status));
 			}
 			else 
 			{
@@ -233,20 +284,24 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 				write(1, "\n", 1);
 			}
 		}
-		if (com.sep[0] == '|')
+		if (com.sep_0 == '|')
 		{
 			pid = fork();
 			if (pid == 0)
 			{
 				dup2(fd1[0], STDIN_FILENO);
 				close(fd1[0]);
-				printf("HACER SEGuNDo CoMAndO DEL PIPE\n");
-				ft_cmd(com.cmd);
+				//printf("HACER SEGuNDo CoMAndO DEL PIPE\n");
+				if (!strncmp(com.cmd, "pwd", 4))
+					r = ft_pwd(com.cmd, com.args);
+				else
+					r = ft_cmd(com.cmd);
 				exit(0);
 			}
 			else if (pid > 0)
 			{
 				close(fd1[0]);
+				printf("ret wait2: %d\n", wait(&status));
 			}
 			else 
 			{
@@ -255,23 +310,10 @@ int	parser(char *str, t_list **head, int ret, char *user)	// TODO: meter cmd, ar
 				write(1, "\n", 1);
 			}
 		}
-		wait(&status); // FIXME: qué pasa si no entra en las condiciones anteriores, por lo que no hay hijos y aún así le digo que espere? 
-		wait(&status);
-
-		/*if (!strncmp(com.cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old, y llamarla dentro y fuera de las condiciones anteriores (en lugar de ft_cmd)
-			r = ft_pwd(com.cmd, com.args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
-		else
-			r = ft_cmd(com.cmd);*/
-
-		//FREES
-		free(com.cmd);
-		j = 0;
-		while (j < n_args)
+		else if (com.sep_0 != '|' && com.sep_1 != '|')
 		{
-			free(com.args[j]);
-			j++;
-		}
-		free(com.args);
-	}
-	return (r);
-}
+			if (!strncmp(com.cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old, y llamarla dentro y fuera de las condiciones anteriores (en lugar de ft_cmd)
+				r = ft_pwd(com.cmd, com.args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
+			else
+				r = ft_cmd(com.cmd);
+		}*/
