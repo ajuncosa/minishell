@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/03 15:01:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/04 13:06:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,30 +127,60 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-void	funcion_de_pipes(t_list *lst)
+void	rec_pipe(t_list *lst, int fd_read)
 {
-	if (((t_cmd*)lst->content)->sep_0 == '|')
-	{
-		printf("redirigir entrada al comando: %s\n", ((t_cmd*)lst->content)->cmd);
-	}
+	int	pid;
+	int	fd_new[2];
+
 	if (((t_cmd*)lst->content)->sep_1 == '|')
 	{
-		printf("crear pipe\n");
-		printf("redirigir salida y hacer comando: %s\n", ((t_cmd*)lst->content)->cmd);
-		funcion_de_pipes(lst->next);
+		pipe(fd_new);
+		pid = fork();
+		if (pid == 0)
+		{
+			if (((t_cmd*)lst->content)->sep_0 == '|')
+				dup2(fd_read, STDIN_FILENO);
+			close(fd_read);
+			close(fd_new[0]);
+			dup2(fd_new[1], STDOUT_FILENO);
+			close(fd_new[1]);
+			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+				ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args); //TODO: returns
+			else
+				ft_cmd(((t_cmd*)lst->content)->cmd);
+			exit(0);
+		}
+		wait(NULL);
+		close(fd_new[1]);
+		rec_pipe(lst->next, fd_new[0]);
+		close(fd_new[0]);
 	}
 	else
-		printf("hacer comando: %s\n", ((t_cmd*)lst->content)->cmd);
-	return ;
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			dup2(fd_read, STDIN_FILENO);
+			close(fd_read);
+			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+				ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args); //TODO: returns
+			else
+				ft_cmd(((t_cmd*)lst->content)->cmd);
+			exit(0);
+		}
+		wait(NULL);
+	}
+	close(fd_read);
 }
 
-int	parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
+int		parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
 {
 	int     i;
 	t_list	*cmd_head;
 	t_list	*new;
 	t_cmd	*com;
 	t_list	*lst;
+	//t_list	*prev;
 	int		r;
 
 	i = 0;
@@ -253,32 +283,39 @@ int	parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cmd
 		lst = lst->next;
 	}*/
 
+
 	// HACER COMANDOS
+
+	int		fd1[2];
+	int		status;
+	int		pid;
+	char 	*sterr;
+	
 	lst = cmd_head;
 	while (lst)
 	{
-		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
+		/*if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
 			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old, y llamarla dentro y fuera de las condiciones anteriores (en lugar de ft_cmd)
 				r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
 			else
 				r = ft_cmd(((t_cmd*)lst->content)->cmd);
-		}
-		else if (((t_cmd*)lst->content)->sep_1 == '|')
+		}*/
+
+		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
-			funcion_de_pipes(lst);
+			rec_pipe(lst, 0);
 			while (((t_cmd*)lst->content)->sep_1 == '|')
 				lst = lst->next;
 		}
+		//prev = lst;
 		lst = lst->next;
 	}
-	
+
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_free_cmd(&cmd_head);
 	return (r);
 }
-
-
 
 /*
 // HACER COMANDO
