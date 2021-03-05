@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libftprintf_bonus.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 18:20:36 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/03/09 12:15:42 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:25:21 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdlib.h>
 # include <stdarg.h>
 
-typedef struct	s_flags
+typedef struct s_flags
 {
 	short		zero;
 	short		dash;
@@ -43,7 +43,7 @@ void			ft_putnbr_unsigned(unsigned int n, t_flags *flags);
 void			ft_choose_format(va_list args, char a, t_flags *flags);
 void			ft_reset_flags(t_flags *flags);
 void			ft_identify_flags(va_list args, const char *s,
-		int i, t_flags *flags);
+					int i, t_flags *flags);
 void			ft_print_filling(t_flags *flags, int len);
 void			ft_putnbr_fd_edit(int n, int fd, t_flags *flags);
 void			ft_putstr_fd_edit(char *s, int fd, t_flags *flags);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printf_x_lower_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:42:28 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/03/09 14:22:20 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:50:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@ static int	ft_num_len(t_flags *flags, unsigned int n)
 {
 	int	len;
 
-	len = (flags->precision == 0 && n == 0) ? 0 : 1;
+	if (flags->precision == 0 && n == 0)
+		len = 0;
+	else
+		len = 1;
 	while (n / 16 != 0)
 	{
 		len++;
@@ -35,7 +38,8 @@ static void	ft_print_num(t_flags *flags, unsigned int n, int len)
 		i++;
 		flags->printed += write(1, "0", 1);
 	}
-	(flags->precision == 0 && n == 0) ? 0 : ft_print_hexa(n, 'l', flags);
+	if (!(flags->precision == 0 && n == 0))
+		ft_print_hexa(n, 'l', flags);
 }
 
 static void	ft_print_width(t_flags *flags, int num_len, int true_len,
@@ -66,7 +70,7 @@ static void	ft_print_width(t_flags *flags, int num_len, int true_len,
 	}
 }
 
-void		ft_print_x_lower(va_list args, t_flags *flags)
+void	ft_print_x_lower(va_list args, t_flags *flags)
 {
 	unsigned int	n;
 	int				num_len;
@@ -74,7 +78,10 @@ void		ft_print_x_lower(va_list args, t_flags *flags)
 
 	n = va_arg(args, unsigned int);
 	num_len = ft_num_len(flags, n);
-	true_len = (flags->precision > num_len) ? flags->precision : num_len;
+	if (flags->precision > num_len)
+		true_len = flags->precision;
+	else
+		true_len = num_len;
 	if (n == 0)
 		flags->hash = -1;
 	if (flags->hash == 1)

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 14:01:13 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/11/11 11:24:47 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:22:50 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ int	get_next_line(int fd, char **line)
 	static char	*stat[4096];
 	char		*tmp;
 
-	if (fd == -1 || !line || !(buf = malloc(BUFFER_SIZE + 1)) ||
-			read(fd, buf, 0) == -1 || BUFFER_SIZE <= 0)
+	buf = malloc(BUFFER_SIZE + 1);
+	if (fd == -1 || !line || !buf
+		|| read(fd, buf, 0) == -1 || BUFFER_SIZE <= 0)
 		return (-1);
 	if (!stat[fd] || ft_strchr_edit(stat[fd], '\n') == -1)
+	{
 		while ((bytes = read(fd, buf, BUFFER_SIZE)) > 0)
 		{
 			buf[bytes] = '\0';
@@ -77,6 +79,7 @@ int	get_next_line(int fd, char **line)
 			if (ft_strchr_edit(stat[fd], '\n') != -1)
 				break ;
 		}
+	}
 	free(buf);
 	return (ft_complete_the_line(fd, stat, line));
 }

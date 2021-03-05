@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   printf_format.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/20 10:48:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/03/04 15:15:49 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:38:09 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-void		ft_choose_format(va_list args, char a, t_flags *flags)
+void	ft_choose_format(va_list args, char a, t_flags *flags)
 {
 	if (a == 'c')
 		ft_print_c(va_arg(args, int), flags);
@@ -34,7 +34,7 @@ void		ft_choose_format(va_list args, char a, t_flags *flags)
 		write(1, &a, 1);
 }
 
-void		ft_reset_flags(t_flags *flags)
+void	ft_reset_flags(t_flags *flags)
 {
 	flags->dash = -1;
 	flags->zero = -1;
@@ -57,7 +57,7 @@ static void	ft_identify_dash_and_zero(const char *s, int *i, t_flags *flags)
 	}
 }
 
-void		ft_identify_flags(va_list args, const char *s, int i,
+void	ft_identify_flags(va_list args, const char *s, int i,
 		t_flags *flags)
 {
 	ft_identify_dash_and_zero(s, &i, flags);
@@ -82,7 +82,11 @@ void		ft_identify_flags(va_list args, const char *s, int i,
 	{
 		flags->precision = 0;
 		flags->zero = -1;
-		flags->precision = (s[i] == '*') ? va_arg(args, int) : ft_atoi(&s[i]);
-		flags->precision = (flags->precision < 0) ? -1 : flags->precision;
+		if (s[i] == '*')
+			flags->precision = va_arg(args, int);
+		else
+			flags->precision = ft_atoi(&s[i]);
+		if (flags->precision < 0)
+			flags->precision = -1;
 	}
 }

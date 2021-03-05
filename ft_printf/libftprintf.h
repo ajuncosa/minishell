@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 13:44:28 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 11:04:46 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:25:04 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdlib.h>
 # include <stdarg.h>
 
-typedef struct	s_flags
+typedef struct s_flags
 {
 	short		zero;
 	short		dash;
@@ -40,7 +40,7 @@ void			ft_putnbr_unsigned(unsigned int n, t_flags *flags);
 void			ft_choose_format(va_list args, char a, t_flags *flags);
 void			ft_reset_flags(t_flags *flags);
 void			ft_identify_flags(va_list args, const char *s,
-		int i, t_flags *flags);
+					int i, t_flags *flags);
 void			ft_print_filling(t_flags *flags, int len);
 void			ft_putnbr_fd_edit(int n, int fd, t_flags *flags);
 void			ft_putstr_fd_edit(char *s, int fd, t_flags *flags);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printf_u_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/09 11:41:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/03/09 11:41:53 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:46:03 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@ static int	ft_num_len(unsigned int n, t_flags *flags)
 {
 	int	len;
 
-	len = (n == 0 && flags->precision == 0) ? 0 : 1;
+	if (n == 0 && flags->precision == 0)
+		len = 0;
+	else
+		len = 1;
 	while (n / 10 != 0)
 	{
 		n /= 10;
@@ -32,10 +35,11 @@ static void	ft_print_number(t_flags *flags, int len, unsigned int n)
 	i = 0;
 	while (i++ < (flags->precision - len))
 		flags->printed += write(1, "0", 1);
-	(n == 0 && flags->precision == 0) ? 0 : ft_putnbr_unsigned(n, flags);
+	if (!(n == 0 && flags->precision == 0))
+		ft_putnbr_unsigned(n, flags);
 }
 
-void		ft_print_u(va_list args, t_flags *flags)
+void	ft_print_u(va_list args, t_flags *flags)
 {
 	unsigned int	n;
 	int				num_len;
@@ -43,8 +47,12 @@ void		ft_print_u(va_list args, t_flags *flags)
 
 	n = va_arg(args, unsigned int);
 	num_len = ft_num_len(n, flags);
-	true_len = (flags->precision > num_len) ? flags->precision : num_len;
+	if (flags->precision > num_len)
+		true_len = flags->precision;
+	else
+		true_len = num_len;
 	if (flags->width > true_len)
+	{
 		if (flags->dash == 1)
 		{
 			ft_print_number(flags, num_len, n);
@@ -55,6 +63,7 @@ void		ft_print_u(va_list args, t_flags *flags)
 			ft_print_filling(flags, true_len);
 			ft_print_number(flags, num_len, n);
 		}
+	}
 	else
 		ft_print_number(flags, num_len, n);
 }

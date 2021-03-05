@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 18:19:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/03/06 18:20:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:24:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf_bonus.h"
 
-int		ft_printf(const char *s, ...)
+int	ft_printf(const char *s, ...)
 {
 	va_list	args;
 	int		i;

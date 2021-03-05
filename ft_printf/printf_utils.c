@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printf_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/18 10:32:36 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/02/28 12:26:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:48:27 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_print_hexa(size_t nbr, char whatcase, t_flags *flags)
 
 void	ft_putnbr_unsigned(unsigned int n, t_flags *flags)
 {
-	char number;
+	char	number;
 
 	if (n > 9)
 		ft_putnbr_unsigned(n / 10, flags);
@@ -43,7 +43,7 @@ void	ft_putnbr_unsigned(unsigned int n, t_flags *flags)
 
 void	ft_print_filling(t_flags *flags, int len)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (flags->zero == 1)
