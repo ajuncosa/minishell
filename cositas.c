@@ -56,3 +56,50 @@ int ft_ls(void)
     free(buf);
     return (0);
 }
+
+//recursividad para los pipes, la intencion es lo que cuenta!
+void	rec_pipe(t_list *lst, int fd_read)
+{
+	int	pid;
+	int	fd_new[2];
+
+	if (((t_cmd*)lst->content)->sep_1 == '|')
+	{
+		pipe(fd_new);
+		pid = fork();
+		if (pid == 0)
+		{
+			if (((t_cmd*)lst->content)->sep_0 == '|')
+				dup2(fd_read, STDIN_FILENO);
+			close(fd_read);
+			close(fd_new[0]);
+			dup2(fd_new[1], STDOUT_FILENO);
+			close(fd_new[1]);
+			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+				ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args); //TODO: returns
+			else
+				ft_cmd(((t_cmd*)lst->content)->cmd);
+			exit(0);
+		}
+		wait(NULL);
+		close(fd_new[1]);
+		rec_pipe(lst->next, fd_new[0]);
+		close(fd_new[0]);
+	}
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			dup2(fd_read, STDIN_FILENO);
+			close(fd_read);
+			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+				ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args); //TODO: returns
+			else
+				ft_cmd(((t_cmd*)lst->content)->cmd);
+			exit(0);
+		}
+		wait(NULL);
+	}
+	close(fd_read);
+}

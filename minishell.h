@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/03 13:16:13 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 13:23:02 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_cmd
 int		ft_echo(char *str);
 int		ft_env(t_list **head, char *str);
 void	ft_exit(t_list **head, char *user);
+int		cmd_manager(char *str, t_list **env_head, int ret, char *user);
 int		parser(char *str, t_list **env_head, int ret, char *user);
 // int		parse_commands(char *str, t_list **head, int ret,char *user);
 int		ft_pwd(char *com, char **args);
