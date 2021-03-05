@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/05 13:24:30 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/05 13:39:03 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,87 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int		parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cmd, args y sep en una lista, en lugar de imprimirlo con printfs y reemplazarlo por cada vuelta al bucle
+int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) 
+{
+	int		fd[2];
+	int		pid;
+	char 	*sterr;
+	int		fd_read;
+	t_list	*lst;
+	int		r;
+	
+	lst = *cmd_head;
+	fd_read = 0;
+	while (lst)
+	{
+		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
+		{
+			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old
+				r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
+			else
+				r = ft_cmd(((t_cmd*)lst->content)->cmd);
+		}
+		if (((t_cmd*)lst->content)->sep_1 == '|')
+		{
+			pipe(fd);
+			pid = fork();
+			if (pid == 0)
+			{
+				if (fd_read)
+				{
+					dup2(fd_read, STDIN_FILENO);
+					close(fd_read);
+				}
+				close(fd[0]);
+				dup2(fd[1], STDOUT_FILENO);
+				close(fd[1]);
+				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
+				else
+					r = ft_cmd(((t_cmd*)lst->content)->cmd);
+				exit(0);
+			}
+			else if (pid < 0)
+			{
+				sterr = strerror(errno);
+				write(1, sterr, ft_strlen(sterr));
+				write(1, "\n", 1);
+			}
+			wait(NULL);
+			if (fd_read)
+				close(fd_read);
+			fd_read = fd[0];
+			close(fd[1]);
+		}
+		else if (((t_cmd*)lst->content)->sep_0 == '|')
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				dup2(fd_read, STDIN_FILENO);
+				close(fd_read);
+				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
+					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
+				else
+					r = ft_cmd(((t_cmd*)lst->content)->cmd);
+				exit(0);
+			}
+			else if (pid < 0)
+			{
+				sterr = strerror(errno);
+				write(1, sterr, ft_strlen(sterr));
+				write(1, "\n", 1);
+			}
+			wait(NULL);
+			close(fd_read);
+			fd_read = 0;
+		}
+		lst = lst->next;
+	}
+	return (r);
+}
+
+int		parser(char *str, t_list **env_head, int ret, char *user) //TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
 {
 	int     i;
 	t_list	*cmd_head;
@@ -206,7 +286,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cm
 			ft_exit(env_head, user);
 		}
 															//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
-		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (¿hay que tenerlo en cuenta o devolver un error como con las comillas?)
+		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')
 			 ((t_cmd*)new->content)->sep_1 = str[i];
 		/*if (com.sep_0 == '|' && com.sep_1 == '|')		//FIXME: por qué esta condicion???? tal vez quería gestionar || y lo he hecho mal (no es un error real pero es un bonus)
@@ -218,89 +298,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	// TODO: meter cm
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&cmd_head, new);
 	}
-	return (r);
-}
 
-int	cmd_manager(char *str, t_list **env_head, int ret, char *user) 
-{
-	int		fd[2];
-	int		pid;
-	char 	*sterr;
-	int		fd_read;
-	t_list	*lst;
-	t_list	*cmd_head;
-	int		r;
+	//HACER  COMANDOS
+	r = cmd_manager(&cmd_head, env_head, ret, user);
 	
-	r = parser(str, env_head, ret, user); // TODO: esta funcion tiene que devolver la lista que ha creado de alguna forma?? 
-	lst = cmd_head;
-	fd_read = 0;
-	while (lst)
-	{
-		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
-		{
-			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old
-				r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
-			else
-				r = ft_cmd(((t_cmd*)lst->content)->cmd);
-		}
-		if (((t_cmd*)lst->content)->sep_1 == '|')
-		{
-			pipe(fd);
-			pid = fork();
-			if (pid == 0)
-			{
-				if (fd_read)
-				{
-					dup2(fd_read, STDIN_FILENO);
-					close(fd_read);
-				}
-				close(fd[0]);
-				dup2(fd[1], STDOUT_FILENO);
-				close(fd[1]);
-				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
-					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
-				else
-					r = ft_cmd(((t_cmd*)lst->content)->cmd);
-				exit(0);
-			}
-			else if (pid < 0)
-			{
-				sterr = strerror(errno);
-				write(1, sterr, ft_strlen(sterr));
-				write(1, "\n", 1);
-			}
-			wait(NULL);
-			if (fd_read)
-				close(fd_read);
-			fd_read = fd[0];
-			close(fd[1]);
-		}
-		else if (((t_cmd*)lst->content)->sep_0 == '|')
-		{
-			pid = fork();
-			if (pid == 0)
-			{
-				dup2(fd_read, STDIN_FILENO);
-				close(fd_read);
-				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
-					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
-				else
-					r = ft_cmd(((t_cmd*)lst->content)->cmd);
-				exit(0);
-			}
-			else if (pid < 0)
-			{
-				sterr = strerror(errno);
-				write(1, sterr, ft_strlen(sterr));
-				write(1, "\n", 1);
-			}
-			wait(NULL);
-			close(fd_read);
-			fd_read = 0;
-		}
-		lst = lst->next;
-	}
-
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_free_cmd(&cmd_head);
 	return (r);
