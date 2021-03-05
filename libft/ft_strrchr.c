@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/08 15:05:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/01/08 15:26:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:08:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft.h"
 
 char	*ft_strrchr(const char *s, int c)
 {
@@ -25,5 +27,5 @@ char	*ft_strrchr(const char *s, int c)
 			return (&copy[i]);
 		i--;
 	}
-	return (0);
+	return (NULL);
 }

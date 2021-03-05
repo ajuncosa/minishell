@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/13 10:53:39 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/09/30 13:39:13 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 14:14:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,16 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1)
 		return (NULL);
-	if (!(new = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
-		return (0);
+	new = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!new)
+		return (NULL);
 	i = 0;
 	j = 0;
 	while (s1[j] != '\0')
-	{
-		new[i] = s1[j];
-		i++;
-		j++;
-	}
+		new[i++] = s1[j++];
 	j = 0;
 	while (s2[j] != '\0')
-	{
-		new[i] = s2[j];
-		i++;
-		j++;
-	}
+		new[i++] = s2[j++];
 	new[i] = '\0';
 	return (new);
 }

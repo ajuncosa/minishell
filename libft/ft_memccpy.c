@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/09 16:15:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/01/15 12:34:19 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 13:50:55 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 	unsigned char		a;
 
 	tmpdst = (unsigned char *)dst;
-	tmpsrc = (unsigned const char*)src;
+	tmpsrc = (unsigned const char *)src;
 	a = (unsigned char)c;
 	i = 0;
 	while (i < n)

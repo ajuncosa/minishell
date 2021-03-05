@@ -6,7 +6,7 @@
 /*   By: ajuncosa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/16 11:31:01 by ajuncosa          #+#    #+#             */
-/*   Updated: 2020/01/16 13:18:04 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/05 13:46:56 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	ft_count(int n)
 {
-	int len;
+	int	len;
 
 	len = 1;
 	while (n / 10 != 0)
@@ -35,7 +35,7 @@ static void	ft_fill_string(char *str, long n, int i)
 	str[i] = c;
 }
 
-char		*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	int		len;
 	long	nb;
@@ -48,7 +48,8 @@ char		*ft_itoa(int n)
 		nb = -nb;
 		len++;
 	}
-	if (!(str = malloc((len + 1) * sizeof(char))))
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
 		return (NULL);
 	if (n < 0)
 		str[0] = '-';
