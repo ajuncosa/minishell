@@ -6,52 +6,35 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/01/29 12:44:35 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/08 18:55:14 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_unset(t_list **head, char *str)
+int	ft_unset(t_list **head, t_cmd *com)
 {
 	t_list	*prev;
 	t_list	*list;
-	char	**items;
-	int		cont;
 	int		i;
-	int		j;
 	int		len;
 	int		lenv;
 
-	cont = 0;
 	i = 0;
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '\n' || str[i] == '\0')
+	if (com->args == NULL)
 	{
 		write(1, "unset: not enough arguments\n", 28);
 		return (1);
 	}
-	j = i;
-	while (str[j] != '\n' && str[j] != '\0')
-	{
-		while (str[j] != ' ' && str[j] != '\n' && str[j] != '\0')
-			j++;
-		while (str[j] == ' ')
-			j++;
-		cont++;
-	}
-	items = ft_split(&str[i], ' ');
-	j = 0;
-	while (j < cont)
+	while (i < com->n_args)
 	{
 		list = *head;
-		len = (j == cont - 1) ? ft_strlen(items[j]) - 1 : ft_strlen(items[j]);
+		len = (i == com->n_args - 1) ? ft_strlen(com->args[i]) - 1 : ft_strlen(com->args[i]);
 		while (list)
 		{
 			lenv = ft_strlen(((t_env*)list->content)->id);
 			lenv = (lenv < len) ? len : lenv;
-			if (!ft_strncmp(((t_env*)list->content)->id, items[j], lenv))
+			if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], lenv))
 			{
 				if (list == *head)
 				{
@@ -68,7 +51,7 @@ int	ft_unset(t_list **head, char *str)
 			prev = list;
 			list = list->next;
 		}
-		j++;
+		i++;
 	}
 	return (0);
 }

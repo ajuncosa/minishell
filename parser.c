@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 13:56:05 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/08 20:07:44 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,20 +132,20 @@ int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user)
 	int len;
 
 	len = ft_strlen(com->cmd);
-	//if (!ft_strncmp(com->cmd, "echo", len)) //probar si funcionan espacios
-	//	return(ft_echo(com->args));
+	if (!ft_strncmp(com->cmd, "echo", len)) //probar si funcionan espacios
+		return(ft_echo(com));
 	if (!ft_strncmp(com->cmd, "pwd", len))
 		return(ft_pwd(com->args));
-	else if (!ft_strncmp(com->cmd, "export", len))
+	else if (!ft_strncmp(com->cmd, "export", len)) //FIXME: comportamiento extraño cuando exporteas + de 3 variables
 		return(ft_export(env_head, com));
 	else if (!ft_strncmp(com->cmd, "cd", len))
 		return(ft_cd(com, user));
-	//else if (!ft_strncmp(com->cmd, "unset", len))
-	//	return(ft_unset(env_head, com->args));
-	//else if (!ft_strncmp(com->cmd, "env", len))
-	//	return(ft_env(env_head, com->args));
-	//else if (!ft_strncmp(com->cmd, "$?", len))
-	//	return(ft_exit_status(ret));
+	else if (!ft_strncmp(com->cmd, "unset", len))
+		return(ft_unset(env_head, com));
+	else if (!ft_strncmp(com->cmd, "env", len))
+		return(ft_env(env_head, com->args));
+	else if (!ft_strncmp(com->cmd, "$?", len))
+		return(ft_exit_status(ret));
 	else if (!ft_strncmp(com->cmd, "exit", len))
 		ft_exit(env_head, user); //FIXME: no libera lista de comandos y eso
 	else
@@ -167,9 +167,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	while (lst)
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
-		{
 			r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
-		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
 			pipe(fd);

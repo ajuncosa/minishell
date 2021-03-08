@@ -6,21 +6,19 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 12:53:44 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/08 18:05:47 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(t_list **head, char *str)
+int	ft_env(t_list **head, char **args)
 {
 	t_list	*lst;
 	int		i;
 
 	i = 0;
-	while (str[i] == ' ')
-		i++;
-	if (str[i] != '\n')
+	if (args != NULL)
 	{
 		write(1, "env: too many arguments\n", 24);
 		return (1);
