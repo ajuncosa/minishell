@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/05 13:39:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/08 11:52:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,33 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) 
+int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user)
+{
+	int len;
+
+	len = ft_strlen(com->cmd);
+	//if (!ft_strncmp(com->cmd, "echo", len)) //probar si funcionan espacios
+	//	return(ft_echo(com->args));
+	if (!ft_strncmp(com->cmd, "pwd", len))
+		return(ft_pwd(com->args));
+	//else if (!ft_strncmp(com->cmd, "export", len))
+	//	return(ft_export(env_head, com->args));
+	else if (!ft_strncmp(com->cmd, "cd", len))
+		return(ft_cd(com, user));
+	//else if (!ft_strncmp(com->cmd, "unset", len))
+	//	return(ft_unset(env_head, com->args));
+	//else if (!ft_strncmp(com->cmd, "env", len))
+	//	return(ft_env(env_head, com->args));
+	//else if (!ft_strncmp(com->cmd, "$?", len))
+	//	return(ft_exit_status(ret));
+	else if (!ft_strncmp(com->cmd, "exit", len))
+		ft_exit(env_head, user); //FIXME: no libera lista de comandos y eso
+	else
+		return (ft_cmd(com->cmd));
+	return (0);
+}
+
+int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
 {
 	int		fd[2];
 	int		pid;
@@ -142,10 +168,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
-			if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4)) //TODO: hacer una función que parsee los comandos tipo el parser_old
-				r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);	//TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
-			else
-				r = ft_cmd(((t_cmd*)lst->content)->cmd);
+			r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
@@ -161,10 +184,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
-				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
-					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
-				else
-					r = ft_cmd(((t_cmd*)lst->content)->cmd);
+				r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -186,10 +206,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 			{
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
-				if (!strncmp(((t_cmd*)lst->content)->cmd, "pwd", 4))
-					r = ft_pwd(((t_cmd*)lst->content)->cmd, ((t_cmd*)lst->content)->args);
-				else
-					r = ft_cmd(((t_cmd*)lst->content)->cmd);
+				r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)

@@ -3,26 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 12:43:41 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/08 11:56:48 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int    ft_cd(char *str, char *user)
+int    ft_cd(t_cmd *com, char *user)
 {   
-	char	*trimmed;						//TODO: return $?
+	//TODO: return $?
 	char	*sterr;
 	char	*path;
-	int 	i;
-
-	i = 0;
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '\n')
+	
+	if (com->args == NULL)
 	{
 		path = ft_strjoin("/Users/", user);
 		if (chdir(path) == -1)
@@ -34,15 +30,18 @@ int    ft_cd(char *str, char *user)
 		free(path);
 		return (0);
 	}
-	trimmed = ft_strtrim(&str[i], " \n");
-	if (chdir(trimmed) == -1)
+	if (com->n_args > 1)
+	{
+		write(1, "cd: string not in pwd: ", 24);
+		write(1, com->args[0], ft_strlen(com->args[0]));
+		write(1, "\n", 1);
+	}
+	if (chdir(com->args[0]) == -1)
 	{
 		sterr = strerror(errno);
 		write(1, sterr, ft_strlen(sterr));
 		write(1, "\n", 1);
-		free (trimmed);
 		return (1);
 	}
-	free (trimmed);
 	return (0);
 }

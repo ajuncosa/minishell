@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/02/26 11:39:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/08 11:36:46 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_pwd(char *com, char **args)
+int	ft_pwd(char **args)
 {
 	char	*pwd;
 	char	*buf;
