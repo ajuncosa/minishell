@@ -3,30 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 12:57:38 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/08 13:52:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_export(t_list **head, char *str)							//TODO: returns para $?
+int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
+											//TODO: comillas? export "args[0]" = hola => bad assignment && te mete args[0] en env
 {
 	t_list	*new;
 	t_list	*list;
 	t_env	*env;
 	int		i;
-	int		valid;
-	int		len;
-	int		start;
+	int		len_id;
+	int		len_v;
 
-	valid = 0;
-	i = 0;
-	while (str[i] == ' ')
-		i++;
-	if (str[i] == '\0' || str[i] == '\n')
+	if (com->args == NULL)
 	{
 		list = *head;
 		while (list)
@@ -39,64 +35,42 @@ int	ft_export(t_list **head, char *str)							//TODO: returns para $?
 		}
 		return (0);
 	}
-	start = i;
-	if (!ft_isalpha(str[i]))
+	i = 0;
+	while (i < com->n_args)
 	{
-		write(1, "Error: not an identifier\n", 25);
-		return (1);
-	}
-	while (str[i])
-	{
-		if (!valid && str[i] == '=')
-			valid = 1;
-		if (str[i] == '=' && str[i - 1] == ' ')				/*FIXME: manage space after '=' */
+		len_id = 0;
+		len_v = 0;
+		if (!ft_isalpha(com->args[i][0]))
 		{
-			if (str[i + 1] == ' ')
-			{
-				write(1, "bad assignment\n", 15);
-				return (0);
-			}
-			else
-			{
-				write(1, "not found\n", 10);			/* TODO: añadir nombre de la var al error */
-				return (1);
-			}
+			write(1, "Error: not an identifier\n", 25);
+			return (1);
 		}
-		i++;
-	}
-	if (!valid)
-	{
-		write(1, "Error\n", 6);
-		return (1);
-	}
-	i = start;
-	len = 0;
-	while (str[i] != '=')
-	{
-		i++;
-		len++;
-	}
-	new = malloc(sizeof(t_list));
-	env = malloc(sizeof(t_env));
-	new->content = env;
-	((t_env *)new->content)->id = ft_substr(str, start, len);
-	list = *head;
-	while (list)
-	{
-		if (!ft_strncmp(((t_env*)list->content)->id, ((t_env *)new->content)->id, len))
+		if (!ft_strchr(com->args[i], '='))
 		{
-			free(((t_env *)list->content)->value);
-			free(((t_env *)new->content)->id);
-			i = len + 2;
-			len = ft_strlen(&str[i]);
-			((t_env *)list->content)->value = ft_substr(str, i, len - 1);
+			write(1, "bad assignment\n", 15);
 			return (0);
 		}
-		list = list->next;
+		while (com->args[i][len_id] != '=')
+			len_id++;
+		new = malloc(sizeof(t_list));
+		env = malloc(sizeof(t_env));
+		new->content = env;
+		((t_env *)new->content)->id = ft_substr(com->args[i], 0, len_id);
+		len_v = ft_strlen(&com->args[i][len_id + 1]);
+		list = *head;
+		while (list)
+		{
+			if (!ft_strncmp(((t_env*)list->content)->id, ((t_env *)new->content)->id, len_id))
+			{
+				free(((t_env *)list->content)->value);
+				free(((t_env *)new->content)->id);
+				break;
+			}
+			list = list->next;
+		}
+		((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
+		ft_lstadd_back(head, new);
+		i++;
 	}
-	i = len + 2;
-	len = ft_strlen(&str[i]);
-	((t_env *)new->content)->value = ft_substr(str, i, len - 1);
-	ft_lstadd_back(head, new);
 	return (0);
 }

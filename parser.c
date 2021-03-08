@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 11:52:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/08 13:56:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,8 @@ int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user)
 	//	return(ft_echo(com->args));
 	if (!ft_strncmp(com->cmd, "pwd", len))
 		return(ft_pwd(com->args));
-	//else if (!ft_strncmp(com->cmd, "export", len))
-	//	return(ft_export(env_head, com->args));
+	else if (!ft_strncmp(com->cmd, "export", len))
+		return(ft_export(env_head, com));
 	else if (!ft_strncmp(com->cmd, "cd", len))
 		return(ft_cd(com, user));
 	//else if (!ft_strncmp(com->cmd, "unset", len))
@@ -224,8 +224,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	return (r);
 }
 
-int		parser(char *str, t_list **env_head, int ret, char *user) //TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
-{
+int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
+{																	//FIXME: el comando también puede venir entre comillas
 	int     i;
 	t_list	*cmd_head;
 	t_list	*new;
