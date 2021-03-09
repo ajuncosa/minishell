@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 20:07:44 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/09 14:14:13 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,17 @@ int		count_args(char *str)
 			}
 			n_args++;
 			i++;
+		}
+		else if (str[i] == '>' || str[i] == '<')
+		{
+			if (ft_isalnum(str[i - 1]))			//FIXME: puede contener cosas no alnums! (-_-)
+				n_args++;
+			while(str[i] == '>' || str[i] == '<')
+				i++;
+			n_args++;
+			while (ft_isalnum(str[i]))
+				i++;
+			n_args++;
 		}
 		else
 		{	// FIXME: algunos argumentos, e.g. redirections, van a incluir espacios. Añadir condiciones aparte para esos casos
@@ -167,7 +178,10 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	while (lst)
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
+		{
+			//redir_manager(((t_cmd*)lst->content));
 			r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
 			pipe(fd);
@@ -288,12 +302,14 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 			return (0);
 		}
 		if (((t_cmd*)new->content)->n_args > 0)
+		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
 			{
 				ft_free_cmd(&cmd_head);
 				ft_exit(env_head, user);
 			}
-
+		}
+		printf("%d\n",((t_cmd*)new->content)->n_args);
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
 		{

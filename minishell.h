@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 20:06:20 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/09 13:51:53 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ void	ft_free_cmd(t_list **head);
 int		ft_cd(t_cmd *com, char *user);
 int		ft_exit_status(int ret);
 int 	ft_cmd(char *str);
+int		redir_manager(t_cmd *com);
 
 #endif
