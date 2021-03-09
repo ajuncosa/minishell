@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/03 13:30:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/09 15:42:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_exit(t_list **head, char *user)
 void	del_lst_cmd(void *cmd)
 {
 	int j;
-	
+
 	free(((t_cmd*)cmd)->cmd);
 	j = 0;
 	while (j < ((t_cmd*)cmd)->n_args)
