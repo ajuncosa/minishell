@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/09 14:14:13 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/09 14:41:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,15 @@ int		count_args(char *str)
 		}
 		else if (str[i] == '>' || str[i] == '<')
 		{
-			if (ft_isalnum(str[i - 1]))			//FIXME: puede contener cosas no alnums! (-_-)
-				n_args++;
+			n_args++;
 			while(str[i] == '>' || str[i] == '<')
 				i++;
-			n_args++;
-			while (ft_isalnum(str[i]))
-				i++;
-			n_args++;
 		}
 		else
 		{	// FIXME: algunos argumentos, e.g. redirections, van a incluir espacios. Añadir condiciones aparte para esos casos
 			while (str[i] != ' ' && str[i] != '"' && str[i] != '\''
-				&& str[i] != '\n'  && str[i] != ';' && str[i] != '|'
-				&& str[i] != '\0')
+				&& str[i] != '<' && str[i] != '>' && str[i] != '\n'
+				&& str[i] != ';' && str[i] != '|' && str[i] != '\0')
 				i++;
 			n_args++;
 		}
@@ -119,11 +114,21 @@ int		save_args(char *str, int n_args, char **args, int *start)
 				return (0);
 			*start = end + 1;
 		}
+		else if (str[*start] == '>' || str[*start] == '<')
+		{
+			end = *start;
+			while (str[end] == '>' || str[end] == '<')
+				end++;
+			if (!(args[n] = ft_substr(str, *start, end - *start)))
+				return (0);
+			*start = end;
+		}
 		else
 		{
 			end = *start;
 			// FIXME: algunos argumentos, e.g. redirections, van a incluir espacios. Añadir condiciones aparte para esos casos
 			while (str[end] != ' ' && str[end] != '"' && str[end] != '\''
+				&& str[end] != '>' && str[end] != '<'
 				&& str[end] != '\n'  && str[end] != ';' && str[end] != '|'
 				&& str[end] != '\0')
 				end++;
@@ -173,6 +178,24 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	t_list	*lst;
 	int		r;
 	
+
+	/*	//PRINTFS
+		lst = *cmd_head;
+		while (lst)
+		{
+			printf("_________________________\n");
+			printf("comando: %s\n", ((t_cmd*)lst->content)->cmd);
+			printf("n de args: %d\n", ((t_cmd*)lst->content)->n_args);
+			int i = 0;
+			while (i < ((t_cmd*)lst->content)->n_args)
+			{
+				printf("arg[%d]: %s\n", i, ((t_cmd*)lst->content)->args[i]);
+				i++;
+			}
+			printf("sep_0: %c, sep_1: %c\n", ((t_cmd*)lst->content)->sep_0, ((t_cmd*)lst->content)->sep_1);
+			lst = lst->next;
+		}*/
+
 	lst = *cmd_head;
 	fd_read = 0;
 	while (lst)
@@ -293,7 +316,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 		}
 		while (str[i] == ' ')
 			i++;
-		
+
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
@@ -309,7 +332,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 				ft_exit(env_head, user);
 			}
 		}
-		printf("%d\n",((t_cmd*)new->content)->n_args);
+
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
 		{
