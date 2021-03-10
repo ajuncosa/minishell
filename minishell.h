@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/09 13:51:53 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/10 13:44:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 # include "gnl/get_next_line.h"
 # include "ft_printf/libftprintf.h"
 
-typedef struct	s_env
+typedef struct s_env
 {
-	char		*id;
-	char		*value;
-}				t_env;
+	char	*id;
+	char	*value;
+}			t_env;
 
 typedef struct s_cmd
 {
@@ -32,7 +32,14 @@ typedef struct s_cmd
 	char	sep_0;
 	char	sep_1;
 	int		n_args;
-}				t_cmd;
+	int		n_redir;
+}			t_cmd;
+
+typedef struct s_redir
+{
+	char	*type;
+	char	*file;
+}			t_redir;
 
 int		ft_echo(t_cmd *com);
 int		ft_env(t_list **head, char **args);
