@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/11 13:57:39 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/11 15:09:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user)
+int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user) //FIXME: hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
 {
 	int len;
 
