@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/28 13:20:40 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/01/29 13:02:01 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/11 14:09:37 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int	ft_exit_status(int ret)
 {
-	ft_printf("command not found: %d\n", ret);
+	printf("command not found: %d\n", ret);
 	return(127);
 }

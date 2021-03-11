@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/11 13:26:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/11 13:57:34 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,31 @@ int redir_manager(t_cmd *com, t_list **env_head, int ret, char *user)
 					write(1, "\n", 1);
 				}
 				dup2(fd, STDOUT_FILENO);
+				close(fd);
+				r = cmd_caller(com, env_head, ret, user);
+				exit(0);
+			}
+			else if (pid < 0)
+			{
+				sterr = strerror(errno);
+				write(1, sterr, ft_strlen(sterr));
+				write(1, "\n", 1);
+			}
+			wait(NULL);
+		}
+		else if (!ft_strncmp(redir[i].type, "<", 1))
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				fd = open(redir[i].file, O_RDONLY);
+				if (fd == -1)
+				{
+					sterr = strerror(errno);
+					write(1, sterr, ft_strlen(sterr));
+					write(1, "\n", 1);
+				}
+				dup2(fd, STDIN_FILENO);
 				close(fd);
 				r = cmd_caller(com, env_head, ret, user);
 				exit(0);

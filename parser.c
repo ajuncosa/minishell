@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/11 12:52:12 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/11 13:57:39 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user)
 	else if (!ft_strncmp(com->cmd, "exit", len))
 		ft_exit(env_head, user); //FIXME: no libera lista de comandos y eso
 	else
-		return (ft_cmd(com->cmd));
+		return (ft_cmd(com));
 	return (0);
 }
 
@@ -202,8 +202,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
-			redir_manager(((t_cmd*)lst->content), env_head, ret, user);
-			//r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+			//r = redir_manager(((t_cmd*)lst->content), env_head, ret, user);
+			r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{

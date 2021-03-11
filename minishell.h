@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/11 13:00:33 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/11 14:08:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <dirent.h>
 # include <fcntl.h>
 # include "gnl/get_next_line.h"
-# include "ft_printf/libftprintf.h"
+# include "libft/libft.h"
 
 typedef struct s_env
 {
@@ -55,7 +55,7 @@ void	del_lst_cmd(void *cmd);
 void	ft_free_cmd(t_list **head);
 int		ft_cd(t_cmd *com, char *user);
 int		ft_exit_status(int ret);
-int 	ft_cmd(char *str);
+int 	ft_cmd(t_cmd *com);
 int		redir_manager(t_cmd *com, t_list **env_head, int ret, char *user);
 int		cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user);
 
