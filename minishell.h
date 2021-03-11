@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/10 13:44:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/11 13:00:33 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <errno.h>
 # include <dirent.h>
+# include <fcntl.h>
 # include "gnl/get_next_line.h"
 # include "ft_printf/libftprintf.h"
 
@@ -55,6 +56,7 @@ void	ft_free_cmd(t_list **head);
 int		ft_cd(t_cmd *com, char *user);
 int		ft_exit_status(int ret);
 int 	ft_cmd(char *str);
-int		redir_manager(t_cmd *com);
+int		redir_manager(t_cmd *com, t_list **env_head, int ret, char *user);
+int		cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user);
 
 #endif
