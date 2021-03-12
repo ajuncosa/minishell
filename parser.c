@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/12 11:27:28 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:36:26 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int		count_args(char *str)
 				i++;
 		}
 		else
-		{	// FIXME: algunos argumentos, e.g. redirections, van a incluir espacios. Añadir condiciones aparte para esos casos
+		{
 			while (str[i] != ' ' && str[i] != '"' && str[i] != '\''
 				&& str[i] != '<' && str[i] != '>' && str[i] != '\n'
 				&& str[i] != ';' && str[i] != '|' && str[i] != '\0')
@@ -143,7 +143,7 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user) //FIXME: hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
+int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user) //FIXME: hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
 {
 	int len;
 
@@ -163,7 +163,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, int ret, char *user) //FIXME: hay 
 	else if (!ft_strncmp(com->cmd, "$?", len))
 		return(ft_exit_status(ret));
 	else if (!ft_strncmp(com->cmd, "exit", len))
-		ft_exit(env_head, user); //FIXME: no libera lista de comandos y eso
+		ft_exit(env_head, cmd_head, user); //FIXME: no libera lista de comandos y eso
 	else
 		return (ft_cmd(com));
 	return (0);
@@ -177,24 +177,6 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	int		fd_read;
 	t_list	*lst;
 	int		r;
-	
-
-	/*	//PRINTFS
-		lst = *cmd_head;
-		while (lst)
-		{
-			printf("_________________________\n");
-			printf("comando: %s\n", ((t_cmd*)lst->content)->cmd);
-			printf("n de args: %d\n", ((t_cmd*)lst->content)->n_args);
-			int i = 0;
-			while (i < ((t_cmd*)lst->content)->n_args)
-			{
-				printf("arg[%d]: %s\n", i, ((t_cmd*)lst->content)->args[i]);
-				i++;
-			}
-			printf("sep_0: %c, sep_1: %c\n", ((t_cmd*)lst->content)->sep_0, ((t_cmd*)lst->content)->sep_1);
-			lst = lst->next;
-		}*/
 
 	lst = *cmd_head;
 	fd_read = 0;
@@ -202,8 +184,10 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
-			r = redir_manager(((t_cmd*)lst->content), env_head, ret, user);
-			//r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+			if (check_if_redir(((t_cmd*)lst->content)))
+				r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+			else
+				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
@@ -219,14 +203,14 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
-				r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
-				write(1, sterr, ft_strlen(sterr));
-				write(1, "\n", 1);
+				write(2, sterr, ft_strlen(sterr));
+				write(2, "\n", 1);
 			}
 			wait(NULL);
 			if (fd_read)
@@ -241,14 +225,14 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 			{
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
-				r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
-				write(1, sterr, ft_strlen(sterr));
-				write(1, "\n", 1);
+				write(2, sterr, ft_strlen(sterr));
+				write(2, "\n", 1);
 			}
 			wait(NULL);
 			close(fd_read);
@@ -261,6 +245,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 
 int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
 {																	//FIXME: el comando también puede venir entre comillas
+																	//TODO: añadir parse errors de >>> <<< ><>< y eso (y terminar los de | y ;)
 	int     i;
 	t_list	*cmd_head;
 	t_list	*new;
@@ -273,15 +258,9 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
-		{
-			ft_free_cmd(&cmd_head);
-			ft_exit(env_head, user);
-		}
+			ft_exit(env_head, &cmd_head, user);
 		if (!(com = malloc(sizeof(t_cmd))))
-		{
-			ft_free_cmd(&cmd_head);
-			ft_exit(env_head, user);
-		}
+			ft_exit(env_head, &cmd_head, user);
 		new->content = com;
 		
 		// INICIALIZAR COSAS
@@ -310,10 +289,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 
 		// GUARDAR COMANDO
 		if (!(((t_cmd*)new->content)->cmd = find_cmd(str, &i)))
-		{
-			ft_free_cmd(&cmd_head);
-			ft_exit(env_head, user);
-		}
+			ft_exit(env_head, &cmd_head, user);
 		while (str[i] == ' ')
 			i++;
 
@@ -321,24 +297,18 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
 		{
-			ft_free_cmd(&cmd_head);
+			ft_lstclear(&cmd_head, &del_lst_cmd);
 			return (0);
 		}
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
-			{
-				ft_free_cmd(&cmd_head);
-				ft_exit(env_head, user);
-			}
+				ft_exit(env_head, &cmd_head, user);
 		}
 
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
-		{
-			ft_free_cmd(&cmd_head);
-			ft_exit(env_head, user);
-		}
+			ft_exit(env_head, &cmd_head, user);
 															//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
 		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')
@@ -357,6 +327,6 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 	r = cmd_manager(&cmd_head, env_head, ret, user);
 	
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	ft_free_cmd(&cmd_head);
+	ft_lstclear(&cmd_head, &del_lst_cmd);
 	return (r);
 }

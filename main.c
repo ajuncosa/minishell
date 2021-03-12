@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/05 13:31:37 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:15:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,11 @@ int		main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			exit(0);
+			ft_exit(&head, NULL, NULL);
 		if (!(env = malloc(sizeof(t_env))))
-		{
-			ft_lstclear(&head, &del_lst);
-			exit(0);
-		}
+			ft_exit(&head, NULL, NULL);
 		if (!(line = ft_split(envp[i], '=')))
-		{
-			ft_lstclear(&head, &del_lst);
-			exit(0);
-		}
+			ft_exit(&head, NULL, NULL);
 		new->content = env;
 		((t_env*)new->content)->id = line[0];
 		((t_env*)new->content)->value = line[1];
@@ -56,13 +50,10 @@ int		main(int argc, char **argv, char **envp)
 	while (lst)
 	{
 		if (!ft_strncmp(((t_env*)lst->content)->id, "USER", 4))
-		{	
+		{
 			user_len = ft_strlen(((t_env*)lst->content)->value);
 			if (!(user = ft_strdup(((t_env*)lst->content)->value)))
-			{
-				ft_lstclear(&head, &del_lst);
-				exit(0);
-			}
+				ft_exit(&head, NULL, NULL);
 			break;
 		}
 		lst = lst->next;
@@ -75,10 +66,10 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		if (read(0, str, 1023) == -1)
-			ft_exit(&head, user);
+			ft_exit(&head, NULL, user);
 		ret = parser(str, &head, ret, user);
 		ft_bzero(str, 1023);
 	}
-	ft_exit(&head, user);
+	ft_exit(&head, NULL, user);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/12 13:30:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:36:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,16 @@ int	ft_cmd(t_cmd *com)
 		if (execve(com->cmd, argv, envp) == -1)
 		{
 			sterr = strerror(errno);
-			write(1, sterr, ft_strlen(sterr));
-			write(1, "\n", 1);
+			write(2, sterr, ft_strlen(sterr));
+			write(2, "\n", 1);
 		}
 		exit(0);
 	}
 	else if (pid < 0)
 	{
 		sterr = strerror(errno);
-		write(1, sterr, ft_strlen(sterr));
-		write(1, "\n", 1);
+		write(2, sterr, ft_strlen(sterr));
+		write(2, "\n", 1);
 	}
 	wait(NULL);
 	i = 0;

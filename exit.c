@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/09 15:42:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 17:51:37 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,29 +19,28 @@ void	del_lst(void *env)
 	free((t_env*)env);
 }
 
-void	ft_exit(t_list **head, char *user)
-{
-	free(user);
-	ft_lstclear(head, &del_lst);
-	exit(0);
-}
-
 void	del_lst_cmd(void *cmd)
 {
 	int j;
 
-	free(((t_cmd*)cmd)->cmd);
+	if (((t_cmd*)cmd)->cmd)
+		free(((t_cmd*)cmd)->cmd);
 	j = 0;
 	while (j < ((t_cmd*)cmd)->n_args)
 	{
 		free(((t_cmd*)cmd)->args[j]);
 		j++;
 	}
-	free(((t_cmd*)cmd)->args);
+	if (((t_cmd*)cmd)->args)
+		free(((t_cmd*)cmd)->args);
 	free((t_cmd*)cmd);
 }
 
-void	ft_free_cmd(t_list **head)
+void	ft_exit(t_list **env_head, t_list **cmd_head, char *user)
 {
-	ft_lstclear(head, &del_lst_cmd);
+	if (user)
+		free(user);
+	ft_lstclear(cmd_head, &del_lst_cmd);
+	ft_lstclear(env_head, &del_lst);
+	exit(0);
 }
