@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/12 18:36:26 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 18:51:40 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,10 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
-				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				if (check_if_redir(((t_cmd*)lst->content)))
+					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				else
+					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -225,7 +228,10 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 			{
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
-				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				if (check_if_redir(((t_cmd*)lst->content)))
+					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				else
+					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
 				exit(0);
 			}
 			else if (pid < 0)
