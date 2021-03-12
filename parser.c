@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/11 15:09:14 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/12 11:27:28 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,8 +202,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TOD
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
-			//r = redir_manager(((t_cmd*)lst->content), env_head, ret, user);
-			r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
+			r = redir_manager(((t_cmd*)lst->content), env_head, ret, user);
+			//r = cmd_caller(((t_cmd*)lst->content), env_head, ret, user);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
