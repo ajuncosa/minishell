@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/12 18:51:40 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/15 11:56:15 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user) //FIXME: hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
+int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user) //FIXME: en los strncmp hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
 {
 	int len;
 
@@ -152,7 +152,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 		return(ft_echo(com));
 	if (!ft_strncmp(com->cmd, "pwd", len))
 		return(ft_pwd(com->args));
-	else if (!ft_strncmp(com->cmd, "export", len)) //FIXME: comportamiento extraño cuando exporteas + de 3 variables
+	else if (!ft_strncmp(com->cmd, "export", len))
 		return(ft_export(env_head, com));
 	else if (!ft_strncmp(com->cmd, "cd", len))
 		return(ft_cd(com, user));
@@ -163,7 +163,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	else if (!ft_strncmp(com->cmd, "$?", len))
 		return(ft_exit_status(ret));
 	else if (!ft_strncmp(com->cmd, "exit", len))
-		ft_exit(env_head, cmd_head, user); //FIXME: no libera lista de comandos y eso
+		ft_exit(env_head, cmd_head, user);
 	else
 		return (ft_cmd(com));
 	return (0);
