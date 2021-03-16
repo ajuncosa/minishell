@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/16 13:42:13 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/16 13:48:49 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ char	*find_cmd(char *str, int *i)	//FIXME: "cmd>file" (sin espacios) no funciona
 		start++;
 	end = start;
 	while (str[end] != ' ' && str[end] != '\n' && str[end] != ';'
-		&& str[end] != '|' && str[end] != '\0')
+		&& str[end] != '|' && str[end] != '\0' && str[end] != '>'
+		&& str[end] != '<')
 		end++;
 	if (!(cmd = ft_substr(str, start, end - start)))
 		return (NULL);

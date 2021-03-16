@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/12 18:36:13 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/16 13:51:20 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_cmd(t_cmd *com)
 	pid_t pid;
 	char *sterr;
 	char **argv;
-	char *envp[] = {NULL};					//FIXME: norminette acepta esto?
+	char *envp[] = {NULL};					//FIXME: hay que pasarle las variables de entorno
 
 	argv = malloc((com->n_args + 2) * sizeof(char *));
 	argv[0] = ft_strdup(com->cmd);
