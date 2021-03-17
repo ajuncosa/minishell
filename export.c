@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/15 13:54:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/17 12:51:10 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,12 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 			i++;
 			continue ;
 		}
-		/*if (!ft_strchr(com->args[i], '='))
+		if (!ft_strchr(com->args[i], '='))
 		{
-			write(1, "bad assignment\n", 15);
+			new = malloc(sizeof(t_list));
+			env = malloc(sizeof(t_env));
 			return (0);
-		}*/
+		}
 		while (com->args[i][len_id] != '=')
 			len_id++;
 		new = malloc(sizeof(t_list));
