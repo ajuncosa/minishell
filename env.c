@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 18:05:47 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:18:17 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,8 @@ int	ft_env(t_list **head, char **args)
 	lst = *head;
 	while (lst)
 	{
-		write(1, ((t_env*)lst->content)->id,
-			ft_strlen(((t_env*)lst->content)->id));
-		write(1, "=", 1);
-		write(1, ((t_env*)lst->content)->value,
-			ft_strlen(((t_env*)lst->content)->value));
-		write(1, "\n", 1);
+		if (((t_env*)lst->content)->value != NULL)
+			printf("%s=%s\n",((t_env*)lst->content)->id, ((t_env*)lst->content)->value);
 		lst = lst->next;
 	}
 	return (0);

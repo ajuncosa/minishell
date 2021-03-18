@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/12 18:46:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:23:37 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	**arg_cleaner(t_cmd *com, t_redir **redir)
 	return(new);
 }
 
-int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user)
+int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp)
 {
 	char	**new;
 	int		i;
@@ -123,7 +123,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			}
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user);
+			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
 			exit(0);
 		}
 		else if (pid < 0)
@@ -148,7 +148,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			}
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user);
+			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
 			exit(0);
 		}
 		else if (pid < 0)
@@ -173,7 +173,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			}
 			dup2(fd, STDIN_FILENO);
 			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user);
+			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
 			exit(0);
 		}
 		else if (pid < 0)

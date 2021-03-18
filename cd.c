@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 18:28:36 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:24:44 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int    ft_cd(t_cmd *com, char *user, t_list **env_head)
 	//TODO: return $?
 	char	*path;
 	t_list	*list;
+	char	*sterr;
 
 	list = *env_head;
 	while (list)
@@ -32,13 +33,19 @@ int    ft_cd(t_cmd *com, char *user, t_list **env_head)
 	{
 		path = ft_strjoin("/Users/", user);
 		if (chdir(path) == -1)
-			printf("%s\n", strerror(errno));
+		{
+			sterr = strerror(errno);
+			write(2, sterr, ft_strlen(sterr));
+			write(2, "\n", 1);
+		}
 		free(path);
 		return (0);
 	}
 	if (chdir(com->args[0]) == -1)
 	{
-		printf("%s\n", strerror(errno));
+		sterr = strerror(errno);
+		write(2, sterr, ft_strlen(sterr));
+		write(2, "\n", 1);
 		return (1);
 	}
 	list = *env_head;

@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/18 17:57:35 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:25:24 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,18 @@ char	*ft_pathfinder(char *cmd, t_list **env_head)
 	return (NULL);
 }
 
-int	ft_cmd(t_cmd *com, t_list **env_head)
+int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 {
 	int 	i;
 	int		j;
+	t_list	*lst;
 	pid_t	pid;
 	char	*path;
-	char	*sterr;
 	char	**argv;
-	char	*envp[] = {NULL};					//FIXME: hay que pasarle las variables de entorno
-
+	char	*sterr;
 
 	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
-	argv = malloc((com->n_args + 2) * sizeof(char *));
+	argv = malloc((com->n_args + 2) * sizeof(char *));			//FIXME: gestionar error
 	argv[0] = ft_strdup(com->cmd);
 	i = 1;
 	j = 0;

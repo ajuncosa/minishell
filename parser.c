@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 18:16:35 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:27:02 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user) //FIXME: en los strncmp hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
+int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp) //FIXME: en los strncmp hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
 {
 	int len;
 
@@ -213,18 +213,18 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	else if (!ft_strncmp(com->cmd, "exit", len))
 		ft_exit(env_head, cmd_head, user);
 	else
-		return (ft_cmd(com, env_head));
+		return (ft_cmd(com, env_head, envp));
 	return (0);
 }
 
-int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
+int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char **envp)
 {
 	int		fd[2];
 	int		pid;
-	char 	*sterr;
 	int		fd_read;
 	t_list	*lst;
 	int		r;
+	char	*sterr;
 
 	lst = *cmd_head;
 	fd_read = 0;
@@ -233,9 +233,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
-				r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 			else
-				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
@@ -252,9 +252,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -277,9 +277,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user);
+					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -297,7 +297,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 	return (r);
 }
 
-int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
+int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
 {
 																	//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
@@ -375,7 +375,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 	}
 
 	//HACER  COMANDOS
-	r = cmd_manager(&cmd_head, env_head, ret, user);
+	r = cmd_manager(&cmd_head, env_head, ret, user, envp);
 	
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&cmd_head, &del_lst_cmd);

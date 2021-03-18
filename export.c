@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/17 12:52:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:51:35 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 		list = *head;
 		while (list)
 		{
-			printf("declare -x %s=\"%s\"\n", ((t_env*)list->content)->id, ((t_env*)list->content)->value);
+			if (((t_env*)list->content)->value)
+				printf("declare -x %s=\"%s\"\n", ((t_env*)list->content)->id, ((t_env*)list->content)->value);
+			else
+				printf("declare -x %s\n", ((t_env*)list->content)->id);
 			list = list->next;
 		}
 		return (0);
@@ -47,9 +50,28 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 		}
 		if (!ft_strchr(com->args[i], '='))
 		{
-			new = malloc(sizeof(t_list));
-			env = malloc(sizeof(t_env));
-			return (0);
+			list = *head;
+			while (list)
+			{
+				if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], ft_strlen(((t_env*)list->content)->id)))
+				{
+					printf("HOLA\n");
+					flag = 1;
+					break;
+				}
+				list = list->next;
+			}
+			if (!flag)
+			{
+				new = malloc(sizeof(t_list));
+				env = malloc(sizeof(t_env));
+				new->content = env;
+				((t_env*)new->content)->id = ft_strdup(com->args[i]);
+				((t_env*)new->content)->value = NULL;
+				ft_lstadd_back(head, new);
+			}
+			i++;
+			continue ;
 		}
 		while (com->args[i][len_id] != '=')
 			len_id++;

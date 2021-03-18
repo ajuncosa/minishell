@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/12 16:15:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 19:14:10 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,17 @@ int		main(int argc, char **argv, char **envp)
 		}
 		lst = lst->next;
 	}
+		lst = head;
+	while (lst)
+	{
+		if (!ft_strncmp(((t_env*)lst->content)->id, "OLDPWD", 7))
+		{
+			free(((t_env*)lst->content)->value);
+			((t_env*)lst->content)->value = NULL;
+			break;
+		}
+		lst = lst->next;
+	}
 	ret = 0;
 	while (1)
 	{
@@ -67,7 +78,7 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "\033[0m", 4);
 		if (read(0, str, 1023) == -1)
 			ft_exit(&head, NULL, user);
-		ret = parser(str, &head, ret, user);
+		ret = parser(str, &head, ret, user, envp);
 		ft_bzero(str, 1023);
 	}
 	ft_exit(&head, NULL, user);
