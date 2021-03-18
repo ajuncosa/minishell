@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/15 11:56:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/16 13:48:49 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*find_cmd(char *str, int *i)
+char	*find_cmd(char *str, int *i)	//FIXME: "cmd>file" (sin espacios) no funciona, hay que separar el comando por < y > también
 {
 	int		start;
 	int		end;
@@ -23,7 +23,8 @@ char	*find_cmd(char *str, int *i)
 		start++;
 	end = start;
 	while (str[end] != ' ' && str[end] != '\n' && str[end] != ';'
-		&& str[end] != '|' && str[end] != '\0')
+		&& str[end] != '|' && str[end] != '\0' && str[end] != '>'
+		&& str[end] != '<')
 		end++;
 	if (!(cmd = ft_substr(str, start, end - start)))
 		return (NULL);
@@ -50,8 +51,9 @@ int		count_args(char *str)
 				write(1, "Error: open dquote\n", 19);
 				return (-1);
 			}
-			n_args++;
 			i++;
+			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '\n' || str[i] == '\0')
+				n_args++;
 		}
 		else if (str[i] == '\'')
 		{
@@ -63,8 +65,9 @@ int		count_args(char *str)
 				write(1, "Error: open quote\n", 18);
 				return (-1);
 			}
-			n_args++;
 			i++;
+			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '\n' || str[i] == '\0')
+				n_args++;
 		}
 		else if (str[i] == '>' || str[i] == '<')
 		{
@@ -78,7 +81,8 @@ int		count_args(char *str)
 				&& str[i] != '<' && str[i] != '>' && str[i] != '\n'
 				&& str[i] != ';' && str[i] != '|' && str[i] != '\0')
 				i++;
-			n_args++;
+			if (str[i] != '"' && str[i] != '\'')
+				n_args++;
 		}
 		while (str[i] == ' ')
 			i++;
@@ -88,10 +92,14 @@ int		count_args(char *str)
 
 int		save_args(char *str, int n_args, char **args, int *start)
 {
-	int	end;
-	int	n;
+	int		end;
+	int		space;
+	int		n;
+	char	*tmp1;
+	char	*tmp2;
 
 	n = 0;
+	space = 1;
 	while (n < n_args)
 	{
 		if (str[*start] == '"')
@@ -100,8 +108,19 @@ int		save_args(char *str, int n_args, char **args, int *start)
 			end = *start;
 			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')
 				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
+			if (!space)
+			{	
+				tmp1 = ft_substr(str, *start, end - *start);
+				tmp2 = ft_strjoin(args[n], tmp1);
+				free(args[n]);
+				free(tmp1);
+				args[n] = tmp2;
+			}
+			else
+			{
+				if (!(args[n] = ft_substr(str, *start, end - *start)))
+					return (0);
+			}
 			*start = end + 1;
 		}
 		else if (str[*start] == '\'')
@@ -110,8 +129,19 @@ int		save_args(char *str, int n_args, char **args, int *start)
 			end = *start;
 			while (str[end] != '\'' && str[end] != '\n' && str[end] != '\0')
 				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
+			if (!space)
+			{	
+				tmp1 = ft_substr(str, *start, end - *start);
+				tmp2 = ft_strjoin(args[n], tmp1);
+				free(args[n]);
+				free(tmp1);
+				args[n] = tmp2;
+			}
+			else
+			{
+				if (!(args[n] = ft_substr(str, *start, end - *start)))
+					return (0);
+			}
 			*start = end + 1;
 		}
 		else if (str[*start] == '>' || str[*start] == '<')
@@ -126,19 +156,37 @@ int		save_args(char *str, int n_args, char **args, int *start)
 		else
 		{
 			end = *start;
-			// FIXME: algunos argumentos, e.g. redirections, van a incluir espacios. Añadir condiciones aparte para esos casos
 			while (str[end] != ' ' && str[end] != '"' && str[end] != '\''
 				&& str[end] != '>' && str[end] != '<'
 				&& str[end] != '\n'  && str[end] != ';' && str[end] != '|'
 				&& str[end] != '\0')
 				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
+			if (!space)
+			{	
+				tmp1 = ft_substr(str, *start, end - *start);
+				tmp2 = ft_strjoin(args[n], tmp1);
+				free(args[n]);
+				free(tmp1);
+				args[n] = tmp2;
+			}
+			else
+			{
+				if (!(args[n] = ft_substr(str, *start, end - *start)))
+					return (0);
+			}
 			*start = end;
 		}
-		while (str[*start] == ' ')
-			*start += 1;
-		n++;
+		if (str[*start] != ' ' && str[*start] != '>' && str[*start] != '<'
+			&& str[*start] != ';' && str[*start] != '|' && str[*start] != '\0'
+			&& str[*start] != '\n' && str[*start - 1] != '>' && str[*start - 1] != '<')
+			space = 0;
+		else
+		{
+			space = 1;
+			while (str[*start] == ' ')
+				*start += 1;
+			n++;
+		}
 	}
 	return (1);
 }
@@ -169,7 +217,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	return (0);
 }
 
-int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user) //TODO: arreglar todas las funciones para adaptarlas al nuevo parseador, y hacer que los comandos de /bin/ puedan recibir los argumentos tb?
+int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 {
 	int		fd[2];
 	int		pid;
