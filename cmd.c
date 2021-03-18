@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/18 14:09:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:33:59 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_pathfinder(char *cmd, t_list **env_head)
 	char		*joined;
 	char		*tmp;
 	int			i;
-	struct stat	*stat;
+	struct stat	stat;
 
 	lst = *env_head;
 	while (lst)
@@ -37,12 +37,8 @@ char	*ft_pathfinder(char *cmd, t_list **env_head)
 		tmp = ft_strjoin(paths[i], "/");
 		joined = ft_strjoin(tmp, cmd);
 		free(tmp);
-		if (lstat(joined, stat) < 0)
-		{
-			//printf("%s\n", strerror(errno));
-			return (NULL);
-		}
-		if (S_ISREG(stat->st_mode))
+		lstat(joined, &stat);
+		if (S_ISREG(stat.st_mode))
 			return (joined);
 		free(joined);
 		i++;
@@ -78,13 +74,13 @@ int	ft_cmd(t_cmd *com, t_list **env_head)
 	if (com->cmd[0] != '/')
 	{
 		path = ft_pathfinder(com->cmd, env_head);
-			printf("|%s|\n", path);
-
 		if (path == NULL)
 		{
 			printf("command not found\n");
 			return (127);
 		}
+		free(com->cmd);
+		com->cmd = path;
 	}
 
 	//EJECUTAR CON EXECVE
