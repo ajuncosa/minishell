@@ -3,24 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/16 13:51:20 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 14:09:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_cmd(t_cmd *com)
+char	*ft_pathfinder(char *cmd, t_list **env_head)
 {
-	int i;
-	int	j;
-	pid_t pid;
-	char *sterr;
-	char **argv;
-	char *envp[] = {NULL};					//FIXME: hay que pasarle las variables de entorno
+	t_list		*lst;
+	char		**paths;
+	char		*joined;
+	char		*tmp;
+	int			i;
+	struct stat	*stat;
 
+	lst = *env_head;
+	while (lst)
+	{
+		if (!ft_strncmp(((t_env*)lst->content)->id, "PATH", 4))
+		{
+			paths = ft_split(((t_env*)lst->content)->value, ':');
+			break;
+		}
+		lst = lst->next;
+	}
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		joined = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (lstat(joined, stat) < 0)
+		{
+			//printf("%s\n", strerror(errno));
+			return (NULL);
+		}
+		if (S_ISREG(stat->st_mode))
+			return (joined);
+		free(joined);
+		i++;
+	}
+	return (NULL);
+}
+
+int	ft_cmd(t_cmd *com, t_list **env_head)
+{
+	int 	i;
+	int		j;
+	pid_t	pid;
+	char	*path;
+	char	*sterr;
+	char	**argv;
+	char	*envp[] = {NULL};					//FIXME: hay que pasarle las variables de entorno
+
+
+	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
 	argv = malloc((com->n_args + 2) * sizeof(char *));
 	argv[0] = ft_strdup(com->cmd);
 	i = 1;
@@ -32,6 +73,21 @@ int	ft_cmd(t_cmd *com)
 		j++;
 	}
 	argv[i] = NULL;
+
+	//BUSCAR CMD EN PATH (sólo si no empieza por '/')
+	if (com->cmd[0] != '/')
+	{
+		path = ft_pathfinder(com->cmd, env_head);
+			printf("|%s|\n", path);
+
+		if (path == NULL)
+		{
+			printf("command not found\n");
+			return (127);
+		}
+	}
+
+	//EJECUTAR CON EXECVE
 	pid = fork();
 	if (pid == 0)
 	{

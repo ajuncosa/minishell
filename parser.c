@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 12:31:56 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 13:43:11 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	else if (!ft_strncmp(com->cmd, "exit", len))
 		ft_exit(env_head, cmd_head, user);
 	else
-		return (ft_cmd(com));
+		return (ft_cmd(com, env_head));
 	return (0);
 }
 
@@ -328,15 +328,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 		{
 			if (i > 0)
 				((t_cmd*)new->content)->sep_0 = str[i];
-			else if (i == 0 && str[i] == '|')
+			else if (i == 0 && (str[i] == '|' || str[i] == ';'))
 			{
-				write(1, "syntax error near unexpected token `|'\n", 39);
+				printf("syntax error near unexpected token `%c\'\n", str[i]);
 				return (2);									//FIXME: estos valores de retorno están mal
-			}
-			else if (i == 0 && str[i] == ';')
-			{
-				write(1, "syntax error near unexpected token `;'\n", 39);
-				return (2);									//FIXME: valores de retorno están mal
 			}
 			i++;
 			while (str[i] == ' ')
@@ -370,15 +365,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
 			ft_exit(env_head, &cmd_head, user);
-															//TODO: si ponen ; y | a la vez e.g. "ls ;| wc" tiene que dar error
+
 		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')
 			 ((t_cmd*)new->content)->sep_1 = str[i];
-		/*if (com.sep_0 == '|' && com.sep_1 == '|')		//FIXME: por qué esta condicion???? tal vez quería gestionar || y lo he hecho mal (no es un error real pero es un bonus)
-		{
-			write(1, "parse error near `|'\n", 21);
-			return ;
-		}*/
 
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&cmd_head, new);

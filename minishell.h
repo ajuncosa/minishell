@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/12 17:59:27 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 13:48:42 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <errno.h>
 # include <dirent.h>
 # include <fcntl.h>
+# include <sys/stat.h>
+//# include <sys/types.h>
 # include "gnl/get_next_line.h"
 # include "libft/libft.h"
 
@@ -54,7 +56,7 @@ int		ft_export(t_list **head, t_cmd *com);
 int		ft_unset(t_list **head, t_cmd *com);
 int		ft_cd(t_cmd *com, char *user);
 int		ft_exit_status(int ret);
-int 	ft_cmd(t_cmd *com);
+int 	ft_cmd(t_cmd *com, t_list **env_head);
 int		check_if_redir(t_cmd *com);
 int		redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user);
 
