@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/16 13:48:49 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 12:31:56 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 char	*find_cmd(char *str, int *i)	//FIXME: "cmd>file" (sin espacios) no funciona, hay que separar el comando por < y > también
-{
+{										//TODO: comillas en el comando
 	int		start;
 	int		end;
 	char	*cmd;
@@ -298,8 +298,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user)
 }
 
 int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
-{																	//FIXME: el comando también puede venir entre comillas
-																	//TODO: añadir parse errors de >>> <<< ><>< y eso (y terminar los de | y ;)
+{
+																	//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*cmd_head;
 	t_list	*new;
@@ -330,14 +330,21 @@ int		parser(char *str, t_list **env_head, int ret, char *user)	//TODO: gestionar
 				((t_cmd*)new->content)->sep_0 = str[i];
 			else if (i == 0 && str[i] == '|')
 			{
-				write(1, "parse error near `|'\n", 21);
+				write(1, "syntax error near unexpected token `|'\n", 39);
 				return (2);									//FIXME: estos valores de retorno están mal
 			}
-			i++;
-			if (str[i] == ';' && str[i - 1] == ';')
+			else if (i == 0 && str[i] == ';')
 			{
-				write(1, "parse error near `;;'\n", 22);
-				return (130);								//FIXME: valores de retorno mal
+				write(1, "syntax error near unexpected token `;'\n", 39);
+				return (2);									//FIXME: valores de retorno están mal
+			}
+			i++;
+			while (str[i] == ' ')
+				i++;
+			if (str[i] == ';' || str[i] == '|')
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				return (2);									//FIXME: valores de retorno mal
 			}
 		}
 
