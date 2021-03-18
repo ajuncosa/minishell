@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/08 11:36:46 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 18:25:39 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	ft_pwd(char **args)
 {
 	char	*pwd;
 	char	*buf;
-	pid_t	status;
 
 	if (args != NULL)
 	{
@@ -25,8 +24,7 @@ int	ft_pwd(char **args)
 	}
 	buf = NULL;
 	buf = getcwd(buf, 0);
-	write(1, buf, ft_strlen(buf));
-	write(1, "\n", 1);
+	printf("%s\n", buf);
 	free(buf);
 	return (0);
 }

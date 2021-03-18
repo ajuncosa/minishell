@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/18 17:33:59 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:57:35 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ int	ft_cmd(t_cmd *com, t_list **env_head)
 	}
 	argv[i] = NULL;
 
-	//BUSCAR CMD EN PATH (sólo si no empieza por '/')
-	if (com->cmd[0] != '/')
+	//BUSCAR CMD EN PATH (si no tiene formato de path con alguna '/')
+	if (!ft_strchr(com->cmd, '/'))
 	{
 		path = ft_pathfinder(com->cmd, env_head);
 		if (path == NULL)
@@ -109,6 +109,5 @@ int	ft_cmd(t_cmd *com, t_list **env_head)
 		i++;
 	}
 	free(argv);
-	//write(1, "command not found\n", 18);
-	return (127);
+	return (127); //FIXME: no sabemos que retorna
 }

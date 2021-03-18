@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 13:43:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/18 18:16:35 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	else if (!ft_strncmp(com->cmd, "export", len))
 		return(ft_export(env_head, com));
 	else if (!ft_strncmp(com->cmd, "cd", len))
-		return(ft_cd(com, user));
+		return(ft_cd(com, user, env_head));
 	else if (!ft_strncmp(com->cmd, "unset", len))
 		return(ft_unset(env_head, com));
 	else if (!ft_strncmp(com->cmd, "env", len))
