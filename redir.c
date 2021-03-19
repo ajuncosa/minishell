@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/18 19:23:37 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/19 18:48:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 	free(com->args);
 	com->args = new;
 
-	i = 0;
+	i = 0; //TODO: cuando le pasas varias redirecciones
 
 	if (!ft_strncmp(redir[i].type, ">", ft_strlen(redir[i].type)))
 	{
@@ -121,9 +121,12 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 				write(2, sterr, ft_strlen(sterr));
 				write(2, "\n", 1);
 			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			if (com->cmd)
+			{
+				dup2(fd, STDOUT_FILENO);
+				close(fd);
+				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			}
 			exit(0);
 		}
 		else if (pid < 0)
@@ -146,9 +149,12 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 				write(2, sterr, ft_strlen(sterr));
 				write(2, "\n", 1);
 			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			if (com->cmd)
+			{
+				dup2(fd, STDOUT_FILENO);
+				close(fd);
+				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			}
 			exit(0);
 		}
 		else if (pid < 0)
@@ -171,9 +177,12 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 				write(2, sterr, ft_strlen(sterr));
 				write(2, "\n", 1);
 			}
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-			r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			if (com->cmd)
+			{
+				dup2(fd, STDIN_FILENO);
+				close(fd);
+				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+			}
 			exit(0);
 		}
 		else if (pid < 0)

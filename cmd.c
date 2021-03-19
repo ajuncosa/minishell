@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/18 19:25:24 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/19 18:37:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,26 @@ char	*ft_pathfinder(char *cmd, t_list **env_head)
 		free(tmp);
 		lstat(joined, &stat);
 		if (S_ISREG(stat.st_mode))
+		{
+			i = 0;
+			while (paths[i])
+			{
+				free(paths[i]);
+				i++;
+			}
+			free(paths);
 			return (joined);
+		}
 		free(joined);
 		i++;
 	}
+	i = 0;
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
 	return (NULL);
 }
 
@@ -76,6 +92,13 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 		if (path == NULL)
 		{
 			printf("command not found\n");
+			i = 0;
+			while (argv[i])
+			{
+				free(argv[i]);
+				i++;
+			}
+			free(argv);
 			return (127);
 		}
 		free(com->cmd);

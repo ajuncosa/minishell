@@ -3,33 +3,75 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:27:02 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/19 18:47:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*find_cmd(char *str, int *i)	//FIXME: "cmd>file" (sin espacios) no funciona, hay que separar el comando por < y > también
-{										//TODO: comillas en el comando
-	int		start;
-	int		end;
-	char	*cmd;
 
-	start = *i;
-	while (str[start] == ' ')
-		start++;
-	end = start;
-	while (str[end] != ' ' && str[end] != '\n' && str[end] != ';'
-		&& str[end] != '|' && str[end] != '\0' && str[end] != '>'
-		&& str[end] != '<')
-		end++;
-	if (!(cmd = ft_substr(str, start, end - start)))
-		return (NULL);
-	*i = end;
-	return (cmd);
+int	find_cmd(t_cmd *com)
+{
+	int 	i;
+	int		j;
+	int		n;
+	int		len;
+	int		found;
+	char	**tmp;
+
+	n = 0;
+	found = 0;
+	while (n < com->n_args)
+	{
+		len = ft_strlen(com->args[n]);
+		if (strncmp(com->args[n], ">", len) && strncmp(com->args[n], "<", len) && strncmp(com->args[n], ">>", len))
+		{
+			com->cmd = ft_strdup(com->args[n]);
+			if (!com->cmd)
+				return (0);
+			free(com->args[n]);
+			found = 1;
+			break;
+		}
+		n += 2;
+	}
+	if (found)
+		tmp = malloc((com->n_args - 1) * sizeof(char *));
+	else
+		tmp = malloc(com->n_args * sizeof(char *));
+	if (!tmp)
+		return (0);
+	i = 0;
+	j = 0;
+	while (i < com->n_args)
+	{
+		if (found && i == n)
+		{
+			i++;
+			continue;
+		}
+		tmp[j] = ft_strdup(com->args[i]);
+		if (!tmp[j])
+			return (0);
+		free(com->args[i]);
+		j++;
+		i++;
+	}
+	free(com->args);
+	com->args = tmp;
+	if (found)
+	{
+		com->n_args -= 1;
+		if (com->n_args == 0)
+		{
+			free(com->args);
+			com->args = NULL;
+		}
+	}
+	return (1);
 }
 
 int		count_args(char *str)
@@ -48,11 +90,11 @@ int		count_args(char *str)
 				i++;
 			if (str[i] != '"')
 			{
-				write(1, "Error: open dquote\n", 19);
+				write(1, "Error: open dquote\n", 20);
 				return (-1);
 			}
 			i++;
-			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '\n' || str[i] == '\0')
+			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '<' || str[i] == '>' || str[i] == '\n' || str[i] == '\0')
 				n_args++;
 		}
 		else if (str[i] == '\'')
@@ -62,11 +104,11 @@ int		count_args(char *str)
 				i++;
 			if (str[i] != '\'')
 			{
-				write(1, "Error: open quote\n", 18);
+				write(1, "Error: open quote\n", 19);
 				return (-1);
 			}
 			i++;
-			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '\n' || str[i] == '\0')
+			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '<' || str[i] == '>' || str[i] == '\n' || str[i] == '\0')
 				n_args++;
 		}
 		else if (str[i] == '>' || str[i] == '<')
@@ -298,7 +340,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 }
 
 int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
-{
+{																	//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <}
+																	//FIXME: si sólo pones {> a} te crea el archivo a aunque no haya comando ni nada
 																	//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*cmd_head;
@@ -343,12 +386,6 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 			}
 		}
 
-		// GUARDAR COMANDO
-		if (!(((t_cmd*)new->content)->cmd = find_cmd(str, &i)))
-			ft_exit(env_head, &cmd_head, user);
-		while (str[i] == ' ')
-			i++;
-
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
@@ -366,6 +403,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
 			ft_exit(env_head, &cmd_head, user);
 
+		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
+		if (!find_cmd((t_cmd*)new->content))
+			ft_exit(env_head, &cmd_head, user);
+
 		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')
 			 ((t_cmd*)new->content)->sep_1 = str[i];
@@ -377,6 +418,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 	//HACER  COMANDOS
 	r = cmd_manager(&cmd_head, env_head, ret, user, envp);
 	
+
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&cmd_head, &del_lst_cmd);
 	return (r);

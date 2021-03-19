@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/10 18:07:17 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/05 13:53:28 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/19 16:10:38 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*ft_strdup(const char *s1)
 	size_t	i;
 	char	*copy;
 
+	if (!s1)
+		return (NULL);
 	copy = malloc((ft_strlen(s1) + 1));
 	if (!copy)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/11 13:49:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/19 17:04:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ int	ft_echo(t_cmd *com)
 	n = 0;
 	i = 0;
 	j = 0;
+	if (!com->args)
+	{
+		write(1, "\n", 1);
+		return (0);
+	}
 	while (!ft_strncmp(com->args[j], "-n", 2))
 	{
 		k = 1;
