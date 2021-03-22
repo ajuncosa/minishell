@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:51:35 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/22 13:20:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,8 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 			list = *head;
 			while (list)
 			{
-				if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], ft_strlen(((t_env*)list->content)->id)))
+				if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
 				{
-					printf("HOLA\n");
 					flag = 1;
 					break;
 				}

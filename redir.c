@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/19 18:48:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/22 12:53:16 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,8 @@ int		check_if_redir(t_cmd *com)
 	i = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strncmp(com->args[i], ">", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], ">>", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], "<", ft_strlen(com->args[i])))
+		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
+		|| !ft_strcmp(com->args[i], "<"))
 		    return (1);
 		i++;
 	}
@@ -40,9 +39,8 @@ char	**arg_cleaner(t_cmd *com, t_redir **redir)
 	n_del = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strncmp(com->args[i], ">", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], ">>", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], "<", ft_strlen(com->args[i])))
+		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
+		|| !ft_strcmp(com->args[i], "<"))
 		    n_del += 2;
 		i++;
 	}
@@ -59,9 +57,8 @@ char	**arg_cleaner(t_cmd *com, t_redir **redir)
 	k = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strncmp(com->args[i], ">", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], ">>", ft_strlen(com->args[i])) 
-		|| !ft_strncmp(com->args[i], "<", ft_strlen(com->args[i])))
+		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
+		|| !ft_strcmp(com->args[i], "<"))
 		{
 			(*redir[k]).type = ft_strdup(com->args[i]);
 			if (!(*redir[k]).type)
@@ -109,7 +106,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 
 	i = 0; //TODO: cuando le pasas varias redirecciones
 
-	if (!ft_strncmp(redir[i].type, ">", ft_strlen(redir[i].type)))
+	if (!ft_strcmp(redir[i].type, ">"))
 	{
 		pid = fork();
 		if (pid == 0)
@@ -137,7 +134,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 		}
 		wait(NULL);
 	}
-	else if (!ft_strncmp(redir[i].type, ">>", 2))
+	else if (!ft_strcmp(redir[i].type, ">>"))
 	{
 		pid = fork();
 		if (pid == 0)
@@ -165,7 +162,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 		}
 		wait(NULL);
 	}
-	else if (!ft_strncmp(redir[i].type, "<", 1))  //FIXME: cuando no existe el archivo
+	else if (!ft_strcmp(redir[i].type, "<"))  //FIXME: cuando no existe el archivo
 	{
 		pid = fork();
 		if (pid == 0)

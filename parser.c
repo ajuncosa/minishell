@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/19 18:47:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/22 14:04:32 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	find_cmd(t_cmd *com)
 	int 	i;
 	int		j;
 	int		n;
-	int		len;
 	int		found;
 	char	**tmp;
 
@@ -26,8 +25,7 @@ int	find_cmd(t_cmd *com)
 	found = 0;
 	while (n < com->n_args)
 	{
-		len = ft_strlen(com->args[n]);
-		if (strncmp(com->args[n], ">", len) && strncmp(com->args[n], "<", len) && strncmp(com->args[n], ">>", len))
+		if (strcmp(com->args[n], ">") && strcmp(com->args[n], "<") && strcmp(com->args[n], ">>"))
 		{
 			com->cmd = ft_strdup(com->args[n]);
 			if (!com->cmd)
@@ -148,10 +146,10 @@ int		save_args(char *str, int n_args, char **args, int *start)
 		{
 			*start += 1;
 			end = *start;
-			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')
-				end++;
+			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')	
+				end++;	//TODO: buscar $ y guardar con su valor directamente
 			if (!space)
-			{	
+			{
 				tmp1 = ft_substr(str, *start, end - *start);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				free(args[n]);
@@ -233,26 +231,26 @@ int		save_args(char *str, int n_args, char **args, int *start)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp) //FIXME: en los strncmp hay que comprobar la len del más largo, si no funcionará con "ech" por ejemplo
+int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp)
 {
 	int len;
 
 	len = ft_strlen(com->cmd);
-	if (!ft_strncmp(com->cmd, "echo", len)) //probar si funcionan espacios
+	if (!ft_strcmp(com->cmd, "echo"))
 		return(ft_echo(com));
-	if (!ft_strncmp(com->cmd, "pwd", len))
+	if (!ft_strcmp(com->cmd, "pwd"))
 		return(ft_pwd(com->args));
-	else if (!ft_strncmp(com->cmd, "export", len))
+	else if (!ft_strcmp(com->cmd, "export"))
 		return(ft_export(env_head, com));
-	else if (!ft_strncmp(com->cmd, "cd", len))
+	else if (!ft_strcmp(com->cmd, "cd"))
 		return(ft_cd(com, user, env_head));
-	else if (!ft_strncmp(com->cmd, "unset", len))
+	else if (!ft_strcmp(com->cmd, "unset"))
 		return(ft_unset(env_head, com));
-	else if (!ft_strncmp(com->cmd, "env", len))
+	else if (!ft_strcmp(com->cmd, "env"))
 		return(ft_env(env_head, com->args));
-	else if (!ft_strncmp(com->cmd, "$?", len))
+	else if (!ft_strcmp(com->cmd, "$?"))
 		return(ft_exit_status(ret));
-	else if (!ft_strncmp(com->cmd, "exit", len))
+	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(env_head, cmd_head, user);
 	else
 		return (ft_cmd(com, env_head, envp));
@@ -341,7 +339,6 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 
 int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
 {																	//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <}
-																	//FIXME: si sólo pones {> a} te crea el archivo a aunque no haya comando ni nada
 																	//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*cmd_head;
@@ -403,6 +400,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
 			ft_exit(env_head, &cmd_head, user);
 
+		// BUSCAR VARIABLES DE ENTORNO y sustituir
+		if (!find_var(env_head, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args))
+			ft_exit(env_head, &cmd_head, user);
+		
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd((t_cmd*)new->content))
 			ft_exit(env_head, &cmd_head, user);

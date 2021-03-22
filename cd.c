@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:24:44 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/22 12:36:08 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int    ft_cd(t_cmd *com, char *user, t_list **env_head)
 	list = *env_head;
 	while (list)
 	{
-		if (!ft_strncmp(((t_env*)list->content)->id, "OLDPWD", 7))
+		if (!ft_strcmp(((t_env*)list->content)->id, "OLDPWD"))
 		{
 			free(((t_env*)list->content)->value);
 			((t_env*)list->content)->value = getcwd(NULL, 0);
@@ -51,7 +51,7 @@ int    ft_cd(t_cmd *com, char *user, t_list **env_head)
 	list = *env_head;
 	while (list)
 	{
-		if (!ft_strncmp(((t_env*)list->content)->id, "PWD", 4))
+		if (!ft_strcmp(((t_env*)list->content)->id, "PWD"))
 		{
 			free(((t_env*)list->content)->value);
 			((t_env*)list->content)->value = getcwd(NULL, 0);

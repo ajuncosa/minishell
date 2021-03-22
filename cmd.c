@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/19 18:37:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/22 12:36:23 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*ft_pathfinder(char *cmd, t_list **env_head)
 	lst = *env_head;
 	while (lst)
 	{
-		if (!ft_strncmp(((t_env*)lst->content)->id, "PATH", 4))
+		if (!ft_strcmp(((t_env*)lst->content)->id, "PATH"))
 		{
 			paths = ft_split(((t_env*)lst->content)->value, ':');
 			break;

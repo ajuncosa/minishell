@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:14:10 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/22 12:32:46 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int		main(int argc, char **argv, char **envp)
 	lst = head;
 	while (lst)
 	{
-		if (!ft_strncmp(((t_env*)lst->content)->id, "USER", 4))
+		if (!ft_strcmp(((t_env*)lst->content)->id, "USER"))
 		{
 			user_len = ft_strlen(((t_env*)lst->content)->value);
 			if (!(user = ft_strdup(((t_env*)lst->content)->value)))
@@ -61,7 +61,7 @@ int		main(int argc, char **argv, char **envp)
 		lst = head;
 	while (lst)
 	{
-		if (!ft_strncmp(((t_env*)lst->content)->id, "OLDPWD", 7))
+		if (!ft_strcmp(((t_env*)lst->content)->id, "OLDPWD"))
 		{
 			free(((t_env*)lst->content)->value);
 			((t_env*)lst->content)->value = NULL;
