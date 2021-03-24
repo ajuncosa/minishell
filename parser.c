@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/22 14:04:32 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/24 14:46:23 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int		count_args(char *str)
 	return (n_args);
 }
 
-int		save_args(char *str, int n_args, char **args, int *start)
+int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head)
 {
 	int		end;
 	int		space;
@@ -197,9 +197,8 @@ int		save_args(char *str, int n_args, char **args, int *start)
 		{
 			end = *start;
 			while (str[end] != ' ' && str[end] != '"' && str[end] != '\''
-				&& str[end] != '>' && str[end] != '<'
-				&& str[end] != '\n'  && str[end] != ';' && str[end] != '|'
-				&& str[end] != '\0')
+				&& str[end] != '>' && str[end] != '<' && str[end] != '\n'
+				&& str[end] != ';' && str[end] != '|' && str[end] != '\0')
 				end++;
 			if (!space)
 			{	
@@ -213,6 +212,7 @@ int		save_args(char *str, int n_args, char **args, int *start)
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
+				dollar_finder(env_head, &args[n]);
 			}
 			*start = end;
 		}
@@ -397,12 +397,12 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 		}
 
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i)))
+		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, env_head)))
 			ft_exit(env_head, &cmd_head, user);
 
 		// BUSCAR VARIABLES DE ENTORNO y sustituir
-		if (!find_var(env_head, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args))
-			ft_exit(env_head, &cmd_head, user);
+		//if (!find_var(env_head, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args))
+		//	ft_exit(env_head, &cmd_head, user);
 		
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd((t_cmd*)new->content))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:03:19 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/24 14:46:42 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>
-//# include <sys/types.h>
 # include "gnl/get_next_line.h"
 # include "libft/libft.h"
 
@@ -59,6 +58,6 @@ int		ft_exit_status(int ret);
 int 	ft_cmd(t_cmd *com, t_list **env_head, char **envp);
 int		check_if_redir(t_cmd *com);
 int		redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp);
-
+int		dollar_finder(t_list **env_head, char **str);
 
 #endif
