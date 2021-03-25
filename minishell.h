@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/24 14:46:42 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/25 19:22:50 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <errno.h>
 # include <dirent.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <sys/stat.h>
 # include "gnl/get_next_line.h"
 # include "libft/libft.h"

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/24 14:46:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/25 18:58:40 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,8 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{
 				tmp1 = ft_substr(str, *start, end - *start);
+				if (!dollar_finder(env_head, &tmp1))
+					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				free(args[n]);
 				free(tmp1);
@@ -159,6 +161,8 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			else
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
+					return (0);
+				if (!dollar_finder(env_head, &args[n]))
 					return (0);
 			}
 			*start = end + 1;
@@ -203,6 +207,8 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
+				if (!dollar_finder(env_head, &tmp1))	
+					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				free(args[n]);
 				free(tmp1);
@@ -212,7 +218,8 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				dollar_finder(env_head, &args[n]);
+				if (!dollar_finder(env_head, &args[n]))
+					return (0);
 			}
 			*start = end;
 		}
@@ -338,7 +345,7 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 }
 
 int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
-{																	//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <}
+{																	//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <} {=>}
 																	//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*cmd_head;

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/24 14:54:47 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/25 18:38:16 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	dollar_finder(t_list **env_head, char **str)
 	char	*tmp3;
 
 	start = 0;
-	
 	while ((*str)[start] != '\0')
 	{
 		if ((*str)[start] == '$')
@@ -49,7 +48,7 @@ int	dollar_finder(t_list **env_head, char **str)
 			&& (*str)[end] != ';' && (*str)[end] != '|' && (*str)[end] != '\0')
 				end++;
 
-			check = ft_substr(*str, start, end - start);
+			check = ft_substr(*str, start, end - start); // TODO: gestionar errores en todas estas
 			value = is_in_env(env_head, check);
 			if (value)
 			{
@@ -64,10 +63,9 @@ int	dollar_finder(t_list **env_head, char **str)
 				free(check);
 				free(tmp);
 				free(tmp2);
-				return (0);
 			}
 		}
 		start++;
 	}
-	return (0); // TODO: valores de retorno
+	return (1); // TODO: valores de retorno
 }
