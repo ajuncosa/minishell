@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/22 12:53:16 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 17:58:15 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 	com->args = new;
 
 	i = 0; //TODO: cuando le pasas varias redirecciones
-
-	if (!ft_strcmp(redir[i].type, ">"))
+	if (!ft_strcmp(redir[i].type, ">")) // FIXME: cuando el comando no existe, eñ mensaje de error lo tiene que poner en la terminal, no meterlo en el archivo!
 	{
 		pid = fork();
 		if (pid == 0)

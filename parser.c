@@ -6,12 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 15:44:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/26 18:22:54 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 int	find_cmd(t_cmd *com)
 {
@@ -92,7 +91,7 @@ int		count_args(char *str)
 				return (-1);
 			}
 			i++;
-			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '<' || str[i] == '>' || str[i] == '\n' || str[i] == '\0')
+			if (is_space_redir_or_endofcmd(str[i]))
 				n_args++;
 		}
 		else if (str[i] == '\'')
@@ -106,7 +105,7 @@ int		count_args(char *str)
 				return (-1);
 			}
 			i++;
-			if (str[i] == ' ' || str[i] == ';' || str[i] == '|' || str[i] == '<' || str[i] == '>' || str[i] == '\n' || str[i] == '\0')
+			if (is_space_redir_or_endofcmd(str[i]))
 				n_args++;
 		}
 		else if (str[i] == '>' || str[i] == '<')
@@ -117,9 +116,7 @@ int		count_args(char *str)
 		}
 		else
 		{
-			while (str[i] != ' ' && str[i] != '"' && str[i] != '\''
-				&& str[i] != '<' && str[i] != '>' && str[i] != '\n'
-				&& str[i] != ';' && str[i] != '|' && str[i] != '\0')
+			while (!is_space_quote_redir_or_endofcmd(str[i]))
 				i++;
 			if (str[i] != '"' && str[i] != '\'')
 				n_args++;
@@ -208,9 +205,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 		else
 		{
 			end = *start;
-			while (str[end] != ' ' && str[end] != '"' && str[end] != '\''
-				&& str[end] != '>' && str[end] != '<' && str[end] != '\n'
-				&& str[end] != ';' && str[end] != '|' && str[end] != '\0')
+			while (!is_space_quote_redir_or_endofcmd(str[end]))
 				end++;
 			if (!space)
 			{	
@@ -235,9 +230,8 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			}
 			*start = end;
 		}
-		if (str[*start] != ' ' && str[*start] != '>' && str[*start] != '<'
-			&& str[*start] != ';' && str[*start] != '|' && str[*start] != '\0'
-			&& str[*start] != '\n' && str[*start - 1] != '>' && str[*start - 1] != '<')
+		if (!is_space_redir_or_endofcmd(str[*start])
+			&& str[*start - 1] != '>' && str[*start - 1] != '<')
 			space = 0;
 		else
 		{
@@ -294,8 +288,8 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 			else
 				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
 		}
-		if (((t_cmd*)lst->content)->sep_1 == '|')
-		{
+		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"
+		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 0 siempre (creo?)
 			pipe(fd);
 			pid = fork();
 			if (pid == 0)
@@ -354,9 +348,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 	return (r);
 }
 
-int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TODO: gestionar valores de retorno aquí, en cmd_manager y en todas las funciones de comandos
-{																	//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <} {=>}
-																	//TODO: añadir parse errors de >>> <<< ><>< y eso
+int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
+{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <} {=>}
+					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*cmd_head;
 	t_list	*new;
@@ -380,15 +374,17 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 		((t_cmd*)new->content)->args = NULL;
 		((t_cmd*)new->content)->cmd = NULL;
 
+		while (str[i] == ' ')
+			i++;
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
 		if (str[i] == ';' || str[i] == '|')
 		{
 			if (i > 0)
 				((t_cmd*)new->content)->sep_0 = str[i];
-			else if (i == 0 && (str[i] == '|' || str[i] == ';'))
+			else if (i == 0 && (str[i] == '|' || str[i] == ';'))	//FIXME: si el signo es el primero de la línea pero tiene espacios delante, necesita dar error también
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
-				return (258);									//FIXME: estos valores de retorno están mal
+				return (258);
 			}
 			i++;
 			while (str[i] == ' ')
@@ -396,10 +392,9 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 			if (str[i] == ';' || str[i] == '|')
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
-				return (258);								//FIXME: valores de retorno mal
+				return (258);
 			}
 		}
-
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
@@ -407,19 +402,20 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 			ft_lstclear(&cmd_head, &del_lst_cmd);
 			return (0);
 		}
+		if (((t_cmd*)new->content)->n_args == 0)
+		{
+			free(new);
+			free(com);
+			continue;
+		}
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
 				ft_exit(env_head, &cmd_head, user);
 		}
-
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, env_head, ret)))
 			ft_exit(env_head, &cmd_head, user);
-
-		// BUSCAR VARIABLES DE ENTORNO y sustituir
-		//if (!find_var(env_head, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args))
-		//	ft_exit(env_head, &cmd_head, user);
 		
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd((t_cmd*)new->content))
@@ -436,7 +432,6 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 	//HACER  COMANDOS
 	r = cmd_manager(&cmd_head, env_head, ret, user, envp);
 	
-
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&cmd_head, &del_lst_cmd);
 	return (r);
