@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/22 13:20:18 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 14:55:11 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
-											//TODO: id con comillas: espacios no válidos (e.g. "hola que"=algo)
-{
+int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
+{ //TODO: id con comillas: espacios no válidos (e.g. "hola que"=algo)
 	t_list	*new;
 	t_list	*list;
 	t_env	*env;
@@ -22,10 +21,12 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 	int		len_id;
 	int		len_v;
 	int		flag;
+	int		r;
 
+	r = 0;
 	if (com->args == NULL)
 	{
-		list = *head;
+		list = *env_head;
 		while (list)
 		{
 			if (((t_env*)list->content)->value)
@@ -34,7 +35,7 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 				printf("declare -x %s\n", ((t_env*)list->content)->id);
 			list = list->next;
 		}
-		return (0);
+		return (r);
 	}
 	i = 0;
 	while (i < com->n_args)
@@ -46,11 +47,12 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 		{
 			write(1, "Error: not an identifier\n", 25);
 			i++;
+			r = 1;
 			continue ;
 		}
 		if (!ft_strchr(com->args[i], '='))
 		{
-			list = *head;
+			list = *env_head;
 			while (list)
 			{
 				if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
@@ -63,11 +65,17 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 			if (!flag)
 			{
 				new = malloc(sizeof(t_list));
+				if (!new)
+					ft_exit(env_head, cmd_head, user);
 				env = malloc(sizeof(t_env));
+				if (!new)
+					ft_exit(env_head, cmd_head, user);
 				new->content = env;
 				((t_env*)new->content)->id = ft_strdup(com->args[i]);
+				if (!((t_env*)new->content)->id)
+					ft_exit(env_head, cmd_head, user);
 				((t_env*)new->content)->value = NULL;
-				ft_lstadd_back(head, new);
+				ft_lstadd_back(env_head, new);
 			}
 			i++;
 			continue ;
@@ -75,7 +83,7 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 		while (com->args[i][len_id] != '=')
 			len_id++;
 		len_v = ft_strlen(&com->args[i][len_id + 1]);
-		list = *head;
+		list = *env_head;
 		while (list)
 		{
 			if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], len_id))
@@ -90,13 +98,21 @@ int	ft_export(t_list **head, t_cmd *com)	//TODO: returns para $?
 		if (!flag)
 		{
 			new = malloc(sizeof(t_list));
+			if (!new)
+				ft_exit(env_head, cmd_head, user);
 			env = malloc(sizeof(t_env));
+			if (!env)
+				ft_exit(env_head, cmd_head, user);
 			new->content = env;
 			((t_env *)new->content)->id = ft_substr(com->args[i], 0, len_id);
+			if (!((t_env *)new->content)->id)
+				ft_exit(env_head, cmd_head, user);
 			((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
-			ft_lstadd_back(head, new);
+			if (!((t_env *)new->content)->value)
+				ft_exit(env_head, cmd_head, user);
+			ft_lstadd_back(env_head, new);
 		}
 		i++;
 	}
-	return (0);
+	return (r);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 13:46:58 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:44:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,13 +147,17 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			*start += 1;
 			end = *start;
 			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')	
-				end++;	//TODO: buscar $ y guardar con su valor directamente
+				end++;
 			if (!space)
 			{
 				tmp1 = ft_substr(str, *start, end - *start);
+				if (!tmp1)
+					return (0);
 				if (!dollar_finder(env_head, &tmp1, ret))
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
+				if (!tmp2)
+					return (0);
 				free(args[n]);
 				free(tmp1);
 				args[n] = tmp2;
@@ -176,7 +180,11 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
+				if (!tmp1)
+					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
+				if (!tmp2)
+					return (0);
 				free(args[n]);
 				free(tmp1);
 				args[n] = tmp2;
@@ -207,9 +215,13 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
+				if (!tmp1)
+					return (0);
 				if (!dollar_finder(env_head, &tmp1, ret))	
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
+				if (!tmp2)
+					return (0);
 				free(args[n]);
 				free(tmp1);
 				args[n] = tmp2;
@@ -248,7 +260,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	if (!ft_strcmp(com->cmd, "pwd"))
 		return(ft_pwd(com->args));
 	else if (!ft_strcmp(com->cmd, "export"))
-		return(ft_export(env_head, com));
+		return(ft_export(env_head, cmd_head, com, user));
 	else if (!ft_strcmp(com->cmd, "cd"))
 		return(ft_cd(com, user, env_head));
 	else if (!ft_strcmp(com->cmd, "unset"))
@@ -258,7 +270,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(env_head, cmd_head, user);
 	else
-		return (ft_cmd(com, env_head, envp));
+		return (ft_cmd(com, env_head, envp, cmd_head, user));
 	return (0);
 }
 

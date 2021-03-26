@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/18 19:18:17 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:39:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_env(t_list **head, char **args)
 	int		i;
 
 	i = 0;
-	if (args != NULL)
+	if (args != NULL)	// TODO: esto no es un error real, damos el error o simplemente lo dejamos que no haga nada?
 	{
 		write(1, "env: too many arguments\n", 24);
 		return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 12:27:25 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:49:12 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	del_lst_cmd(void *cmd);
 int		parser(char *str, t_list **env_head, int ret, char *user, char **envp);
 int		cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp);
 int		ft_pwd(char **args);
-int		ft_export(t_list **head, t_cmd *com);
+int		ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user);
 int		ft_unset(t_list **head, t_cmd *com);
 int		ft_cd(t_cmd *com, char *user, t_list **env_head);
-int 	ft_cmd(t_cmd *com, t_list **env_head, char **envp);
+int 	ft_cmd(t_cmd *com, t_list **env_head, char **envp, t_list **cmd_head, char *user);
 int		check_if_redir(t_cmd *com);
 int		redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp);
 int		dollar_finder(t_list **env_head, char **str, int ret);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/26 12:22:59 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:15:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,27 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 			&& (*str)[end] != ';' && (*str)[end] != '|' && (*str)[end] != '\0')
 				end++;
 
-			check = ft_substr(*str, start, end - start); // TODO: gestionar errores en todas estas
+			check = ft_substr(*str, start, end - start);
+			if (!check)
+				return (0);
 			value = is_in_env(env_head, check);
 			if (!value && (*str)[start] == '?')
+			{
 				value = ft_itoa(ret);
+				if (!value)
+					return (0);
+			}
 			if (value)
 			{
 				tmp = ft_substr(*str, 0, start - 1);
+				if (!tmp)
+					return (0);
 				tmp2 = ft_strjoin(tmp, value);
+				if (!tmp2)
+					return (0);
 				tmp3 = ft_strjoin(tmp2, &(*str)[end]);
+				if (!tmp3)
+					return (0);
 				if ((*str)[start] == '?')
 					free(value);
 				free(*str);
@@ -68,7 +80,11 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 			else
 			{
 				tmp = ft_substr(*str, 0, start - 1);
+				if (!tmp)
+					return (0);
 				tmp2 = ft_strjoin(tmp, &(*str)[end]);
+				if (!tmp2)
+					return (0);
 				free(*str);
 				*str = tmp2;
 				free(tmp);
@@ -78,5 +94,5 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 		}
 		start++;
 	}
-	return (1); // TODO: valores de retorno
+	return (1);
 }
