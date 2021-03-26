@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 12:28:36 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:46:58 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,8 +255,6 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 		return(ft_unset(env_head, com));
 	else if (!ft_strcmp(com->cmd, "env"))
 		return(ft_env(env_head, com->args));
-	//else if (!ft_strcmp(com->cmd, "$?"))
-	//	return(ft_exit_status(ret));
 	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(env_head, cmd_head, user);
 	else
@@ -378,7 +376,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 			else if (i == 0 && (str[i] == '|' || str[i] == ';'))
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
-				return (2);									//FIXME: estos valores de retorno están mal
+				return (258);									//FIXME: estos valores de retorno están mal
 			}
 			i++;
 			while (str[i] == ' ')
@@ -386,7 +384,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 			if (str[i] == ';' || str[i] == '|')
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
-				return (2);									//FIXME: valores de retorno mal
+				return (258);								//FIXME: valores de retorno mal
 			}
 		}
 

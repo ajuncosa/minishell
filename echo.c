@@ -6,13 +6,11 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/22 12:37:37 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:41:51 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
- /* TODO: añadir echo $var con las variables de env */
 
 int	ft_echo(t_cmd *com)
 {
@@ -50,7 +48,7 @@ int	ft_echo(t_cmd *com)
 	{
 		write(1, com->args[i], ft_strlen(com->args[i]));
 		if (i < com->n_args - 1)
-			write(1, " ", 1);			//FIXME: si no hay espacio entre dos argumentos de comillas, no hay que dejar espacio (el parseador tiene que mirar dónde hay espacio?) e.g. echo "hola"'adios'
+			write(1, " ", 1);
 		i++;
 	}
 	if (n == 0)
