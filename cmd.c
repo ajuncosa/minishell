@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/22 12:36:23 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/26 12:28:48 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 	char	*path;
 	char	**argv;
 	char	*sterr;
+	int		status;
+	int		exit_stat;
 
 	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
 	argv = malloc((com->n_args + 2) * sizeof(char *));			//FIXME: gestionar error
@@ -91,7 +93,7 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 		path = ft_pathfinder(com->cmd, env_head);
 		if (path == NULL)
 		{
-			printf("command not found\n");
+			printf("%s: command not found\n", com->cmd);
 			i = 0;
 			while (argv[i])
 			{
@@ -115,7 +117,7 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 			write(2, sterr, ft_strlen(sterr));
 			write(2, "\n", 1);
 		}
-		exit(0);
+		exit(127);
 	}
 	else if (pid < 0)
 	{
@@ -123,7 +125,8 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 		write(2, sterr, ft_strlen(sterr));
 		write(2, "\n", 1);
 	}
-	wait(NULL);
+	wait(&status);
+	exit_stat = WEXITSTATUS(status);
 	i = 0;
 	while (argv[i])
 	{
@@ -131,5 +134,5 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp)
 		i++;
 	}
 	free(argv);
-	return (127); //FIXME: no sabemos que retorna
+	return (exit_stat);
 }

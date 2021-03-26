@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/25 18:58:40 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/26 12:28:36 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int		count_args(char *str)
 	return (n_args);
 }
 
-int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head)
+int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head, int ret)
 {
 	int		end;
 	int		space;
@@ -151,7 +151,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{
 				tmp1 = ft_substr(str, *start, end - *start);
-				if (!dollar_finder(env_head, &tmp1))
+				if (!dollar_finder(env_head, &tmp1, ret))
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				free(args[n]);
@@ -162,7 +162,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(env_head, &args[n]))
+				if (!dollar_finder(env_head, &args[n], ret))
 					return (0);
 			}
 			*start = end + 1;
@@ -207,7 +207,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
-				if (!dollar_finder(env_head, &tmp1))	
+				if (!dollar_finder(env_head, &tmp1, ret))	
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				free(args[n]);
@@ -218,7 +218,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(env_head, &args[n]))
+				if (!dollar_finder(env_head, &args[n], ret))
 					return (0);
 			}
 			*start = end;
@@ -255,8 +255,8 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 		return(ft_unset(env_head, com));
 	else if (!ft_strcmp(com->cmd, "env"))
 		return(ft_env(env_head, com->args));
-	else if (!ft_strcmp(com->cmd, "$?"))
-		return(ft_exit_status(ret));
+	//else if (!ft_strcmp(com->cmd, "$?"))
+	//	return(ft_exit_status(ret));
 	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(env_head, cmd_head, user);
 	else
@@ -404,7 +404,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)	//TO
 		}
 
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, env_head)))
+		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, env_head, ret)))
 			ft_exit(env_head, &cmd_head, user);
 
 		// BUSCAR VARIABLES DE ENTORNO y sustituir

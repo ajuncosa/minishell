@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/25 18:38:16 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/26 12:22:59 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*is_in_env(t_list **env_head, char *str)  //TODO: esto se puede usar en má
 	return (NULL);
 }
 
-int	dollar_finder(t_list **env_head, char **str)
+int	dollar_finder(t_list **env_head, char **str, int ret)
 {
 	int		start;
 	int		end;
@@ -44,26 +44,37 @@ int	dollar_finder(t_list **env_head, char **str)
 			start++;
 			end = start;
 			while ((*str)[end] != ' ' && (*str)[end] != '"' && (*str)[end] != '\''
+			&& (*str)[end] != '$'
 			&& (*str)[end] != '>' && (*str)[end] != '<' && (*str)[end] != '\n'
 			&& (*str)[end] != ';' && (*str)[end] != '|' && (*str)[end] != '\0')
 				end++;
 
 			check = ft_substr(*str, start, end - start); // TODO: gestionar errores en todas estas
 			value = is_in_env(env_head, check);
+			if (!value && (*str)[start] == '?')
+				value = ft_itoa(ret);
 			if (value)
 			{
 				tmp = ft_substr(*str, 0, start - 1);
 				tmp2 = ft_strjoin(tmp, value);
 				tmp3 = ft_strjoin(tmp2, &(*str)[end]);
+				if ((*str)[start] == '?')
+					free(value);
 				free(*str);
 				*str = tmp3;
-				//printf("tmp: |%s| valor: |%s|\n", tmp, value);
-				//printf("|%s|\n", *str);
-				//printf("&str[end]: |%s|\n", &str[end]);
-				free(check);
 				free(tmp);
 				free(tmp2);
 			}
+			else
+			{
+				tmp = ft_substr(*str, 0, start - 1);
+				tmp2 = ft_strjoin(tmp, &(*str)[end]);
+				free(*str);
+				*str = tmp2;
+				free(tmp);
+			}
+			free(check);
+			start--;
 		}
 		start++;
 	}
