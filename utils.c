@@ -6,11 +6,25 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 12:46:34 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 14:41:38 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más sitios!! 
+{
+	t_list *list;
+
+	list = *env_head;
+	while (list)
+	{
+		if (!ft_strcmp(str, ((t_env*)list->content)->id))
+			return (((t_env*)list->content)->value);
+		list = list->next;
+	}
+	return (NULL);
+}
 
 int	is_space_quote_redir_or_endofcmd(char c)
 {
@@ -30,7 +44,7 @@ int	is_space_redir_or_endofcmd(char c)
 		return (0);
 }
 
-int is_args_empty(t_cmd *com)
+int filter_empty_args(t_cmd *com)
 {
 	char	**tmp;
 	int		i;
@@ -44,8 +58,9 @@ int is_args_empty(t_cmd *com)
 			j++;
 		i++;
 	}
-	tmp = malloc(j * sizeof(char *)); //FIXME: gesttionar errores
-
+	tmp = malloc(j * sizeof(char *));
+	if (!tmp)
+		return (0);
 	i = 0;
 	j = 0;
 	while (i < com->n_args)
@@ -53,6 +68,8 @@ int is_args_empty(t_cmd *com)
 		if (com->args[i][0] != '\0')
 		{
 			tmp[j] = ft_strdup(com->args[i]);
+			if (!tmp[j])
+				return (0);
 			j++;
 		}
 		free(com->args[i]);

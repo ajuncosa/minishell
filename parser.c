@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 13:05:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 14:20:45 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,7 +367,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 		if (!(com = malloc(sizeof(t_cmd))))
 			ft_exit(env_head, &cmd_head, user);
 		new->content = com;
-		
+
 		// INICIALIZAR COSAS
 		((t_cmd*)new->content)->sep_0 = '0';
 		((t_cmd*)new->content)->sep_1 = '0';
@@ -418,9 +418,8 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 			ft_exit(env_head, &cmd_head, user);
 
 		// CREAR aRRay DE ARGS NUEVO EliMiNANDO LAS $ QUE nO EXISTEN
-		if (!is_args_empty((t_cmd*)new->content))
+		if (!filter_empty_args((t_cmd*)new->content))
 			ft_exit(env_head, &cmd_head, user);
-		
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
 			free(new);

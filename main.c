@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/22 12:32:46 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/03/29 14:40:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int		main(int argc, char **argv, char **envp)
 	char	str[1024];								//FIXME: 1024
 	char	**line;
 	char	*user;
+	char	*oldpwd;
 	t_list	*head;
 	t_list	*new;
 	t_list	*lst;
@@ -46,19 +47,21 @@ int		main(int argc, char **argv, char **envp)
 		free(line);
 		i++;
 	}
-	lst = head;
-	while (lst)
+
+	user = ft_strdup(is_in_env(&head, "USER"));
+	if (!user)
+		ft_exit(&head, NULL, NULL);
+	user_len = ft_strlen(user);
+
+	/*oldpwd = is_in_env(&head, "OLDPWD");
+	if (oldpwd)
 	{
-		if (!ft_strcmp(((t_env*)lst->content)->id, "USER"))
-		{
-			user_len = ft_strlen(((t_env*)lst->content)->value);
-			if (!(user = ft_strdup(((t_env*)lst->content)->value)))
-				ft_exit(&head, NULL, NULL);
-			break;
-		}
-		lst = lst->next;
-	}
-		lst = head;
+		free(oldpwd);
+		oldpwd = NULL;
+	printf("|%s|\n", is_in_env(&head, "OLDPWD"));
+
+	}*/
+	lst = head;
 	while (lst)
 	{
 		if (!ft_strcmp(((t_env*)lst->content)->id, "OLDPWD"))
@@ -69,6 +72,7 @@ int		main(int argc, char **argv, char **envp)
 		}
 		lst = lst->next;
 	}
+
 	ret = 0;
 	while (1)
 	{

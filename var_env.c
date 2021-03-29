@@ -6,25 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/29 12:47:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 14:22:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*is_in_env(t_list **env_head, char *str)  //TODO: esto se puede usar en más sitios
-{
-	t_list *list;
-
-	list = *env_head;
-	while (list)
-	{
-		if (!ft_strcmp(str, ((t_env*)list->content)->id))
-			return (((t_env*)list->content)->value);
-		list = list->next;
-	}
-	return (NULL);
-}
 
 int	dollar_finder(t_list **env_head, char **str, int ret)
 {
