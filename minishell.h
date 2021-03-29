@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 18:22:26 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 12:46:55 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,6 @@ int		redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, ch
 int		dollar_finder(t_list **env_head, char **str, int ret);
 int		is_space_quote_redir_or_endofcmd(char c);
 int		is_space_redir_or_endofcmd(char c);
+int		is_args_empty(t_cmd *com);
 
 #endif

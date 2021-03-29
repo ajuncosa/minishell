@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/26 15:15:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 12:47:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,7 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 		{
 			start++;
 			end = start;
-			while ((*str)[end] != ' ' && (*str)[end] != '"' && (*str)[end] != '\''
-			&& (*str)[end] != '$'
-			&& (*str)[end] != '>' && (*str)[end] != '<' && (*str)[end] != '\n'
-			&& (*str)[end] != ';' && (*str)[end] != '|' && (*str)[end] != '\0')
+			while (!is_space_quote_redir_or_endofcmd((*str)[end]) && (*str)[end] != '$')
 				end++;
 
 			check = ft_substr(*str, start, end - start);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 15:39:32 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/29 10:55:40 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_env(t_list **head, char **args)
 	int		i;
 
 	i = 0;
-	if (args != NULL)	// TODO: esto no es un error real, damos el error o simplemente lo dejamos que no haga nada?
+	if (args != NULL)
 	{
 		write(1, "env: too many arguments\n", 24);
 		return (1);
