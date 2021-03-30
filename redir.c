@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/26 17:58:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/30 13:19:01 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 	int		i;
 	t_redir	*redir;
 	int     fd;
-	int     pid;
+	//int     pid;
 	int		r;
 	char 	*sterr;
 

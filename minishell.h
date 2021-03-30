@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 14:21:48 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/30 13:15:29 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ typedef struct s_redir
 	char	*type;
 	char	*file;
 }			t_redir;
+
+char 	*user;
+pid_t	pid;
 
 int		ft_echo(t_cmd *com);
 int		ft_env(t_list **head, char **args);

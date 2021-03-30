@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 14:20:45 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/30 13:57:22 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char **envp)
 {
 	int		fd[2];
-	int		pid;
+	//int		pid;
 	int		fd_read;
 	t_list	*lst;
 	int		r;
@@ -441,7 +441,10 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 
 	//HACER  COMANDOS
 	r = cmd_manager(&cmd_head, env_head, ret, user, envp);
-	
+
+	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
+	pid = 0;
+
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&cmd_head, &del_lst_cmd);
 	return (r);

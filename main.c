@@ -6,11 +6,27 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 14:40:13 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/30 14:03:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+						//TODO: user es una variable global asi que ya no hace falta pasarsela a todas las funciones
+void sigfun(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, todo esto funciona mal :(
+{
+	if (pid == 0)
+	{
+		write(1, "\b\b", 2); // move cursor behind of ^C
+		write(1, "  ", 2); // remove ^C by printing spaces.
+		write(1, "\b\b", 2); // reset cursor pos
+		write(1, "\n\033[1;37m", 9);
+		write(1, user, ft_strlen(user));
+		write(1, "> ", 2);
+		write(1, "\033[0m", 4);
+	}
+	else if (pid > 0)
+		write(1, "\n", 1);
+}
 
 int		main(int argc, char **argv, char **envp)
 {
@@ -18,7 +34,7 @@ int		main(int argc, char **argv, char **envp)
 	int		ret;
 	char	str[1024];								//FIXME: 1024
 	char	**line;
-	char	*user;
+	//char	*user;
 	char	*oldpwd;
 	t_list	*head;
 	t_list	*new;
@@ -26,7 +42,7 @@ int		main(int argc, char **argv, char **envp)
 	t_env	*env;
 	size_t	user_len;
 
-
+	signal(SIGINT, sigfun);
 	write(1, "\e[1;1H\e[2J", 11);
 	printf("\033[1;36m                                         _       _       \n              _                         (_)     (_)      \n ____   ___ _| |_     ___  ___     ____  _ ____  _       \n|  _ \\ / _ (_   _)   /___)/ _ \\   |    \\| |  _ \\| |      \n| | | | |_| || |_   |___ | |_| |  | | | | | | | | |  _ _ _ \n|_| |_|\\___/  \\__)  (___/ \\___/   |_|_|_|_|_| |_|_| (_|_|_)\033[0m\n\n");
 
@@ -53,14 +69,6 @@ int		main(int argc, char **argv, char **envp)
 		ft_exit(&head, NULL, NULL);
 	user_len = ft_strlen(user);
 
-	/*oldpwd = is_in_env(&head, "OLDPWD");
-	if (oldpwd)
-	{
-		free(oldpwd);
-		oldpwd = NULL;
-	printf("|%s|\n", is_in_env(&head, "OLDPWD"));
-
-	}*/
 	lst = head;
 	while (lst)
 	{

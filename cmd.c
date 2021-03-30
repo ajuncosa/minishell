@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/29 11:56:49 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/03/30 13:45:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	ft_cmd(t_cmd *com, t_list **env_head, char **envp, t_list **cmd_head, char *
 	int 	i;
 	int		j;
 	t_list	*lst;
-	pid_t	pid;
+	//pid_t	pid;
 	char	*path;
 	char	**argv;
 	char	*sterr;
