@@ -6,18 +6,41 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 14:55:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 16:44:34 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
-{ //TODO: id con comillas: espacios no válidos (e.g. "hola que"=algo)
+int	export_errors(char *str)
+{
+	int i;
+
+	i = 0;
+	if (!ft_isalpha(str[0]))
+	{
+		write(1, "Error: not a valid identifier\n", 31);
+		return (0);
+	}
+	while (str[i] != '=' && str[i] != '\0')
+	{
+		if (str[i] == ' ')
+		{
+			write(1, "Error: not a valid identifier\n", 31);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	ft_export(t_data data, t_cmd *com)
+{
 	t_list	*new;
 	t_list	*list;
 	t_env	*env;
 	int		i;
+	int		j;
 	int		len_id;
 	int		len_v;
 	int		flag;
@@ -26,7 +49,7 @@ int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
 	r = 0;
 	if (com->args == NULL)
 	{
-		list = *env_head;
+		list = data.env_head;
 		while (list)
 		{
 			if (((t_env*)list->content)->value)
@@ -43,16 +66,16 @@ int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
 		flag = 0;
 		len_id = 0;
 		len_v = 0;
-		if (!ft_isalpha(com->args[i][0]))
+
+		if (!export_errors(com->args[i]))
 		{
-			write(1, "Error: not an identifier\n", 25);
 			i++;
 			r = 1;
 			continue ;
 		}
 		if (!ft_strchr(com->args[i], '='))
 		{
-			list = *env_head;
+			list = data.env_head;
 			while (list)
 			{
 				if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
@@ -66,16 +89,16 @@ int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
 			{
 				new = malloc(sizeof(t_list));
 				if (!new)
-					ft_exit(env_head, cmd_head, user);
+					ft_exit(data);
 				env = malloc(sizeof(t_env));
 				if (!new)
-					ft_exit(env_head, cmd_head, user);
+					ft_exit(data);
 				new->content = env;
 				((t_env*)new->content)->id = ft_strdup(com->args[i]);
 				if (!((t_env*)new->content)->id)
-					ft_exit(env_head, cmd_head, user);
+					ft_exit(data);
 				((t_env*)new->content)->value = NULL;
-				ft_lstadd_back(env_head, new);
+				ft_lstadd_back(&data.env_head, new);
 			}
 			i++;
 			continue ;
@@ -83,7 +106,7 @@ int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
 		while (com->args[i][len_id] != '=')
 			len_id++;
 		len_v = ft_strlen(&com->args[i][len_id + 1]);
-		list = *env_head;
+		list = data.env_head;
 		while (list)
 		{
 			if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], len_id))
@@ -99,18 +122,18 @@ int	ft_export(t_list **env_head, t_list **cmd_head, t_cmd *com, char *user)
 		{
 			new = malloc(sizeof(t_list));
 			if (!new)
-				ft_exit(env_head, cmd_head, user);
+				ft_exit(data);
 			env = malloc(sizeof(t_env));
 			if (!env)
-				ft_exit(env_head, cmd_head, user);
+				ft_exit(data);
 			new->content = env;
 			((t_env *)new->content)->id = ft_substr(com->args[i], 0, len_id);
 			if (!((t_env *)new->content)->id)
-				ft_exit(env_head, cmd_head, user);
+				ft_exit(data);
 			((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
 			if (!((t_env *)new->content)->value)
-				ft_exit(env_head, cmd_head, user);
-			ft_lstadd_back(env_head, new);
+				ft_exit(data);
+			ft_lstadd_back(&data.env_head, new);
 		}
 		i++;
 	}

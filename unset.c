@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/26 15:37:18 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 16:48:33 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_unset(t_list **head, t_cmd *com)
+int	ft_unset(t_data data, t_cmd *com)
 {
 	t_list	*prev;
 	t_list	*list;
@@ -21,14 +21,14 @@ int	ft_unset(t_list **head, t_cmd *com)
 	i = 0;
 	while (i < com->n_args)
 	{
-		list = *head;
+		list = data.env_head;
 		while (list)
 		{
 			if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
 			{
-				if (list == *head)
+				if (list == data.env_head)
 				{
-					*head = list->next;
+					data.env_head = list->next;
 					ft_lstdelone(list, &del_lst);
 				}
 				else

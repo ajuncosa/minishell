@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/30 13:57:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 17:02:48 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int		count_args(char *str)
 	return (n_args);
 }
 
-int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head, int ret)
+int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 {
 	int		end;
 	int		space;
@@ -150,7 +150,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
-				if (!dollar_finder(env_head, &tmp1, ret))
+				if (!dollar_finder(&data.env_head, &tmp1, data.ret))
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				if (!tmp2)
@@ -163,7 +163,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(env_head, &args[n], ret))
+				if (!dollar_finder(&data.env_head, &args[n], data.ret))
 					return (0);
 			}
 			*start = end + 1;
@@ -212,7 +212,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
-				if (!dollar_finder(env_head, &tmp1, ret))	
+				if (!dollar_finder(&data.env_head, &tmp1, data.ret))	
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				if (!tmp2)
@@ -225,7 +225,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(env_head, &args[n], ret))
+				if (!dollar_finder(&data.env_head, &args[n], data.ret))
 					return (0);
 			}
 			*start = end;
@@ -244,7 +244,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_list **env_head
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp)
+int	cmd_caller(t_cmd *com, t_data data, char **envp)
 {
 	int len;
 
@@ -254,21 +254,21 @@ int	cmd_caller(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *
 	if (!ft_strcmp(com->cmd, "pwd"))
 		return(ft_pwd(com->args));
 	else if (!ft_strcmp(com->cmd, "export"))
-		return(ft_export(env_head, cmd_head, com, user));
+		return(ft_export(data, com));
 	else if (!ft_strcmp(com->cmd, "cd"))
-		return(ft_cd(com, user, env_head));
+		return(ft_cd(data, com));
 	else if (!ft_strcmp(com->cmd, "unset"))
-		return(ft_unset(env_head, com));
+		return(ft_unset(data, com));
 	else if (!ft_strcmp(com->cmd, "env"))
-		return(ft_env(env_head, com->args));
+		return(ft_env(data, com->args));
 	else if (!ft_strcmp(com->cmd, "exit"))
-		ft_exit(env_head, cmd_head, user);
+		ft_exit(data);
 	else
-		return (ft_cmd(com, env_head, envp, cmd_head, user));
+		return (ft_cmd(com, envp, data));
 	return (0);
 }
 
-int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char **envp)
+int	cmd_manager(t_data data, char **envp)
 {
 	int		fd[2];
 	//int		pid;
@@ -277,16 +277,16 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 	int		r;
 	char	*sterr;
 
-	lst = *cmd_head;
+	lst = data.cmd_head;
 	fd_read = 0;
 	while (lst)
 	{
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
-				r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+				r = redir_manager(((t_cmd*)lst->content), data, envp);
 			else
-				r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+				r = cmd_caller(((t_cmd*)lst->content), data, envp);
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"
 		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 0 siempre (creo?)
@@ -303,9 +303,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+					r = redir_manager(((t_cmd*)lst->content), data, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+					r = cmd_caller(((t_cmd*)lst->content), data, envp);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -328,9 +328,9 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+					r = redir_manager(((t_cmd*)lst->content), data, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), env_head, cmd_head, ret, user, envp);
+					r = cmd_caller(((t_cmd*)lst->content), data, envp);
 				exit(0);
 			}
 			else if (pid < 0)
@@ -348,24 +348,24 @@ int	cmd_manager(t_list **cmd_head, t_list **env_head, int ret, char *user, char 
 	return (r);
 }
 
-int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
+int		parser(t_data data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <} {=>}
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
-	t_list	*cmd_head;
+	//t_list	*cmd_head;
 	t_list	*new;
 	t_cmd	*com;
 	int		r;
 
 	i = 0;
-	cmd_head = NULL;
+	//data.cmd_head = NULL;
 	while (str[i] != '\n')
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(env_head, &cmd_head, user);
+			ft_exit(data);
 		if (!(com = malloc(sizeof(t_cmd))))
-			ft_exit(env_head, &cmd_head, user);
+			ft_exit(data);
 		new->content = com;
 
 		// INICIALIZAR COSAS
@@ -399,7 +399,7 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
 		{
-			ft_lstclear(&cmd_head, &del_lst_cmd);
+			ft_lstclear(&data.cmd_head, &del_lst_cmd);
 			return (0);
 		}
 		if (((t_cmd*)new->content)->n_args == 0)
@@ -411,15 +411,15 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
-				ft_exit(env_head, &cmd_head, user);
+				ft_exit(data);
 		}
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, env_head, ret)))
-			ft_exit(env_head, &cmd_head, user);
+		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
+			ft_exit(data);
 
 		// CREAR aRRay DE ARGS NUEVO EliMiNANDO LAS $ QUE nO EXISTEN
 		if (!filter_empty_args((t_cmd*)new->content))
-			ft_exit(env_head, &cmd_head, user);
+			ft_exit(data);
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
 			free(new);
@@ -429,23 +429,23 @@ int		parser(char *str, t_list **env_head, int ret, char *user, char **envp)
 
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd((t_cmd*)new->content))
-			ft_exit(env_head, &cmd_head, user);
+			ft_exit(data);
 
 		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')
 			 ((t_cmd*)new->content)->sep_1 = str[i];
 
 		//GUARDAR COMANDO EN LISTA
-		ft_lstadd_back(&cmd_head, new);
+		ft_lstadd_back(&data.cmd_head, new);
 	}
 
 	//HACER  COMANDOS
-	r = cmd_manager(&cmd_head, env_head, ret, user, envp);
+	r = cmd_manager(data, envp);
 
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = 0;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	ft_lstclear(&cmd_head, &del_lst_cmd);
+	ft_lstclear(&data.cmd_head, &del_lst_cmd);
 	return (r);
 }

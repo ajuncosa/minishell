@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/30 13:19:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 16:59:42 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	**arg_cleaner(t_cmd *com, t_redir **redir)
 	return(new);
 }
 
-int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, char *user, char **envp)
+int redir_manager(t_cmd *com, t_data data, char **envp)
 {
 	char	**new;
 	int		i;
@@ -100,7 +100,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 
 	new = arg_cleaner(com, &redir);
 	if (!new)
-		ft_exit(env_head, cmd_head, user);
+		ft_exit(data);
 	free(com->args);
 	com->args = new;
 
@@ -121,7 +121,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			{
 				dup2(fd, STDOUT_FILENO);
 				close(fd);
-				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+				r = cmd_caller(com, data, envp);
 			}
 			exit(0);
 		}
@@ -149,7 +149,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			{
 				dup2(fd, STDOUT_FILENO);
 				close(fd);
-				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+				r = cmd_caller(com, data, envp);
 			}
 			exit(0);
 		}
@@ -177,7 +177,7 @@ int redir_manager(t_cmd *com, t_list **env_head, t_list **cmd_head, int ret, cha
 			{
 				dup2(fd, STDIN_FILENO);
 				close(fd);
-				r = cmd_caller(com, env_head, cmd_head, ret, user, envp);
+				r = cmd_caller(com, data, envp);
 			}
 			exit(0);
 		}

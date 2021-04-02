@@ -6,19 +6,19 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 15:25:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 16:47:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int    ft_cd(t_cmd *com, char *user, t_list **env_head)
+int    ft_cd(t_data data, t_cmd *com)
 {
 	char	*path;
 	t_list	*list;
 	char	*sterr;
 
-	list = *env_head;
+	list = data.env_head;
 	while (list)
 	{
 		if (!ft_strcmp(((t_env*)list->content)->id, "OLDPWD"))
@@ -47,7 +47,7 @@ int    ft_cd(t_cmd *com, char *user, t_list **env_head)
 		write(2, "\n", 1);
 		return (1);
 	}
-	list = *env_head;
+	list = data.env_head;
 	while (list)
 	{
 		if (!ft_strcmp(((t_env*)list->content)->id, "PWD"))

@@ -1,4 +1,41 @@
 
+// exit version 2.0 (funciona?)
+void	ft_exit(t_cmd *com, int ret, t_list **env_head, t_list **cmd_head, char *user)
+{
+	int	i;
+	int	r;
+
+	if (!ft_strcmp(com->cmd, "exit"))
+	{
+		if (com->n_args > 1)
+		{
+			printf("exit: too many arguments\n");
+			ret = 1;
+			return ;
+		}
+		if (com->n_args > 0)
+		{
+			i = 0;
+			r = ft_atoi(com->args[0]);
+			while(com->args[0][i])
+			{
+				if (!ft_isdigit(com->args[0][i]))
+				{
+					printf("exit: %s: numeric argument required\n", com->args[0]);
+					r = 255;
+					break ;
+				}
+				i++;
+			}
+		}
+	}
+	if (user)
+		free(user);
+	ft_lstclear(cmd_head, &del_lst_cmd);
+	ft_lstclear(env_head, &del_lst);
+	exit(r);
+}
+
 // para multiline en el echo
 char	*dquote(char *str)
 {

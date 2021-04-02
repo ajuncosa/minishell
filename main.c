@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/30 14:03:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/02 16:26:11 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,45 +31,52 @@ void sigfun(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, t
 int		main(int argc, char **argv, char **envp)
 {
 	int		i;
-	int		ret;
+	//int		ret;
 	char	str[1024];								//FIXME: 1024
 	char	**line;
 	//char	*user;
 	char	*oldpwd;
-	t_list	*head;
+	//t_list	*head;
 	t_list	*new;
 	t_list	*lst;
 	t_env	*env;
 	size_t	user_len;
+	t_data	data;
 
 	signal(SIGINT, sigfun);
 	write(1, "\e[1;1H\e[2J", 11);
 	printf("\033[1;36m                                         _       _       \n              _                         (_)     (_)      \n ____   ___ _| |_     ___  ___     ____  _ ____  _       \n|  _ \\ / _ (_   _)   /___)/ _ \\   |    \\| |  _ \\| |      \n| | | | |_| || |_   |___ | |_| |  | | | | | | | | |  _ _ _ \n|_| |_|\\___/  \\__)  (___/ \\___/   |_|_|_|_|_| |_|_| (_|_|_)\033[0m\n\n");
 
+	/*data = malloc(sizeof(t_data));
+	if (!data)
+		ft_exit(data);
+	*/
+	data.cmd_head = NULL;
+	user = NULL;
 	i = 0;
-	head = NULL;
+	data.env_head = NULL;
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(&head, NULL, NULL);
+			ft_exit(data);
 		if (!(env = malloc(sizeof(t_env))))
-			ft_exit(&head, NULL, NULL);
+			ft_exit(data);
 		if (!(line = ft_split(envp[i], '=')))
-			ft_exit(&head, NULL, NULL);
+			ft_exit(data);
 		new->content = env;
 		((t_env*)new->content)->id = line[0];
 		((t_env*)new->content)->value = line[1];
-		ft_lstadd_back(&head, new);
+		ft_lstadd_back(&data.env_head, new);
 		free(line);
 		i++;
 	}
 
-	user = ft_strdup(is_in_env(&head, "USER"));
+	user = ft_strdup(is_in_env(&data.env_head, "USER"));
 	if (!user)
-		ft_exit(&head, NULL, NULL);
+		ft_exit(data);
 	user_len = ft_strlen(user);
 
-	lst = head;
+	lst = data.env_head;
 	while (lst)
 	{
 		if (!ft_strcmp(((t_env*)lst->content)->id, "OLDPWD"))
@@ -81,7 +88,7 @@ int		main(int argc, char **argv, char **envp)
 		lst = lst->next;
 	}
 
-	ret = 0;
+	data.ret = 0;
 	while (1)
 	{
 		write(1, "\033[1;37m", 7);
@@ -89,10 +96,10 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		if (read(0, str, 1023) == -1)
-			ft_exit(&head, NULL, user);
-		ret = parser(str, &head, ret, user, envp);
+			ft_exit(data);
+		data.ret = parser(data, str, envp);
 		ft_bzero(str, 1023);
 	}
-	ft_exit(&head, NULL, user);
+	ft_exit(data);
 	return (0);
 }
