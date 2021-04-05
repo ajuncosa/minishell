@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 13:28:22 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/05 14:08:45 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,7 @@ int	cmd_manager(t_data data, char **envp)
 }
 
 int		parser(t_data data, char *str, char **envp)
-{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {<  <} {=>}
+{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {=>}
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	//t_list	*cmd_head;

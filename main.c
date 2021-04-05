@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 12:04:33 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/05 14:17:05 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,11 @@ int		main(int argc, char **argv, char **envp)
 
 	user = ft_strdup(is_in_env(&data.env_head, "USER"));
 	if (!user)
-		ft_exit(data, NULL);
+	{
+		user = ft_strdup("michael-s");
+		if (!user)
+			ft_exit(data, NULL);
+	}
 	user_len = ft_strlen(user);
 
 	lst = data.env_head;
