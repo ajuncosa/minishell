@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 16:47:32 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 20:58:01 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ int    ft_cd(t_data data, t_cmd *com)
 		}
 		list = list->next;
 	}
-	if (com->args == NULL)
+	if (com->args == NULL || !ft_strcmp(com->args[0], "~"))
 	{
 		path = ft_strjoin("/Users/", user);
 		if (chdir(path) == -1)
 		{
 			sterr = strerror(errno);
+			write(2, "cd: ", 5);
 			write(2, sterr, ft_strlen(sterr));
 			write(2, "\n", 1);
 		}
@@ -43,6 +44,7 @@ int    ft_cd(t_data data, t_cmd *com)
 	if (chdir(com->args[0]) == -1)
 	{
 		sterr = strerror(errno);
+		write(2, "cd: ", 5);
 		write(2, sterr, ft_strlen(sterr));
 		write(2, "\n", 1);
 		return (1);
