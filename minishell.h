@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 17:00:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 13:03:25 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ pid_t	pid;
 
 int		ft_echo(t_cmd *com);
 int		ft_env(t_data data, char **args);
-void	ft_exit(t_data data);
+int		ft_exit(t_data data, t_cmd *com);
 void	del_lst(void *env);
 void	del_lst_cmd(void *cmd);
 int		parser(t_data data, char *str, char **envp);

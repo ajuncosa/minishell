@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/02 16:59:42 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:08:38 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 
 	new = arg_cleaner(com, &redir);
 	if (!new)
-		ft_exit(data);
+		ft_exit(data, com);
 	free(com->args);
 	com->args = new;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 17:02:48 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 13:28:22 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ int	cmd_caller(t_cmd *com, t_data data, char **envp)
 	else if (!ft_strcmp(com->cmd, "env"))
 		return(ft_env(data, com->args));
 	else if (!ft_strcmp(com->cmd, "exit"))
-		ft_exit(data);
+		return(ft_exit(data, com));
 	else
 		return (ft_cmd(com, envp, data));
 	return (0);
@@ -363,9 +363,9 @@ int		parser(t_data data, char *str, char **envp)
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(data);
+			ft_exit(data, com);
 		if (!(com = malloc(sizeof(t_cmd))))
-			ft_exit(data);
+			ft_exit(data, com);
 		new->content = com;
 
 		// INICIALIZAR COSAS
@@ -411,15 +411,15 @@ int		parser(t_data data, char *str, char **envp)
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
-				ft_exit(data);
+				ft_exit(data, com);
 		}
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
-			ft_exit(data);
+			ft_exit(data, com);
 
 		// CREAR aRRay DE ARGS NUEVO EliMiNANDO LAS $ QUE nO EXISTEN
 		if (!filter_empty_args((t_cmd*)new->content))
-			ft_exit(data);
+			ft_exit(data, com);
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
 			free(new);
@@ -429,7 +429,7 @@ int		parser(t_data data, char *str, char **envp)
 
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd((t_cmd*)new->content))
-			ft_exit(data);
+			ft_exit(data, com);
 
 		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
 		if (str[i] == ';' || str[i] == '|')

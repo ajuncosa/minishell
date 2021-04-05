@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 16:25:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 13:52:38 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,39 +36,45 @@ void	del_lst_cmd(void *cmd)
 	free((t_cmd*)cmd);
 }
 
-void	ft_exit(t_data data)
+int		ft_exit(t_data data, t_cmd *com)
 {
-	/*int	i;
-	int	r;
+	int	i;
 
 	if (!ft_strcmp(com->cmd, "exit"))
 	{
+		printf("exit\n");
 		if (com->n_args > 1)
 		{
 			printf("exit: too many arguments\n");
-			ret = 1;
-			return ;
+			data.ret = 1;
+			return (data.ret);
 		}
 		if (com->n_args > 0)
 		{
 			i = 0;
-			r = ft_atoi(com->args[0]);
+			printf("%d\n", data.ret);
+			data.ret = ft_atoi(com->args[0]);
+			printf("%d\n", data.ret);
+			if (data.ret >= 256)
+				data.ret -= 256;
+			else if (data.ret < 0)
+				data.ret += 256;
 			while(com->args[0][i])
 			{
-				if (!ft_isdigit(com->args[0][i]))
+				if (!ft_isdigit(com->args[0][i]) && com->args[0][i] != '-')
 				{
 					printf("exit: %s: numeric argument required\n", com->args[0]);
-					r = 255;
+					data.ret = 255;
 					break ;
 				}
 				i++;
 			}
+
 		}
 	}
-	*/
 	if (user)
 		free(user);
 	ft_lstclear(&data.cmd_head, &del_lst_cmd);
 	ft_lstclear(&data.env_head, &del_lst);
-	exit(0);
+	exit(data.ret);
 }

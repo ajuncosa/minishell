@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/02 16:56:59 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:08:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_pathfinder(char *cmd, t_data data)
 			{
 				paths = ft_split(((t_env*)lst->content)->value, ':');
 				if (!paths)
-					ft_exit(data);
+					ft_exit(data, NULL);
 			}
 			break;
 		}
@@ -43,10 +43,10 @@ char	*ft_pathfinder(char *cmd, t_data data)
 		{
 			tmp = ft_strjoin(paths[i], "/");
 			if (!tmp)
-				ft_exit(data);
+				ft_exit(data, NULL);
 			joined = ft_strjoin(tmp, cmd);
 			if (!joined)
-				ft_exit(data);
+				ft_exit(data, NULL);
 			free(tmp);
 			lstat(joined, &stat);
 			if (S_ISREG(stat.st_mode))
@@ -89,17 +89,17 @@ int	ft_cmd(t_cmd *com, char **envp, t_data data)
 	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
 	argv = malloc((com->n_args + 2) * sizeof(char *));
 	if (!argv)
-		ft_exit(data);
+		ft_exit(data, com);
 	argv[0] = ft_strdup(com->cmd);
 	if (!argv[0])
-		ft_exit(data);
+		ft_exit(data, com);
 	i = 1;
 	j = 0;
 	while (j < com->n_args)
 	{
 		argv[i] = ft_strdup(com->args[j]);
 		if (!argv[i])
-			ft_exit(data);
+			ft_exit(data, com);
 		i++;
 		j++;
 	}

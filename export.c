@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 16:44:34 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:43:13 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ int	export_errors(char *str)
 	i = 0;
 	if (!ft_isalpha(str[0]))
 	{
-		write(1, "Error: not a valid identifier\n", 31);
+		printf("export: `%s': not a valid identifier\n", str);
 		return (0);
 	}
 	while (str[i] != '=' && str[i] != '\0')
 	{
 		if (str[i] == ' ')
 		{
-			write(1, "Error: not a valid identifier\n", 31);
+			printf("export: `%s': not a valid identifier\n", str);
 			return (0);
 		}
 		i++;
@@ -89,14 +89,14 @@ int	ft_export(t_data data, t_cmd *com)
 			{
 				new = malloc(sizeof(t_list));
 				if (!new)
-					ft_exit(data);
+					ft_exit(data, com);
 				env = malloc(sizeof(t_env));
 				if (!new)
-					ft_exit(data);
+					ft_exit(data, com);
 				new->content = env;
 				((t_env*)new->content)->id = ft_strdup(com->args[i]);
 				if (!((t_env*)new->content)->id)
-					ft_exit(data);
+					ft_exit(data, com);
 				((t_env*)new->content)->value = NULL;
 				ft_lstadd_back(&data.env_head, new);
 			}
@@ -122,17 +122,17 @@ int	ft_export(t_data data, t_cmd *com)
 		{
 			new = malloc(sizeof(t_list));
 			if (!new)
-				ft_exit(data);
+				ft_exit(data, com);
 			env = malloc(sizeof(t_env));
 			if (!env)
-				ft_exit(data);
+				ft_exit(data, com);
 			new->content = env;
 			((t_env *)new->content)->id = ft_substr(com->args[i], 0, len_id);
 			if (!((t_env *)new->content)->id)
-				ft_exit(data);
+				ft_exit(data, com);
 			((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
 			if (!((t_env *)new->content)->value)
-				ft_exit(data);
+				ft_exit(data, com);
 			ft_lstadd_back(&data.env_head, new);
 		}
 		i++;

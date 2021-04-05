@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 16:26:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/05 12:04:33 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ int		main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(data);
+			ft_exit(data, NULL);
 		if (!(env = malloc(sizeof(t_env))))
-			ft_exit(data);
+			ft_exit(data, NULL);
 		if (!(line = ft_split(envp[i], '=')))
-			ft_exit(data);
+			ft_exit(data, NULL);
 		new->content = env;
 		((t_env*)new->content)->id = line[0];
 		((t_env*)new->content)->value = line[1];
@@ -73,7 +73,7 @@ int		main(int argc, char **argv, char **envp)
 
 	user = ft_strdup(is_in_env(&data.env_head, "USER"));
 	if (!user)
-		ft_exit(data);
+		ft_exit(data, NULL);
 	user_len = ft_strlen(user);
 
 	lst = data.env_head;
@@ -96,10 +96,10 @@ int		main(int argc, char **argv, char **envp)
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		if (read(0, str, 1023) == -1)
-			ft_exit(data);
+			ft_exit(data, NULL);
 		data.ret = parser(data, str, envp);
 		ft_bzero(str, 1023);
 	}
-	ft_exit(data);
+	ft_exit(data, NULL);
 	return (0);
 }
