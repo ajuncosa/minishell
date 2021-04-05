@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 14:17:05 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/05 16:35:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-						//TODO: user es una variable global asi que ya no hace falta pasarsela a todas las funciones
+
 void sigfun(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, todo esto funciona mal :(
 {
 	if (pid == 0)
@@ -41,16 +41,12 @@ int		main(int argc, char **argv, char **envp)
 	t_list	*lst;
 	t_env	*env;
 	size_t	user_len;
-	t_data	data;
+	t_data	data;		//TODO: a lo mejor queremos cambiar todos los returns y utilizar el data.ret en todas las funciones?? se podría??
 
 	signal(SIGINT, sigfun);
 	write(1, "\e[1;1H\e[2J", 11);
 	printf("\033[1;36m                                         _       _       \n              _                         (_)     (_)      \n ____   ___ _| |_     ___  ___     ____  _ ____  _       \n|  _ \\ / _ (_   _)   /___)/ _ \\   |    \\| |  _ \\| |      \n| | | | |_| || |_   |___ | |_| |  | | | | | | | | |  _ _ _ \n|_| |_|\\___/  \\__)  (___/ \\___/   |_|_|_|_|_| |_|_| (_|_|_)\033[0m\n\n");
 
-	/*data = malloc(sizeof(t_data));
-	if (!data)
-		ft_exit(data);
-	*/
 	data.cmd_head = NULL;
 	user = NULL;
 	i = 0;

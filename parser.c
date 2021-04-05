@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 14:08:45 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/05 17:00:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,8 +288,8 @@ int	cmd_manager(t_data data, char **envp)
 			else
 				r = cmd_caller(((t_cmd*)lst->content), data, envp);
 		}
-		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"
-		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 0 siempre (creo?)
+		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
+		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 32766 (????)
 			pipe(fd);
 			pid = fork();
 			if (pid == 0)
@@ -349,16 +349,15 @@ int	cmd_manager(t_data data, char **envp)
 }
 
 int		parser(t_data data, char *str, char **envp)
-{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {=>}
+{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {=>}, si pones {>|} ignora el pipe (creo)
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
-	//t_list	*cmd_head;
 	t_list	*new;
 	t_cmd	*com;
 	int		r;
 
 	i = 0;
-	//data.cmd_head = NULL;
+	data.cmd_head = NULL;
 	while (str[i] != '\n')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -377,7 +376,7 @@ int		parser(t_data data, char *str, char **envp)
 		while (str[i] == ' ')
 			i++;
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
-		if (str[i] == ';' || str[i] == '|')
+		if (str[i] == ';' || str[i] == '|') 	//FIXME: toda esta gestión de errores tiene leaks porque no libero los comandos y eso
 		{
 			if (i > 0)
 				((t_cmd*)new->content)->sep_0 = str[i];
@@ -392,6 +391,11 @@ int		parser(t_data data, char *str, char **envp)
 			if (str[i] == ';' || str[i] == '|')
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				return (258);
+			}
+			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\n')
+			{
+				printf("Error: open pipe\n");
 				return (258);
 			}
 		}
