@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 20:58:01 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/06 13:14:23 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int    ft_cd(t_data data, t_cmd *com)
 		{
 			sterr = strerror(errno);
 			write(2, "cd: ", 5);
+			write(2, com->args[0], ft_strlen(com->args[0]));
+			write(2, ": ", 2);
 			write(2, sterr, ft_strlen(sterr));
 			write(2, "\n", 1);
 		}
@@ -45,6 +47,8 @@ int    ft_cd(t_data data, t_cmd *com)
 	{
 		sterr = strerror(errno);
 		write(2, "cd: ", 5);
+		write(2, com->args[0], ft_strlen(com->args[0]));
+		write(2, ": ", 2);
 		write(2, sterr, ft_strlen(sterr));
 		write(2, "\n", 1);
 		return (1);

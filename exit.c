@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 16:35:54 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/06 11:02:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ int		ft_exit(t_data data, t_cmd *com)
 			if (com->n_args > 0)
 			{
 				i = 0;
-				printf("%d\n", data.ret);
 				data.ret = ft_atoi(com->args[0]);
-				printf("%d\n", data.ret);
 				if (data.ret >= 256)
 					data.ret -= 256;
 				else if (data.ret < 0)
