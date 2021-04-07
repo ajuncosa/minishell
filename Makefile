@@ -12,7 +12,7 @@ SANITIZE = -g -fsanitize=address
 ${NAME}:	${OBJS}
 				make bonus -C libft/
 				cp libft/libft.a ${NAME}
-				${CC} ${SANITIZE} -L libft/ -lft $^ -o ${NAME}
+				${CC} -L libft/ -lft $^ -o ${NAME}
 
 all:		${NAME}
 
