@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/06 13:38:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/06 13:57:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 	free(com->args);
 	com->args = new;
 
-	i = 0; //TODO: cuando le pasas varias redirecciones
+	i = 0;
 	while (i < com->n_redir)
 	{
 
@@ -182,8 +182,8 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 			}
 			wait(NULL);
 		}
-		else if (!ft_strcmp(redir[i].type, "<"))
-		{
+		else if (!ft_strcmp(redir[i].type, "<")) //FIXME: si hay varias redirs de este tipo, en cuanto un archivo no existe, deja de comprobar el resto
+		{										// FIXME: si hay varias de estas seguidas, solo lee la del último
 			pid = fork();
 			if (pid == 0)
 			{
@@ -215,6 +215,8 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 			}
 			wait(&status);
 			data.ret = status / 256;
+			if (data.ret == 1)
+				break;
 		}
 		i++;
 	}
