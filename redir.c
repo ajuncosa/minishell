@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/06 13:57:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/07 16:28:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 	return(new);
 }
 
-int redir_manager(t_cmd *com, t_data data, char **envp)
-{
+int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a los archivos que no necesitemos??
+{															//FIXME: cuando haces echo hola > adios < que tal te escribe también en stdout
 	char	**new;
 	int		i;
 	t_redir	*redir;
@@ -100,11 +100,11 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 	int		r;
 	int		status;
 	char 	*sterr;
+	int		last_in;
+	int		last_out;
 
 	data.ret = 0;
 	count_redir(com);
-			//printf("%d\n", com->n_redir);
-
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
 		ft_exit(data, com);
@@ -114,10 +114,20 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 	free(com->args);
 	com->args = new;
 
+	last_in = -1;
+	last_out = -1;
 	i = 0;
 	while (i < com->n_redir)
 	{
-
+		if (!ft_strcmp(redir[i].type, ">") || !ft_strcmp(redir[i].type, ">>"))
+			last_out = i;
+		else if (!ft_strcmp(redir[i].type, "<"))
+			last_in = i;
+		i++;
+	}
+	i = 0;
+	while (i < com->n_redir)
+	{
 		if (!ft_strcmp(redir[i].type, ">")) // FIXME: cuando el comando no existe, eñ mensaje de error lo tiene que poner en la terminal, no meterlo en el archivo!
 		{
 			pid = fork();
@@ -132,7 +142,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 					write(2, sterr, ft_strlen(sterr));
 					write(2, "\n", 1);
 				}
-				if (com->cmd && i == (com->n_redir - 1))
+				if (com->cmd && i == last_out)
 				{
 					dup2(fd, STDOUT_FILENO);
 					close(fd);
@@ -164,7 +174,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 					write(2, sterr, ft_strlen(sterr));
 					write(2, "\n", 1);
 				}
-				if (com->cmd && i == (com->n_redir - 1))
+				if (com->cmd && i == last_out)
 				{
 					dup2(fd, STDOUT_FILENO);
 					close(fd);
@@ -182,8 +192,8 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 			}
 			wait(NULL);
 		}
-		else if (!ft_strcmp(redir[i].type, "<")) //FIXME: si hay varias redirs de este tipo, en cuanto un archivo no existe, deja de comprobar el resto
-		{										// FIXME: si hay varias de estas seguidas, solo lee la del último
+		else if (!ft_strcmp(redir[i].type, "<"))
+		{
 			pid = fork();
 			if (pid == 0)
 			{
@@ -197,7 +207,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 					write(2, "\n", 1);
 					exit (1);
 				}
-				if (com->cmd)
+				if (com->cmd && i == last_in)
 				{
 					dup2(fd, STDIN_FILENO);
 					close(fd);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/07 15:31:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/07 16:22:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,7 @@ int	cmd_manager(t_data data, char **envp)
 }
 
 int		parser(t_data data, char *str, char **envp)
-{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {=>}, si pones {>|} ignora el pipe (creo)
+{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*new;
