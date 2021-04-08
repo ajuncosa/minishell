@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/26 13:41:51 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/08 12:48:39 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	ft_echo(t_cmd *com)
 {
 	int	n;
 	int	i;
-	int j;
-	int k;
+	int	j;
+	int	k;
 
 	n = 0;
 	i = 0;
@@ -40,7 +40,7 @@ int	ft_echo(t_cmd *com)
 		else
 		{
 			i = j;
-			break;
+			break ;
 		}
 		j++;
 	}

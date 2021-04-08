@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/02 16:49:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/06 19:46:30 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ int	ft_env(t_data data, char **args)
 	i = 0;
 	if (args != NULL)
 	{
-		write(1, "env: too many arguments\n", 24);
+		write(2, "env: ", 6);
+		write(2, args[0], ft_strlen(args[0]));
+		write(2, ": ", 2);
+		write(2, "No such file or directory\n", 27);
 		return (1);
 	}
 	lst = data.env_head;

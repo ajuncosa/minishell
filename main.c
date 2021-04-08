@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 16:35:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/08 13:33:50 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,9 @@ int		main(int argc, char **argv, char **envp)
 {
 	int		i;
 	//int		ret;
-	char	str[1024];								//FIXME: 1024
+	//char	str[1024];								//FIXME: 1024
 	char	**line;
+	char	*str;
 	//char	*user;
 	char	*oldpwd;
 	//t_list	*head;
@@ -41,6 +42,7 @@ int		main(int argc, char **argv, char **envp)
 	t_list	*lst;
 	t_env	*env;
 	size_t	user_len;
+	char	*tmp;
 	t_data	data;		//TODO: a lo mejor queremos cambiar todos los returns y utilizar el data.ret en todas las funciones?? se podría??
 
 	signal(SIGINT, sigfun);
@@ -95,10 +97,17 @@ int		main(int argc, char **argv, char **envp)
 		write(1, user, user_len);
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
+		/*
 		if (read(0, str, 1023) == -1)
 			ft_exit(data, NULL);
+		*/
+		get_next_line(0, &str);
+		tmp = str;
+		str = ft_strjoin(str, "\n");
+		free(tmp);
 		data.ret = parser(data, str, envp);
-		ft_bzero(str, 1023);
+		//ft_bzero(str, 1023);
+		free(str);
 	}
 	ft_exit(data, NULL);
 	return (0);

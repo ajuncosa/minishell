@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/06 13:57:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/07 12:30:40 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 			wait(NULL);
 		}
 		else if (!ft_strcmp(redir[i].type, "<")) //FIXME: si hay varias redirs de este tipo, en cuanto un archivo no existe, deja de comprobar el resto
-		{										// FIXME: si hay varias de estas seguidas, solo lee la del último
+		{
 			pid = fork();
 			if (pid == 0)
 			{
@@ -197,7 +197,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)
 					write(2, "\n", 1);
 					exit (1);
 				}
-				if (com->cmd)
+				if (com->cmd && i == (com->n_redir - 1))
 				{
 					dup2(fd, STDIN_FILENO);
 					close(fd);

@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 13:03:25 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/07 11:54:14 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <fcntl.h>
 # include <signal.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include "gnl/get_next_line.h"
 # include "libft/libft.h"
 

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/06 13:14:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/08 12:44:34 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int    ft_cd(t_data data, t_cmd *com)
+int	ft_cd(t_data data, t_cmd *com)
 {
 	char	*path;
 	t_list	*list;
