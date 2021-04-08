@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 17:00:36 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/07 16:22:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,7 @@ int	cmd_manager(t_data data, char **envp)
 }
 
 int		parser(t_data data, char *str, char **envp)
-{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {=>}, si pones {>|} ignora el pipe (creo)
+{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*new;
@@ -375,27 +375,36 @@ int		parser(t_data data, char *str, char **envp)
 
 		while (str[i] == ' ')
 			i++;
+
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
-		if (str[i] == ';' || str[i] == '|') 	//FIXME: toda esta gestión de errores tiene leaks porque no libero los comandos y eso
+		if (str[i] == ';' || str[i] == '|')
 		{
-			if (i > 0)
-				((t_cmd*)new->content)->sep_0 = str[i];
-			else if (i == 0 && (str[i] == '|' || str[i] == ';'))	//FIXME: si el signo es el primero de la línea pero tiene espacios delante, necesita dar error también
+			if (!data.cmd_head)
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				free(new);
+				free(com);
 				return (258);
 			}
+			else
+				((t_cmd*)new->content)->sep_0 = str[i];
 			i++;
 			while (str[i] == ' ')
 				i++;
 			if (str[i] == ';' || str[i] == '|')
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				free(new);
+				free(com);
+				ft_lstclear(&data.cmd_head, &del_lst_cmd);
 				return (258);
 			}
 			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\n')
 			{
 				printf("Error: open pipe\n");
+				free(new);
+				free(com);
+				ft_lstclear(&data.cmd_head, &del_lst_cmd);
 				return (258);
 			}
 		}
@@ -403,6 +412,8 @@ int		parser(t_data data, char *str, char **envp)
 		((t_cmd*)new->content)->n_args = count_args(&str[i]);
 		if (((t_cmd*)new->content)->n_args == -1)
 		{
+			free(new);
+			free(com);
 			ft_lstclear(&data.cmd_head, &del_lst_cmd);
 			return (0);
 		}
@@ -435,7 +446,7 @@ int		parser(t_data data, char *str, char **envp)
 		if (!find_cmd((t_cmd*)new->content))
 			ft_exit(data, com);
 
-		// GUARDAR sep_1									//TODO: si la línea acaba en | sin nada detrás se queda el pipe abierto (devolver un error como con las comillas)
+		// GUARDAR sep_1
 		if (str[i] == ';' || str[i] == '|')
 			 ((t_cmd*)new->content)->sep_1 = str[i];
 
