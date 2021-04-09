@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/06 19:46:30 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 12:58:45 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(t_data data, char **args)
+int	ft_env(t_data *data, char **args)
 {
 	t_list	*lst;
 	int		i;
@@ -26,7 +26,7 @@ int	ft_env(t_data data, char **args)
 		write(2, "No such file or directory\n", 27);
 		return (1);
 	}
-	lst = data.env_head;
+	lst = data->env_head;
 	while (lst)
 	{
 		if (((t_env*)lst->content)->value != NULL)

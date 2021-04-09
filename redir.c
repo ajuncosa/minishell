@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/08 14:09:53 by alvrodri         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:03:27 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 	return(new);
 }
 
-int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a los archivos que no necesitemos??
+int redir_manager(t_cmd *com, t_data *data, char **envp)		//TODO: hacer close a los archivos que no necesitemos??
 {															//FIXME: cuando haces echo hola > adios < que tal te escribe también en stdout
 	char	**new;
 	int		i;
@@ -103,7 +103,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a l
 	int		last_in;
 	int		last_out;
 
-	data.ret = 0;
+	data->ret = 0;
 	count_redir(com);
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
@@ -192,11 +192,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a l
 			}
 			wait(NULL);
 		}
-<<<<<<< HEAD
-		else if (!ft_strcmp(redir[i].type, "<")) //FIXME: si hay varias redirs de este tipo, en cuanto un archivo no existe, deja de comprobar el resto
-=======
 		else if (!ft_strcmp(redir[i].type, "<"))
->>>>>>> 84228646f9b78bbf19abe8cacdc43d7d3ff3280e
 		{
 			pid = fork();
 			if (pid == 0)
@@ -211,11 +207,7 @@ int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a l
 					write(2, "\n", 1);
 					exit (1);
 				}
-<<<<<<< HEAD
-				if (com->cmd && i == (com->n_redir - 1))
-=======
 				if (com->cmd && i == last_in)
->>>>>>> 84228646f9b78bbf19abe8cacdc43d7d3ff3280e
 				{
 					dup2(fd, STDIN_FILENO);
 					close(fd);
@@ -232,8 +224,8 @@ int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a l
 				write(2, "\n", 1);
 			}
 			wait(&status);
-			data.ret = status / 256;
-			if (data.ret == 1)
+			data->ret = status / 256;
+			if (data->ret == 1)
 				break;
 		}
 		i++;
@@ -246,5 +238,5 @@ int redir_manager(t_cmd *com, t_data data, char **envp)		//TODO: hacer close a l
 		i++;
 	}
 	free(redir);
-	return(data.ret);
+	return(data->ret);
 }

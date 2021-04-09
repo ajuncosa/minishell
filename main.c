@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/08 13:33:50 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:03:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ int		main(int argc, char **argv, char **envp)
 	while (envp[i])
 	{
 		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(data, NULL);
+			ft_exit(&data, NULL);
 		if (!(env = malloc(sizeof(t_env))))
-			ft_exit(data, NULL);
+			ft_exit(&data, NULL);
 		if (!(line = ft_split(envp[i], '=')))
-			ft_exit(data, NULL);
+			ft_exit(&data, NULL);
 		new->content = env;
 		((t_env*)new->content)->id = line[0];
 		((t_env*)new->content)->value = line[1];
@@ -74,7 +74,7 @@ int		main(int argc, char **argv, char **envp)
 	{
 		user = ft_strdup("michael-s");
 		if (!user)
-			ft_exit(data, NULL);
+			ft_exit(&data, NULL);
 	}
 	user_len = ft_strlen(user);
 
@@ -101,14 +101,14 @@ int		main(int argc, char **argv, char **envp)
 		if (read(0, str, 1023) == -1)
 			ft_exit(data, NULL);
 		*/
-		get_next_line(0, &str);
+		get_next_line(0, &str);		//TODO: revisar buffersize??
 		tmp = str;
-		str = ft_strjoin(str, "\n");
+		str = ft_strjoin(str, "\n");			//TODO: cambiar el parseador, quitar \n
 		free(tmp);
-		data.ret = parser(data, str, envp);
+		data.ret = parser(&data, str, envp);
 		//ft_bzero(str, 1023);
 		free(str);
 	}
-	ft_exit(data, NULL);
+	ft_exit(&data, NULL);
 	return (0);
 }

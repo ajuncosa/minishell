@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/08 12:44:34 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:01:22 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_cd(t_data data, t_cmd *com)
+int	ft_cd(t_data *data, t_cmd *com)
 {
 	char	*path;
 	t_list	*list;
 	char	*sterr;
 
-	list = data.env_head;
+	list = data->env_head;
 	while (list)
 	{
 		if (!ft_strcmp(((t_env*)list->content)->id, "OLDPWD"))
@@ -53,7 +53,7 @@ int	ft_cd(t_data data, t_cmd *com)
 		write(2, "\n", 1);
 		return (1);
 	}
-	list = data.env_head;
+	list = data->env_head;
 	while (list)
 	{
 		if (!ft_strcmp(((t_env*)list->content)->id, "PWD"))

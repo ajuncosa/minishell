@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/05 12:08:18 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:08:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_pathfinder(char *cmd, t_data data)
+char	*ft_pathfinder(char *cmd, t_data *data)
 {
 	t_list		*lst;
 	char		**paths;
@@ -20,8 +20,8 @@ char	*ft_pathfinder(char *cmd, t_data data)
 	char		*tmp;
 	int			i;
 	struct stat	stat;
-
-	lst = data.env_head;
+	
+	lst = data->env_head;
 	while (lst)
 	{
 		if (!ft_strcmp(((t_env*)lst->content)->id, "PATH"))
@@ -74,7 +74,7 @@ char	*ft_pathfinder(char *cmd, t_data data)
 	return (NULL);
 }
 
-int	ft_cmd(t_cmd *com, char **envp, t_data data)
+int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 {
 	int 	i;
 	int		j;

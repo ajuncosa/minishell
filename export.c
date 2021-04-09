@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/05 12:43:13 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:08:50 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,15 @@ int	export_errors(char *str)
 	int i;
 
 	i = 0;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]))		// FIXME: una barrabaja sí la puede tener!! 
+		{
+			printf("unset: `%s': not a valid identifier\n", str);	//FIXME: estos errores los tiene que buscar en el id, no en toda la string!!! 
+			return (0);
+		}
+		i++;
+	}
 	if (!ft_isalpha(str[0]))
 	{
 		printf("export: `%s': not a valid identifier\n", str);
@@ -34,7 +43,7 @@ int	export_errors(char *str)
 	return (1);
 }
 
-int	ft_export(t_data data, t_cmd *com)
+int	ft_export(t_data *data, t_cmd *com)
 {
 	t_list	*new;
 	t_list	*list;
@@ -49,7 +58,7 @@ int	ft_export(t_data data, t_cmd *com)
 	r = 0;
 	if (com->args == NULL)
 	{
-		list = data.env_head;
+		list = data->env_head;
 		while (list)
 		{
 			if (((t_env*)list->content)->value)
@@ -75,7 +84,7 @@ int	ft_export(t_data data, t_cmd *com)
 		}
 		if (!ft_strchr(com->args[i], '='))
 		{
-			list = data.env_head;
+			list = data->env_head;
 			while (list)
 			{
 				if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
@@ -98,7 +107,7 @@ int	ft_export(t_data data, t_cmd *com)
 				if (!((t_env*)new->content)->id)
 					ft_exit(data, com);
 				((t_env*)new->content)->value = NULL;
-				ft_lstadd_back(&data.env_head, new);
+				ft_lstadd_back(&data->env_head, new);
 			}
 			i++;
 			continue ;
@@ -106,7 +115,7 @@ int	ft_export(t_data data, t_cmd *com)
 		while (com->args[i][len_id] != '=')
 			len_id++;
 		len_v = ft_strlen(&com->args[i][len_id + 1]);
-		list = data.env_head;
+		list = data->env_head;
 		while (list)
 		{
 			if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], len_id))
@@ -133,7 +142,7 @@ int	ft_export(t_data data, t_cmd *com)
 			((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
 			if (!((t_env *)new->content)->value)
 				ft_exit(data, com);
-			ft_lstadd_back(&data.env_head, new);
+			ft_lstadd_back(&data->env_head, new);
 		}
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/07 11:54:14 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:03:55 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,19 @@ char 	*user;
 pid_t	pid;
 
 int		ft_echo(t_cmd *com);
-int		ft_env(t_data data, char **args);
-int		ft_exit(t_data data, t_cmd *com);
+int		ft_env(t_data *data, char **args);
+int		ft_exit(t_data *data, t_cmd *com);
 void	del_lst(void *env);
 void	del_lst_cmd(void *cmd);
-int		parser(t_data data, char *str, char **envp);
-int		cmd_caller(t_cmd *com, t_data data, char **envp);
+int		parser(t_data *data, char *str, char **envp);
+int		cmd_caller(t_cmd *com, t_data *data, char **envp);
 int		ft_pwd(char **args);
-int		ft_export(t_data data, t_cmd *com);
-int		ft_unset(t_data data, t_cmd *com);
-int		ft_cd(t_data data, t_cmd *com);
-int 	ft_cmd(t_cmd *com, char **envp, t_data data);
+int		ft_export(t_data *data, t_cmd *com);
+int		ft_unset(t_data *data, t_cmd *com);
+int		ft_cd(t_data *data, t_cmd *com);
+int 	ft_cmd(t_cmd *com, char **envp, t_data *data);
 int		check_if_redir(t_cmd *com);
-int		redir_manager(t_cmd *com, t_data data, char **envp);
+int		redir_manager(t_cmd *com, t_data *data, char **envp);
 int		dollar_finder(t_list **env_head, char **str, int ret);
 char	*is_in_env(t_list **env_head, char *str);
 int		is_space_quote_redir_or_endofcmd(char c);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/07 16:22:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:06:26 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int		count_args(char *str)
 	return (n_args);
 }
 
-int		save_args(char *str, int n_args, char **args, int *start, t_data data)
+int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 {
 	int		end;
 	int		space;
@@ -150,7 +150,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
-				if (!dollar_finder(&data.env_head, &tmp1, data.ret))
+				if (!dollar_finder(&data->env_head, &tmp1, data->ret))
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				if (!tmp2)
@@ -163,7 +163,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(&data.env_head, &args[n], data.ret))
+				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
 			}
 			*start = end + 1;
@@ -212,7 +212,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
-				if (!dollar_finder(&data.env_head, &tmp1, data.ret))	
+				if (!dollar_finder(&data->env_head, &tmp1, data->ret))	
 					return (0);
 				tmp2 = ft_strjoin(args[n], tmp1);
 				if (!tmp2)
@@ -225,7 +225,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-				if (!dollar_finder(&data.env_head, &args[n], data.ret))
+				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
 			}
 			*start = end;
@@ -244,7 +244,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data data)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_data data, char **envp)
+int	cmd_caller(t_cmd *com, t_data *data, char **envp)
 {
 	int len;
 
@@ -268,7 +268,7 @@ int	cmd_caller(t_cmd *com, t_data data, char **envp)
 	return (0);
 }
 
-int	cmd_manager(t_data data, char **envp)
+int	cmd_manager(t_data *data, char **envp)
 {
 	int		fd[2];
 	//int		pid;
@@ -277,7 +277,7 @@ int	cmd_manager(t_data data, char **envp)
 	int		r;
 	char	*sterr;
 
-	lst = data.cmd_head;
+	lst = data->cmd_head;
 	fd_read = 0;
 	while (lst)
 	{
@@ -286,7 +286,7 @@ int	cmd_manager(t_data data, char **envp)
 			if (check_if_redir(((t_cmd*)lst->content)))
 				r = redir_manager(((t_cmd*)lst->content), data, envp);
 			else
-				r = cmd_caller(((t_cmd*)lst->content), data, envp);
+				r = cmd_caller(((t_cmd*)lst->content), data, envp);			
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
 		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 32766 (????)
@@ -348,7 +348,7 @@ int	cmd_manager(t_data data, char **envp)
 	return (r);
 }
 
-int		parser(t_data data, char *str, char **envp)
+int		parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
@@ -357,7 +357,7 @@ int		parser(t_data data, char *str, char **envp)
 	int		r;
 
 	i = 0;
-	data.cmd_head = NULL;
+	data->cmd_head = NULL;
 	while (str[i] != '\n')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -379,7 +379,7 @@ int		parser(t_data data, char *str, char **envp)
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
 		if (str[i] == ';' || str[i] == '|')
 		{
-			if (!data.cmd_head)
+			if (!data->cmd_head)
 			{
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
 				free(new);
@@ -396,7 +396,7 @@ int		parser(t_data data, char *str, char **envp)
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
 				free(new);
 				free(com);
-				ft_lstclear(&data.cmd_head, &del_lst_cmd);
+				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				return (258);
 			}
 			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\n')
@@ -404,7 +404,7 @@ int		parser(t_data data, char *str, char **envp)
 				printf("Error: open pipe\n");
 				free(new);
 				free(com);
-				ft_lstclear(&data.cmd_head, &del_lst_cmd);
+				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				return (258);
 			}
 		}
@@ -414,7 +414,7 @@ int		parser(t_data data, char *str, char **envp)
 		{
 			free(new);
 			free(com);
-			ft_lstclear(&data.cmd_head, &del_lst_cmd);
+			ft_lstclear(&data->cmd_head, &del_lst_cmd);
 			return (0);
 		}
 		if (((t_cmd*)new->content)->n_args == 0)
@@ -451,16 +451,16 @@ int		parser(t_data data, char *str, char **envp)
 			 ((t_cmd*)new->content)->sep_1 = str[i];
 
 		//GUARDAR COMANDO EN LISTA
-		ft_lstadd_back(&data.cmd_head, new);
+		ft_lstadd_back(&data->cmd_head, new);
 	}
 
 	//HACER  COMANDOS
 	r = cmd_manager(data, envp);
-
+	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = 0;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	ft_lstclear(&data.cmd_head, &del_lst_cmd);
+	ft_lstclear(&data->cmd_head, &del_lst_cmd);
 	return (r);
 }
