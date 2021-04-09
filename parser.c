@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:06:26 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/09 14:06:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ int	cmd_manager(t_data *data, char **envp)
 				r = cmd_caller(((t_cmd*)lst->content), data, envp);			
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
-		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 32766 (????)
+		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 32766 (????) ESTAMOS INTENTANDO DEVOLVER LAS r DEL HIJO
 			pipe(fd);
 			pid = fork();
 			if (pid == 0)

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/09 13:08:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:56:45 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ char	*ft_pathfinder(char *cmd, t_data *data)
 	struct stat	stat;
 	
 	lst = data->env_head;
+	paths = NULL;
 	while (lst)
 	{
 		if (!ft_strcmp(((t_env*)lst->content)->id, "PATH"))

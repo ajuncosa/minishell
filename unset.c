@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/09 13:08:58 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/09 13:17:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@ int	unset_errors(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (!ft_isalnum(str[i]))	// FIXME: una barrabaja sí la puede tener!! 
+		if (!ft_isalnum(str[i]) && str[i] != '_')
 		{
 			printf("unset: `%s': not a valid identifier\n", str);
 			return (0);
 		}
 		i++;
 	}
-	if (!ft_isalpha(str[0]))
+	if (!ft_isalpha(str[0]) && str[0] != '_')
 	{
-		printf("export: `%s': not a valid identifier\n", str);
+		printf("unset: `%s': not a valid identifier\n", str);
 		return (0);
 	}
 	return (1);
