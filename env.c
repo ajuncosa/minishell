@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/12 13:12:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:34:33 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_env(t_data *data, char **args)
 	int		i;
 
 	i = 0;
-	if (args != NULL)
+	if (args != NULL)	//FIXME: redirs no cuentan como args
 	{
 		error_msn("env", NULL, "too many arguments");
 		return (1);

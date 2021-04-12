@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/12 13:31:38 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:41:56 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,9 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 	if (!new)
 		ft_exit(data, com);
 	free(com->args);
-	com->args = new;
-
+	com->args = NULL;
+	if (com->n_args > 0)
+		com->args = new;
 	last_in = -1;
 	last_out = -1;
 	fdin = -1;
