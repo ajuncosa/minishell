@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/03/29 14:41:38 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:00:07 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,24 @@ int filter_empty_args(t_cmd *com)
 		com->args = NULL;
 	}
 	return (1);
+}
+
+void	error_msn(char *cmd, char *str, char *txt)
+{
+	if (cmd && str && txt)
+	{
+		write(2, cmd, ft_strlen(cmd));
+		write(2, ": ", 2);
+		write(2, str, ft_strlen(str));
+		write(2, ": ", 2);
+		write(2, txt, ft_strlen(txt));
+		write(2, "\n", 1);
+	}
+	else if (cmd && txt)
+	{
+		write(2, cmd, ft_strlen(cmd));
+		write(2, ": ", 2);
+		write(2, txt, ft_strlen(txt));
+		write(2, "\n", 1);
+	}
 }

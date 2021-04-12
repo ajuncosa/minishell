@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/09 13:56:45 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:31:12 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		path = ft_pathfinder(com->cmd, data);
 		if (path == NULL)
 		{
-			printf("%s: command not found\n", com->cmd);
+			dup2(data->std_out, STDOUT_FILENO);
+			error_msn(com->cmd, NULL, "command not found");
 			i = 0;
 			while (argv[i])
 			{
@@ -132,17 +133,16 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	{
 		if (execve(com->cmd, argv, envp) == -1)
 		{
+			dup2(data->std_out, STDOUT_FILENO);
 			sterr = strerror(errno);
-			write(2, sterr, ft_strlen(sterr));
-			write(2, "\n", 1);
+			error_msn(com->cmd, NULL, sterr);
 		}
 		exit(127);
 	}
 	else if (pid < 0)
 	{
 		sterr = strerror(errno);
-		write(2, sterr, ft_strlen(sterr));
-		write(2, "\n", 1);
+		error_msn(NULL, NULL, sterr);
 	}
 	wait(&status);
 	exit_stat = WEXITSTATUS(status);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:25:35 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:15:47 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@ int	export_errors(char *str)
 	while (str[i] != '=' && str[i] != '\0')
 	{
 		if (!ft_isalnum(str[i]) && str[i] != '_')
-		{	printf("soy este\n");
-			printf("export: `%s': not a valid identifier\n", str);
+		{
+			error_msn("export", str, "not a valid identifier");
 			return (0);
 		}
 		i++;
 	}
 	if (!ft_isalpha(str[0]) && str[0] != '_')
 	{
-		printf("export: `%s': not a valid identifier\n", str);
+		error_msn("export", str, "not a valid identifier");
 		return (0);
 	}
 	return (1);

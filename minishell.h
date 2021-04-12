@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:57:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:00:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ typedef struct s_data
 	t_list	*cmd_head;
 	//char	*user;
 	int		ret;
+	int		std_in;
+	int 	std_out;
 }				t_data;
 
 
@@ -76,5 +78,6 @@ char	*is_in_env(t_list **env_head, char *str);
 int		is_space_quote_redir_or_endofcmd(char c);
 int		is_space_redir_or_endofcmd(char c);
 int		filter_empty_args(t_cmd *com);
+void	error_msn(char *cmd, char *str, char *txt);
 
 #endif

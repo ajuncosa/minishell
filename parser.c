@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 14:06:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:21:41 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,8 +311,7 @@ int	cmd_manager(t_data *data, char **envp)
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
-				write(2, sterr, ft_strlen(sterr));
-				write(2, "\n", 1);
+				error_msn(NULL, NULL, sterr);
 			}
 			wait(NULL);
 			if (fd_read)
@@ -336,8 +335,7 @@ int	cmd_manager(t_data *data, char **envp)
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
-				write(2, sterr, ft_strlen(sterr));
-				write(2, "\n", 1);
+				error_msn(NULL, NULL, sterr);
 			}
 			wait(NULL);
 			close(fd_read);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/09 13:56:52 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:31:38 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,14 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 	return(new);
 }
 
-int redir_manager(t_cmd *com, t_data *data, char **envp)		//TODO: hacer close a los archivos que no necesitemos??
-{															//FIXME: cuando haces echo hola > adios < que tal te escribe también en stdout
+int redir_manager(t_cmd *com, t_data *data, char **envp)
+{
 	char	**new;
 	int		i;
 	t_redir	*redir;
 	int     fd;
+	int 	fdin;
+	int		fdout;
 	//int     pid;
 	int		r;
 	int		status;
@@ -116,120 +118,85 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)		//TODO: hacer close a 
 
 	last_in = -1;
 	last_out = -1;
+	fdin = -1;
+	fdout = -1;
 	i = 0;
 	while (i < com->n_redir)
 	{
-		if (!ft_strcmp(redir[i].type, ">") || !ft_strcmp(redir[i].type, ">>"))
-			last_out = i;
-		else if (!ft_strcmp(redir[i].type, "<"))
-			last_in = i;
-		i++;
-	}
-	i = 0;
-	while (i < com->n_redir)
-	{
-		if (!ft_strcmp(redir[i].type, ">")) // FIXME: cuando el comando no existe, eñ mensaje de error lo tiene que poner en la terminal, no meterlo en el archivo!
+		if (!ft_strcmp(redir[i].type, ">"))
 		{
-			pid = fork();
-			if (pid == 0)
-			{
-				fd = open(redir[i].file, O_WRONLY |  O_TRUNC | O_CREAT, 0777);
-				if (fd == -1)
-				{
-					sterr = strerror(errno);
-					write(2, redir[i].file, ft_strlen(redir[i].file));
-					write(2, ": ", 2);
-					write(2, sterr, ft_strlen(sterr));
-					write(2, "\n", 1);
-				}
-				if (com->cmd && i == last_out)
-				{
-					dup2(fd, STDOUT_FILENO);
-					close(fd);
-					r = cmd_caller(com, data, envp);
-				}
-				exit(0);
-			}
-			else if (pid < 0)
+			fd = open(redir[i].file, O_WRONLY |  O_TRUNC | O_CREAT, 0777);
+			if (fd == -1)
 			{
 				sterr = strerror(errno);
-				write(2, redir[i].file, ft_strlen(redir[i].file));
-				write(2, ": ", 2);
-				write(2, sterr, ft_strlen(sterr));
-				write(2, "\n", 1);
+				error_msn(redir[i].file, NULL, sterr);
+				return (1);
 			}
-			wait(NULL);
+			close(fd);
+			last_out = i;
 		}
 		else if (!ft_strcmp(redir[i].type, ">>"))
 		{
-			pid = fork();
-			if (pid == 0)
-			{
-				fd = open(redir[i].file, O_WRONLY |  O_APPEND | O_CREAT, 0777);
-				if (fd == -1)
-				{
-					sterr = strerror(errno);
-					write(2, redir[i].file, ft_strlen(redir[i].file));
-					write(2, ": ", 2);
-					write(2, sterr, ft_strlen(sterr));
-					write(2, "\n", 1);
-				}
-				if (com->cmd && i == last_out)
-				{
-					dup2(fd, STDOUT_FILENO);
-					close(fd);
-					r = cmd_caller(com, data, envp);
-				}
-				exit(0);
-			}
-			else if (pid < 0)
+			fd = open(redir[i].file, O_WRONLY |  O_APPEND | O_CREAT, 0777);
+			if (fd == -1)
 			{
 				sterr = strerror(errno);
-				write(2, redir[i].file, ft_strlen(redir[i].file));
-				write(2, ": ", 2);
-				write(2, sterr, ft_strlen(sterr));
-				write(2, "\n", 1);
+				error_msn(redir[i].file, NULL, sterr);
+				return (1);
 			}
-			wait(NULL);
+			close(fd);
+			last_out = i;
 		}
 		else if (!ft_strcmp(redir[i].type, "<"))
 		{
-			pid = fork();
-			if (pid == 0)
-			{
-				fd = open(redir[i].file, O_RDONLY);
-				if (fd == -1)
-				{
-					sterr = strerror(errno);
-					write(2, redir[i].file, ft_strlen(redir[i].file));
-					write(2, ": ", 2);
-					write(2, sterr, ft_strlen(sterr));
-					write(2, "\n", 1);
-					exit (1);
-				}
-				if (com->cmd && i == last_in)
-				{
-					dup2(fd, STDIN_FILENO);
-					close(fd);
-					r = cmd_caller(com, data, envp);
-				}
-				exit(0);
-			}
-			else if (pid < 0)
+			fd = open(redir[i].file, O_RDONLY);
+			if (fd == -1)
 			{
 				sterr = strerror(errno);
-				write(2, redir[i].file, ft_strlen(redir[i].file));
-				write(2, ": ", 2);
-				write(2, sterr, ft_strlen(sterr));
-				write(2, "\n", 1);
+				error_msn(redir[i].file, NULL, sterr);
+				return (1);
 			}
-			wait(&status);
-			data->ret = status / 256;
-			if (data->ret == 1)
-				break;
+			close(fd);
+			last_in = i;
 		}
 		i++;
 	}
+	pid = fork();
+	if (pid == 0)
+	{
+		if (last_out != -1)
+		{
+			if (!ft_strcmp(redir[last_out].type, ">"))
+				fdout = open(redir[last_out].file, O_WRONLY |  O_TRUNC | O_CREAT, 0777);
+			else if (!ft_strcmp(redir[last_out].type, ">>"))
+				fdout = open(redir[last_out].file, O_WRONLY |  O_APPEND | O_CREAT, 0777);
+		}
+		if (last_in != -1)
+			fdin = open(redir[last_in].file, O_RDONLY);
+		if (com->cmd)
+		{
+			if (fdout != -1)
+			{
+				dup2(STDOUT_FILENO, data->std_out);
+				dup2(fdout, STDOUT_FILENO);
+				close(fdout);
+			}
+			if (fdin != -1)
+			{
+				dup2(fdin, STDIN_FILENO);
+				close(fdin);
+			}
+			r = cmd_caller(com, data, envp);
+		}
+		exit(r);
+	}
+	else if (pid < 0)
+	{
+		sterr = strerror(errno);
+		error_msn(NULL, NULL, sterr);
+	}
+	wait(&status);
+	data->ret = WEXITSTATUS(status);
 	i = 0;
 	while (i < com->n_redir)
 	{

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:01:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:07:10 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,7 @@ int	ft_cd(t_data *data, t_cmd *com)
 		if (chdir(path) == -1)
 		{
 			sterr = strerror(errno);
-			write(2, "cd: ", 5);
-			write(2, com->args[0], ft_strlen(com->args[0]));
-			write(2, ": ", 2);
-			write(2, sterr, ft_strlen(sterr));
-			write(2, "\n", 1);
+			error_msn("cd", com->args[0], sterr);
 		}
 		free(path);
 		return (0);
@@ -46,11 +42,7 @@ int	ft_cd(t_data *data, t_cmd *com)
 	if (chdir(com->args[0]) == -1)
 	{
 		sterr = strerror(errno);
-		write(2, "cd: ", 5);
-		write(2, com->args[0], ft_strlen(com->args[0]));
-		write(2, ": ", 2);
-		write(2, sterr, ft_strlen(sterr));
-		write(2, "\n", 1);
+		error_msn("cd", com->args[0], sterr);
 		return (1);
 	}
 	list = data->env_head;

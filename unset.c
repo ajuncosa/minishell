@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/09 13:17:14 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/12 13:20:43 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ int	unset_errors(char *str)
 	{
 		if (!ft_isalnum(str[i]) && str[i] != '_')
 		{
-			printf("unset: `%s': not a valid identifier\n", str);
+			error_msn("unset", str, "not a valid identifier");
 			return (0);
 		}
 		i++;
 	}
 	if (!ft_isalpha(str[0]) && str[0] != '_')
 	{
-		printf("unset: `%s': not a valid identifier\n", str);
+		error_msn("unset", str, "not a valid identifier");
 		return (0);
 	}
 	return (1);
