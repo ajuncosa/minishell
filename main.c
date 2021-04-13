@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:57:13 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:58:58 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int		main(int argc, char **argv, char **envp)
 		tmp = str;
 		str = ft_strjoin(str, "\n");			//TODO: cambiar el parseador, quitar \n
 		free(tmp);
-		data.ret = parser(&data, str, envp);
+		parser(&data, str, envp);
 		//ft_bzero(str, 1023);
 		free(str);
 	}

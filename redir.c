@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/13 12:42:59 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 16:04:33 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int		arg_cleaner(t_cmd *com, t_redir *redir)
 	return(1);
 }
 
-int redir_manager(t_cmd *com, t_data *data, char **envp)
+void	redir_manager(t_cmd *com, t_data *data, char **envp)
 {
 	int		i;
 	t_redir	*redir;
@@ -104,7 +104,7 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 	int 	fdin;
 	int		fdout;
 	//int     pid;
-	int		r;
+	//int		r;
 	int		status;
 	char 	*sterr;
 	int		last_in;
@@ -141,7 +141,8 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 					i++;
 				}
 				free(redir);
-				return (1);
+				data->ret = 1;
+				return ;
 			}
 			close(fd);
 			last_out = i;
@@ -161,7 +162,8 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 					i++;
 				}
 				free(redir);
-				return (1);
+				data->ret = 1;
+				return ;
 			}
 			close(fd);
 			last_out = i;
@@ -181,7 +183,8 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 					i++;
 				}
 				free(redir);
-				return (1);
+				data->ret = 1;
+				return ;
 			}
 			close(fd);
 			last_in = i;
@@ -213,9 +216,9 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 				dup2(fdin, STDIN_FILENO);
 				close(fdin);
 			}			
-			r = cmd_caller(com, data, envp);
+			cmd_caller(com, data, envp);
 		}
-		exit(r);
+		exit(data->ret);
 	}
 	else if (pid < 0)
 	{
@@ -232,5 +235,4 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 		i++;
 	}
 	free(redir);
-	return(data->ret);
 }

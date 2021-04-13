@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/12 13:07:10 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:48:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_cd(t_data *data, t_cmd *com)
+void	ft_cd(t_data *data, t_cmd *com)
 {
 	char	*path;
 	t_list	*list;
@@ -37,13 +37,15 @@ int	ft_cd(t_data *data, t_cmd *com)
 			error_msn("cd", com->args[0], sterr);
 		}
 		free(path);
-		return (0);
+		data->ret = 0;
+		return ;
 	}
 	if (chdir(com->args[0]) == -1)
 	{
 		sterr = strerror(errno);
 		error_msn("cd", com->args[0], sterr);
-		return (1);
+		data->ret = 1;
+		return ;
 	}
 	list = data->env_head;
 	while (list)
@@ -55,5 +57,5 @@ int	ft_cd(t_data *data, t_cmd *com)
 		}
 		list = list->next;
 	}
-	return (0);
+	data->ret = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/13 12:39:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:54:54 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char	*ft_pathfinder(char *cmd, t_data *data)
 	return (NULL);
 }
 
-int	ft_cmd(t_cmd *com, char **envp, t_data *data)
+void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 {
 	int 	i;
 	int		j;
@@ -85,7 +85,6 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	char	**argv;
 	char	*sterr;
 	int		status;
-	int		exit_stat;
 
 	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
 	argv = malloc((com->n_args + 2) * sizeof(char *));
@@ -121,7 +120,8 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 				i++;
 			}
 			free(argv);
-			return (127);
+			data->ret = 127;
+			return ;
 		}
 		free(com->cmd);
 		com->cmd = path;
@@ -145,7 +145,7 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		error_msn(NULL, NULL, sterr);
 	}
 	wait(&status);
-	exit_stat = WEXITSTATUS(status);
+	data->ret = WEXITSTATUS(status);
 	i = 0;
 	while (argv[i])
 	{
@@ -153,5 +153,4 @@ int	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		i++;
 	}
 	free(argv);
-	return (exit_stat);
 }

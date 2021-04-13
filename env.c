@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 11:17:26 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:50:53 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(t_data *data, char **args)
+void	ft_env(t_data *data, char **args)
 {
 	t_list	*lst;
 	int		i;
@@ -21,7 +21,8 @@ int	ft_env(t_data *data, char **args)
 	if (args != NULL)
 	{
 		error_msn("env", NULL, "too many arguments");
-		return (1);
+		data->ret = 1;
+		return ;
 	}
 	lst = data->env_head;
 	while (lst)
@@ -30,5 +31,5 @@ int	ft_env(t_data *data, char **args)
 			printf("%s=%s\n",((t_env*)lst->content)->id, ((t_env*)lst->content)->value);
 		lst = lst->next;
 	}
-	return (0);
+	data->ret = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/12 13:20:43 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:49:58 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,22 @@ int	unset_errors(char *str)
 	return (1);
 }
 
-int	ft_unset(t_data *data, t_cmd *com)
+void	ft_unset(t_data *data, t_cmd *com)
 {
 	t_list	*prev;
 	t_list	*list;
 	int		i;
-	int		r;
+	//int		r;
 
-	r = 0;
+	//r = 0;
+	data->ret = 0;
 	i = 0;
 	while (i < com->n_args)
 	{
 		if (!unset_errors(com->args[i]))
 		{
 			i++;
-			r = 1;
+			data->ret = 1;
 			continue ;
 		}
 		list = data->env_head;
@@ -73,5 +74,4 @@ int	ft_unset(t_data *data, t_cmd *com)
 		}
 		i++;
 	}
-	return (0);
 }

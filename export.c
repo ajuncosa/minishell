@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/12 13:42:29 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:44:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	export_errors(char *str)
 	return (1);
 }
 
-int	ft_export(t_data *data, t_cmd *com)
+void	ft_export(t_data *data, t_cmd *com)
 {
 	t_list	*new;
 	t_list	*list;
@@ -44,9 +44,9 @@ int	ft_export(t_data *data, t_cmd *com)
 	int		len_id;
 	int		len_v;
 	int		flag;
-	int		r;
+	//int		r;
 
-	r = 0;
+	data->ret = 0;
 	if (com->args == NULL)
 	{
 		list = data->env_head;
@@ -58,7 +58,8 @@ int	ft_export(t_data *data, t_cmd *com)
 				printf("declare -x %s\n", ((t_env*)list->content)->id);
 			list = list->next;
 		}
-		return (r);
+		data->ret = 0;
+		return ;
 	}
 	i = 0;
 	while (i < com->n_args)
@@ -70,7 +71,7 @@ int	ft_export(t_data *data, t_cmd *com)
 		if (!export_errors(com->args[i]))
 		{
 			i++;
-			r = 1;
+			data->ret = 1;
 			continue ;
 		}
 		if (!ft_strchr(com->args[i], '='))
@@ -137,5 +138,4 @@ int	ft_export(t_data *data, t_cmd *com)
 		}
 		i++;
 	}
-	return (r);
 }

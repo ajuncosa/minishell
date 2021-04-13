@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/08 12:48:39 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:41:12 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_echo(t_cmd *com)
+void	ft_echo(t_data *data, t_cmd *com)
 {
 	int	n;
 	int	i;
@@ -25,7 +25,8 @@ int	ft_echo(t_cmd *com)
 	if (!com->args)
 	{
 		write(1, "\n", 1);
-		return (0);
+		data->ret = 0;
+		return ;
 	}
 	while (!ft_strncmp(com->args[j], "-n", 2))
 	{
@@ -53,5 +54,5 @@ int	ft_echo(t_cmd *com)
 	}
 	if (n == 0)
 		write(1, "\n", 1);
-	return (0);
+	data->ret = 0;
 }

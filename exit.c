@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/09 13:00:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 15:52:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	del_lst_cmd(void *cmd)
 	free((t_cmd*)cmd);
 }
 
-int		ft_exit(t_data *data, t_cmd *com)
+void	ft_exit(t_data *data, t_cmd *com)
 {
 	int	i;
 
@@ -49,7 +49,7 @@ int		ft_exit(t_data *data, t_cmd *com)
 			{
 				printf("exit: too many arguments\n");
 				data->ret = 1;
-				return (data->ret);
+				return ;
 			}
 			if (com->n_args > 0)
 			{

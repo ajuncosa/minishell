@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 12:57:46 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 16:06:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,37 +244,36 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 	return (1);
 }
 
-int	cmd_caller(t_cmd *com, t_data *data, char **envp)
+void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 {
 	int len;
 
 	len = ft_strlen(com->cmd);
 	if (!ft_strcmp(com->cmd, "echo"))
-		return(ft_echo(com));
-	if (!ft_strcmp(com->cmd, "pwd"))
-		return(ft_pwd(com->args));
+		ft_echo(data, com);
+	else if (!ft_strcmp(com->cmd, "pwd"))
+		ft_pwd(data, com->args);
 	else if (!ft_strcmp(com->cmd, "export"))
-		return(ft_export(data, com));
+		ft_export(data, com);
 	else if (!ft_strcmp(com->cmd, "cd"))
-		return(ft_cd(data, com));
+		ft_cd(data, com);
 	else if (!ft_strcmp(com->cmd, "unset"))
-		return(ft_unset(data, com));
+		ft_unset(data, com);
 	else if (!ft_strcmp(com->cmd, "env"))
-		return(ft_env(data, com->args));
+		ft_env(data, com->args);
 	else if (!ft_strcmp(com->cmd, "exit"))
-		return(ft_exit(data, com));
+		ft_exit(data, com);
 	else
-		return (ft_cmd(com, envp, data));
-	return (0);
+		ft_cmd(com, envp, data);
 }
 
-int	cmd_manager(t_data *data, char **envp)
+void	cmd_manager(t_data *data, char **envp)
 {
 	int		fd[2];
 	//int		pid;
 	int		fd_read;
 	t_list	*lst;
-	int		r;
+	//int		r;
 	char	*sterr;
 	int		status;
 
@@ -285,12 +284,12 @@ int	cmd_manager(t_data *data, char **envp)
 		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
-				r = redir_manager(((t_cmd*)lst->content), data, envp);
+				redir_manager(((t_cmd*)lst->content), data, envp);
 			else
-				r = cmd_caller(((t_cmd*)lst->content), data, envp);			
+				cmd_caller(((t_cmd*)lst->content), data, envp);			
 		}
 		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
-		{											//FIXME: gestionar exit status porque cuando hay pipes el nuestro devuelve 32766 (????) ESTAMOS INTENTANDO DEVOLVER LAS r DEL HIJO
+		{
 			pipe(fd);
 			pid = fork();
 			if (pid == 0)
@@ -304,10 +303,10 @@ int	cmd_manager(t_data *data, char **envp)
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), data, envp);
+					redir_manager(((t_cmd*)lst->content), data, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), data, envp);
-				exit(r);
+					cmd_caller(((t_cmd*)lst->content), data, envp);
+				exit(data->ret);
 			}
 			else if (pid < 0)
 			{
@@ -315,7 +314,7 @@ int	cmd_manager(t_data *data, char **envp)
 				error_msn(NULL, NULL, sterr);
 			}
 			wait(&status);
-			r = WEXITSTATUS(status);
+			data->ret = WEXITSTATUS(status);
 			if (fd_read)
 				close(fd_read);
 			fd_read = fd[0];
@@ -329,10 +328,10 @@ int	cmd_manager(t_data *data, char **envp)
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
 				if (check_if_redir(((t_cmd*)lst->content)))
-					r = redir_manager(((t_cmd*)lst->content), data, envp);
+					redir_manager(((t_cmd*)lst->content), data, envp);
 				else
-					r = cmd_caller(((t_cmd*)lst->content), data, envp);
-				exit(r);
+					cmd_caller(((t_cmd*)lst->content), data, envp);
+				exit(data->ret);
 			}
 			else if (pid < 0)
 			{
@@ -340,22 +339,21 @@ int	cmd_manager(t_data *data, char **envp)
 				error_msn(NULL, NULL, sterr);
 			}
 			wait(&status);
-			r = WEXITSTATUS(status);
+			data->ret = WEXITSTATUS(status);
 			close(fd_read);
 			fd_read = 0;
 		}
 		lst = lst->next;
 	}
-	return (r);
 }
 
-int		parser(t_data *data, char *str, char **envp)
+void	parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int     i;
 	t_list	*new;
 	t_cmd	*com;
-	int		r;
+	//int		r;
 
 	i = 0;
 	data->cmd_head = NULL;
@@ -385,7 +383,8 @@ int		parser(t_data *data, char *str, char **envp)
 				printf("syntax error near unexpected token `%c\'\n", str[i]);
 				free(new);
 				free(com);
-				return (258);
+				data->ret = 258;
+				return ;
 			}
 			else
 				((t_cmd*)new->content)->sep_0 = str[i];
@@ -398,7 +397,8 @@ int		parser(t_data *data, char *str, char **envp)
 				free(new);
 				free(com);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
-				return (258);
+				data->ret = 258;
+				return ;
 			}
 			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\n')
 			{
@@ -406,7 +406,8 @@ int		parser(t_data *data, char *str, char **envp)
 				free(new);
 				free(com);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
-				return (258);
+				data->ret = 258;
+				return ;
 			}
 		}
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
@@ -416,7 +417,8 @@ int		parser(t_data *data, char *str, char **envp)
 			free(new);
 			free(com);
 			ft_lstclear(&data->cmd_head, &del_lst_cmd);
-			return (0);
+			data->ret = 0;
+			return ;
 		}
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
@@ -456,12 +458,11 @@ int		parser(t_data *data, char *str, char **envp)
 	}
 
 	//HACER  COMANDOS
-	r = cmd_manager(data, envp);
+	cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = 0;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
-	return (r);
 }
