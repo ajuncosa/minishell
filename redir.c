@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/13 11:50:32 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 12:42:59 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 	last_out = -1;
 	fdin = -1;
 	fdout = -1;
+	data->std_out = 1;
+	data->std_in = 0;
 	i = 0;
 	while (i < com->n_redir)
 	{
@@ -210,7 +212,7 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 			{
 				dup2(fdin, STDIN_FILENO);
 				close(fdin);
-			}
+			}			
 			r = cmd_caller(com, data, envp);
 		}
 		exit(r);

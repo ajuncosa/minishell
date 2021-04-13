@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/12 13:21:41 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 12:57:46 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,6 +276,7 @@ int	cmd_manager(t_data *data, char **envp)
 	t_list	*lst;
 	int		r;
 	char	*sterr;
+	int		status;
 
 	lst = data->cmd_head;
 	fd_read = 0;
@@ -306,14 +307,15 @@ int	cmd_manager(t_data *data, char **envp)
 					r = redir_manager(((t_cmd*)lst->content), data, envp);
 				else
 					r = cmd_caller(((t_cmd*)lst->content), data, envp);
-				exit(0);
+				exit(r);
 			}
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
 				error_msn(NULL, NULL, sterr);
 			}
-			wait(NULL);
+			wait(&status);
+			r = WEXITSTATUS(status);
 			if (fd_read)
 				close(fd_read);
 			fd_read = fd[0];
@@ -330,14 +332,15 @@ int	cmd_manager(t_data *data, char **envp)
 					r = redir_manager(((t_cmd*)lst->content), data, envp);
 				else
 					r = cmd_caller(((t_cmd*)lst->content), data, envp);
-				exit(0);
+				exit(r);
 			}
 			else if (pid < 0)
 			{
 				sterr = strerror(errno);
 				error_msn(NULL, NULL, sterr);
 			}
-			wait(NULL);
+			wait(&status);
+			r = WEXITSTATUS(status);
 			close(fd_read);
 			fd_read = 0;
 		}
