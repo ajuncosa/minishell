@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/12 13:41:56 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/13 11:50:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void		count_redir(t_cmd *com)
 	}
 }
 
-char	**arg_cleaner(t_cmd *com, t_redir *redir)
+int		arg_cleaner(t_cmd *com, t_redir *redir)
 {
 	char	**new;
 	int		i;
@@ -53,7 +53,7 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 	n_del = com->n_redir * 2;
 	new = malloc((com->n_args - n_del)  * sizeof(char *));
 	if (!new)
-		return (NULL);
+		return (0);
 	i = 0;
 	j = 0;
 	k = 0;
@@ -64,10 +64,10 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 		{
 			redir[k].type = ft_strdup(com->args[i]);
 			if (!redir[k].type)
-				return (NULL);
+				return (0);
 			redir[k].file = ft_strdup(com->args[i + 1]);
 			if (!redir[k].file)
-				return (NULL);
+				return (0);
 			k++;
 			i++;
 		}
@@ -75,7 +75,7 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 		{
 			new[j] = ft_strdup(com->args[i]);
 			if (!new[j])
-				return(NULL);
+				return(0);
 			j++;
 		}
 		i++;
@@ -86,13 +86,18 @@ char	**arg_cleaner(t_cmd *com, t_redir *redir)
 		free(com->args[i]);
 		i++;
 	}
+	free(com->args);
 	com->n_args = com->n_args - n_del;
-	return(new);
+	com->args = NULL;
+	if (com->n_args > 0)
+		com->args = new;
+	else
+		free(new);
+	return(1);
 }
 
 int redir_manager(t_cmd *com, t_data *data, char **envp)
 {
-	char	**new;
 	int		i;
 	t_redir	*redir;
 	int     fd;
@@ -110,13 +115,8 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
 		ft_exit(data, com);
-	new = arg_cleaner(com, redir);
-	if (!new)
+	if (!arg_cleaner(com, redir))
 		ft_exit(data, com);
-	free(com->args);
-	com->args = NULL;
-	if (com->n_args > 0)
-		com->args = new;
 	last_in = -1;
 	last_out = -1;
 	fdin = -1;
@@ -131,6 +131,14 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 			{
 				sterr = strerror(errno);
 				error_msn(redir[i].file, NULL, sterr);
+				i = 0;
+				while (i < com->n_redir)
+				{
+					free(redir[i].type);
+					free(redir[i].file);
+					i++;
+				}
+				free(redir);
 				return (1);
 			}
 			close(fd);
@@ -143,6 +151,14 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 			{
 				sterr = strerror(errno);
 				error_msn(redir[i].file, NULL, sterr);
+				i = 0;
+				while (i < com->n_redir)
+				{
+					free(redir[i].type);
+					free(redir[i].file);
+					i++;
+				}
+				free(redir);
 				return (1);
 			}
 			close(fd);
@@ -155,6 +171,14 @@ int redir_manager(t_cmd *com, t_data *data, char **envp)
 			{
 				sterr = strerror(errno);
 				error_msn(redir[i].file, NULL, sterr);
+				i = 0;
+				while (i < com->n_redir)
+				{
+					free(redir[i].type);
+					free(redir[i].file);
+					i++;
+				}
+				free(redir);
 				return (1);
 			}
 			close(fd);
