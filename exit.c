@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 15:52:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/14 12:52:40 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,28 @@ void	ft_exit(t_data *data, t_cmd *com)
 					data->ret -= 256;
 				else if (data->ret < 0)
 					data->ret += 256;
+				if (com->args[0][0] == '-')
+				{
+					if (com->args[0][1] == '-' && com->args[0][2] == '\0')
+						i = 2;
+					/*else if ((com->args[0][1] != '-' && !ft_isdigit(com->args[0][1])) || (com->args[0][1] == '-' && com->args[0][2] == '-'))
+					{
+						printf("exit: %s: numeric argument required\n", com->args[0]);
+						data->ret = 255;
+					}*/
+					else if (ft_isdigit(com->args[0][1]))
+						i = 1;
+				}
+				/*while (com->args[0][i] == '-')
+					i++;
+				if ((com->args[0][i] == '\0' && i == 1) || (i == 2 && com->args[0][i] != '\0'))
+				{
+					printf("exit: %s: numeric argument required\n", com->args[0]);
+					data->ret = 255;
+				}*/
 				while(com->args[0][i])
 				{
-					if (!ft_isdigit(com->args[0][i]) && com->args[0][i] != '-')
+					if (!ft_isdigit(com->args[0][i]))
 					{
 						printf("exit: %s: numeric argument required\n", com->args[0]);
 						data->ret = 255;

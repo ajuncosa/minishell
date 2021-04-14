@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 15:58:58 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/14 12:09:49 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void sigfun(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, todo esto funciona mal :(
 {
-	if (pid == 0)
+	if (pid == -1)
 	{
 		write(1, "\b\b", 2); // move cursor behind of ^C
 		write(1, "  ", 2); // remove ^C by printing spaces.
@@ -91,6 +91,7 @@ int		main(int argc, char **argv, char **envp)
 	}
 
 	data.ret = 0;
+	pid = -1;
 	while (1)
 	{
 		write(1, "\033[1;37m", 7);

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 16:06:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/14 12:08:37 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -461,7 +461,7 @@ void	parser(t_data *data, char *str, char **envp)
 	cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
-	pid = 0;
+	pid = -1;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
