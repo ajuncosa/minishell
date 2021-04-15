@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/15 12:32:52 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/15 13:34:37 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,12 @@ int		main(int argc, char **argv, char **envp)
 		free(tmp);
 		parser(&data, str, envp);
 		//ft_bzero(str, 1023);
-		free(str);
-		if (!ctrl)
+		if (!ctrl && str[0] == '\n')			//TODO: si cambiamos el parseador hay que cambiar esto tambien!!
+		{
+			free(str);
 			ft_exit(&data, NULL);
+		}
+		free(str);
 	}
 	ft_exit(&data, NULL);
 	return (0);

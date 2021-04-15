@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/03/29 14:22:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/15 13:58:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,8 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 		{
 			start++;
 			end = start;
-			while (!is_space_quote_redir_or_endofcmd((*str)[end]) && (*str)[end] != '$')
+			while (ft_isalnum((*str)[end]) || (*str)[end] == '_')
 				end++;
-
 			check = ft_substr(*str, start, end - start);
 			if (!check)
 				return (0);
