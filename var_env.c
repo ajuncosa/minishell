@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/15 13:58:18 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/15 14:48:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 			end = start;
 			while (ft_isalnum((*str)[end]) || (*str)[end] == '_')
 				end++;
+			if (end == start)
+				return (1);
 			check = ft_substr(*str, start, end - start);
 			if (!check)
 				return (0);
@@ -72,7 +74,7 @@ int	dollar_finder(t_list **env_head, char **str, int ret)
 				free(tmp);
 			}
 			free(check);
-			start--;
+			start -= 2;		//TODO: checkear si esto me ha roto algo en estas envs
 		}
 		start++;
 	}
