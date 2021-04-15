@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/14 12:08:37 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/15 12:34:59 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,6 +356,7 @@ void	parser(t_data *data, char *str, char **envp)
 	//int		r;
 
 	i = 0;
+	com = NULL;
 	data->cmd_head = NULL;
 	while (str[i] != '\n')
 	{
@@ -371,7 +372,7 @@ void	parser(t_data *data, char *str, char **envp)
 		((t_cmd*)new->content)->sep_1 = '0';
 		((t_cmd*)new->content)->args = NULL;
 		((t_cmd*)new->content)->cmd = NULL;
-
+	
 		while (str[i] == ' ')
 			i++;
 

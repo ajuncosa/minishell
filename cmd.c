@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/14 11:52:51 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:40:30 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		free(com->cmd);
 		com->cmd = path;
 	}
-
+	
 	//EJECUTAR CON EXECVE
 	pid = fork();
 	if (pid == 0)

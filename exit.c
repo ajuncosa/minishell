@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/14 12:52:40 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/15 11:45:37 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ void	ft_exit(t_data *data, t_cmd *com)
 {
 	int	i;
 
+	printf("exit\n");
 	if (com)
 	{
 		if (!ft_strcmp(com->cmd, "exit"))
 		{
-			printf("exit\n");
 			if (com->n_args > 1)
 			{
 				printf("exit: too many arguments\n");
@@ -63,21 +63,9 @@ void	ft_exit(t_data *data, t_cmd *com)
 				{
 					if (com->args[0][1] == '-' && com->args[0][2] == '\0')
 						i = 2;
-					/*else if ((com->args[0][1] != '-' && !ft_isdigit(com->args[0][1])) || (com->args[0][1] == '-' && com->args[0][2] == '-'))
-					{
-						printf("exit: %s: numeric argument required\n", com->args[0]);
-						data->ret = 255;
-					}*/
 					else if (ft_isdigit(com->args[0][1]))
 						i = 1;
 				}
-				/*while (com->args[0][i] == '-')
-					i++;
-				if ((com->args[0][i] == '\0' && i == 1) || (i == 2 && com->args[0][i] != '\0'))
-				{
-					printf("exit: %s: numeric argument required\n", com->args[0]);
-					data->ret = 255;
-				}*/
 				while(com->args[0][i])
 				{
 					if (!ft_isdigit(com->args[0][i]))
