@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/15 12:34:59 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/16 12:15:06 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,12 @@ int		count_args(char *str)
 	
 	i = 0;
 	n_args = 0;
-	while (str[i] != '\n' && str[i] != ';' && str[i] != '|' && str[i] != '\0')
+	while (str[i] != ';' && str[i] != '|' && str[i] != '\0')
 	{
 		if (str[i] == '"')
 		{
 			i++;
-			while (str[i] != '"' && str[i] != '\n' && str[i] != '\0')
+			while (str[i] != '"' && str[i] != '\0')
 				i++;
 			if (str[i] != '"')
 			{
@@ -97,7 +97,7 @@ int		count_args(char *str)
 		else if (str[i] == '\'')
 		{
 			i++;
-			while (str[i] != '\'' && str[i] != '\n' && str[i] != '\0')
+			while (str[i] != '\'' && str[i] != '\0')
 				i++;
 			if (str[i] != '\'')
 			{
@@ -143,7 +143,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 		{
 			*start += 1;
 			end = *start;
-			while (str[end] != '"' && str[end] != '\n' && str[end] != '\0')	
+			while (str[end] != '"' && str[end] != '\0')	
 				end++;
 			if (!space)
 			{
@@ -172,7 +172,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 		{
 			*start += 1;
 			end = *start;
-			while (str[end] != '\'' && str[end] != '\n' && str[end] != '\0')
+			while (str[end] != '\'' && str[end] != '\0')
 				end++;
 			if (!space)
 			{	
@@ -358,7 +358,7 @@ void	parser(t_data *data, char *str, char **envp)
 	i = 0;
 	com = NULL;
 	data->cmd_head = NULL;
-	while (str[i] != '\n')
+	while (str[i] != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
@@ -401,7 +401,7 @@ void	parser(t_data *data, char *str, char **envp)
 				data->ret = 258;
 				return ;
 			}
-			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\n')
+			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\0')
 			{
 				printf("Error: open pipe\n");
 				free(new);
@@ -436,7 +436,7 @@ void	parser(t_data *data, char *str, char **envp)
 		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
 			ft_exit(data, com);
 
-		// CREAR aRRay DE ARGS NUEVO EliMiNANDO LAS $ QUE nO EXISTEN
+		// CREAR ARRAY DE ARGS NUEVO ElIMINANDO LAS $ QUE NO EXISTEN
 		if (!filter_empty_args((t_cmd*)new->content))
 			ft_exit(data, com);
 		if (((t_cmd*)new->content)->n_args == 0)

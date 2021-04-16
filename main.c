@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/15 13:34:37 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/16 11:31:01 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,17 +113,9 @@ int		main(int argc, char **argv, char **envp)
 		write(1, user, user_len);
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
-		/*
-		if (read(0, str, 1023) == -1)
-			ft_exit(data, NULL);
-		*/
 		ctrl = get_next_line(0, &str);	//TODO: revisar buffersize??
-		tmp = str;
-		str = ft_strjoin(str, "\n");			//TODO: cambiar el parseador, quitar \n
-		free(tmp);
 		parser(&data, str, envp);
-		//ft_bzero(str, 1023);
-		if (!ctrl && str[0] == '\n')			//TODO: si cambiamos el parseador hay que cambiar esto tambien!!
+		if (!ctrl && str[0] == '\0')			 //FIXME: no funciona
 		{
 			free(str);
 			ft_exit(&data, NULL);

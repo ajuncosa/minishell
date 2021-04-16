@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/12 13:00:07 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/16 11:12:19 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más siti
 
 int	is_space_quote_redir_or_endofcmd(char c)
 {
-	if (c == ' ' || c == '"' || c == '\'' || c == '<' || c == '>' 
-		|| c == '\n' || c == ';' || c == '|' || c == '\0')
+	if (c == ' ' || c == '"' || c == '\'' || c == '<' || c == '>'
+	|| c == ';' || c == '|' || c == '\0')
 		return (1);
 	else
 		return (0);
@@ -37,8 +37,8 @@ int	is_space_quote_redir_or_endofcmd(char c)
 
 int	is_space_redir_or_endofcmd(char c)
 {
-	if (c == ' ' || c == '<' || c == '>' || c == '\n'
-		|| c == ';' || c == '|' || c == '\0')
+	if (c == ' ' || c == '<' || c == '>'
+	|| c == ';' || c == '|' || c == '\0')
 		return (1);
 	else
 		return (0);
