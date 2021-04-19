@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/19 12:30:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/19 14:25:19 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,63 +71,69 @@ int	find_cmd(t_cmd *com)
 	return (1);
 }
 
-int		count_args(char *str)
+int		count_args(t_letter *str)
 {
 	int i;
 	int	n_args;
 	
 	i = 0;
 	n_args = 0;
-	while (str[i] != ';' && str[i] != '|' && str[i] != '\0')
+	while (str[i].c != '\0')
 	{
-		if (str[i] == '"')
+		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
+			break ;
+		if (str[i].c == '"' && !str[i].esc)
 		{
 			i++;
-			while (str[i] != '"' && str[i] != '\0')
-				i++;
-			if (str[i] != '"')
+			while (str[i].c != '\0')
 			{
-				write(1, "Error: open dquote\n", 20);
+				if (str[i].c == '"' && !str[i].esc)
+					break;
+				i++;
+			}
+			if (str[i].c != '"')
+			{
+				write(2, "Error: open dquote\n", 20);
 				return (-1);
 			}
 			i++;
 			if (is_space_redir_or_endofcmd(str[i]))
 				n_args++;
 		}
-		else if (str[i] == '\'')
+		else if (str[i].c == '\'' && !str[i].esc)
 		{
 			i++;
-			while (str[i] != '\'' && str[i] != '\0')
+			while (str[i].c != '\'' && str[i].c != '\0')
 				i++;
-			if (str[i] != '\'')
+			if (str[i].c != '\'')
 			{
-				write(1, "Error: open quote\n", 19);
+				write(2, "Error: open quote\n", 19);
 				return (-1);
 			}
 			i++;
 			if (is_space_redir_or_endofcmd(str[i]))
 				n_args++;
 		}
-		else if (str[i] == '>' || str[i] == '<')
+		else if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 		{
 			n_args++;
-			while(str[i] == '>' || str[i] == '<')
+			while((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 				i++;
 		}
 		else
 		{
 			while (!is_space_quote_redir_or_endofcmd(str[i]))
 				i++;
-			if (str[i] != '"' && str[i] != '\'')
+			if (str[i].c != '"' && str[i].c != '\'')
 				n_args++;
 		}
-		while (str[i] == ' ')
+		while (str[i].c == ' ')
 			i++;
 	}
 	return (n_args);
 }
 
-int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
+int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 {
 	int		end;
 	int		space;
@@ -139,13 +145,17 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 	space = 1;
 	while (n < n_args)
 	{
-		if (str[*start] == '"')
+		if (str[*start].c == '"' && !str[*start].esc)
 		{
 			*start += 1;
 			end = *start;
-			while (str[end] != '"' && str[end] != '\0')	
+			while (str[end].c != '\0')	
+			{
+				if (str[end].c == '"' && !str[end].esc)
+					break;
 				end++;
-			if (!space)
+			}
+			/*if (!space)
 			{
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -165,16 +175,16 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}
+			}*/
 			*start = end + 1;
 		}
-		else if (str[*start] == '\'')
+		else if (str[*start].c == '\'' && !str[*start].esc)
 		{
 			*start += 1;
 			end = *start;
-			while (str[end] != '\'' && str[end] != '\0')
+			while (str[end].c != '\'' && str[end].c != '\0')
 				end++;
-			if (!space)
+			/*if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -190,16 +200,16 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))
 					return (0);
-			}
+			}*/
 			*start = end + 1;
 		}
-		else if (str[*start] == '>' || str[*start] == '<')
+		else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
 		{
 			end = *start;
-			while (str[end] == '>' || str[end] == '<')
+			while ((str[end].c == '>' || str[end].c == '<') && !str[end].esc)
 				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
+			/*if (!(args[n] = ft_substr(str, *start, end - *start)))
+				return (0);*/
 			*start = end;
 		}
 		else
@@ -207,7 +217,7 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while (!is_space_quote_redir_or_endofcmd(str[end]))
 				end++;
-			if (!space)
+			/*if (!space)
 			{	
 				tmp1 = ft_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -227,16 +237,16 @@ int		save_args(char *str, int n_args, char **args, int *start, t_data *data)
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}
+			}*/
 			*start = end;
 		}
 		if (!is_space_redir_or_endofcmd(str[*start])
-			&& str[*start - 1] != '>' && str[*start - 1] != '<')
+			&& !((str[*start - 1].c == '>' || str[*start - 1].c == '<') && !str[*start - 1].esc))
 			space = 0;
 		else
 		{
 			space = 1;
-			while (str[*start] == ' ')
+			while (str[*start].c == ' ')
 				*start += 1;
 			n++;
 		}
@@ -345,17 +355,90 @@ void	cmd_manager(t_data *data, char **envp)
 	}
 }
 
+int	esc_strlen(char *str)
+{
+	int	i;
+	int	n;
+
+	i = 0;
+	n = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+		{
+			i++;
+			n++;
+			while (str[i] != '\'' && str[i] != '\0')
+			{
+				i++;
+				n++;
+			}
+		}
+		if (str[i] == '\\')
+			i++;
+		if (str[i])
+			n++;
+		i++;
+	}
+	return (n);
+}
+
+t_letter	*str_to_struct(char *str)
+{
+	int			i;
+	int			j;
+	int			len;
+	int			quote;
+	t_letter	*line;
+
+	i = 0;
+	j = 0;
+	quote = 0;
+	len = esc_strlen(str);
+	line = malloc((len + 1) * sizeof(t_letter));
+	while (str[i])		//TODO: error open "\"
+	{
+		if (str[i] == '\'')
+		{
+			if (!quote)
+				quote = 1;
+			else
+				quote = 0;
+		}
+		line[j].esc = 0;
+		if (str[i] == '\\' && !quote)
+		{
+			i++;
+			line[j].esc = 1;
+		}
+		line[j].c = str[i];
+		i++;
+		j++;
+	}
+	line[j].c = '\0';
+	return (line);
+	/*i = 0;
+	while (i < len)
+	{
+		printf("str: %c esc: %d\n", line[i].c, line[i].esc);
+		i++;
+	}
+	*/
+}
+
 void	parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
-	int     i;
-	t_list	*new;
-	t_cmd	*com;
+	int   		i;
+	t_list		*new;
+	t_cmd		*com;
+	t_letter	*line;
 
 	i = 0;
 	com = NULL;
 	data->cmd_head = NULL;
-	while (str[i] != '\0')
+	line = str_to_struct(str);
+	while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
@@ -370,35 +453,35 @@ void	parser(t_data *data, char *str, char **envp)
 		((t_cmd*)new->content)->args = NULL;
 		((t_cmd*)new->content)->cmd = NULL;
 	
-		while (str[i] == ' ')
+		while (line[i].c == ' ')
 			i++;
 
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
-		if (str[i] == ';' || str[i] == '|')
+		if ((line[i].c == ';' || line[i].c == '|') && !line[i].esc)
 		{
 			if (!data->cmd_head)
 			{
-				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				printf("syntax error near unexpected token `%c\'\n", line[i].c);
 				free(new);
 				free(com);
 				data->ret = 258;
 				return ;
 			}
 			else
-				((t_cmd*)new->content)->sep_0 = str[i];
+				((t_cmd*)new->content)->sep_0 = line[i].c;
 			i++;
-			while (str[i] == ' ')
+			while (line[i].c == ' ')
 				i++;
-			if (str[i] == ';' || str[i] == '|')
+			if ((line[i].c == ';' || line[i].c == '|') && !line[i].esc)
 			{
-				printf("syntax error near unexpected token `%c\'\n", str[i]);
+				printf("syntax error near unexpected token `%c\'\n", line[i].c);
 				free(new);
 				free(com);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				data->ret = 258;
 				return ;
 			}
-			if (((t_cmd*)new->content)->sep_0 == '|' && str[i] == '\0')
+			if (((t_cmd*)new->content)->sep_0 == '|' && line[i].c == '\0')
 			{
 				printf("Error: open pipe\n");
 				free(new);
@@ -409,7 +492,8 @@ void	parser(t_data *data, char *str, char **envp)
 			}
 		}
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
-		((t_cmd*)new->content)->n_args = count_args(&str[i]);
+		((t_cmd*)new->content)->n_args = count_args(&line[i]);
+		printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
 		if (((t_cmd*)new->content)->n_args == -1)
 		{
 			free(new);
@@ -430,11 +514,11 @@ void	parser(t_data *data, char *str, char **envp)
 				ft_exit(data, com);
 		}
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(str, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
+		if (!(save_args(line, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
 			ft_exit(data, com);
 
 		// CREAR ARRAY DE ARGS NUEVO ElIMINANDO LAS $ QUE NO EXISTEN
-		if (!filter_empty_args((t_cmd*)new->content))
+		/*if (!filter_empty_args((t_cmd*)new->content))
 			ft_exit(data, com);
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
@@ -452,11 +536,11 @@ void	parser(t_data *data, char *str, char **envp)
 			 ((t_cmd*)new->content)->sep_1 = str[i];
 
 		//GUARDAR COMANDO EN LISTA
-		ft_lstadd_back(&data->cmd_head, new);
+		ft_lstadd_back(&data->cmd_head, new);*/
 	}
 
 	//HACER  COMANDOS
-	cmd_manager(data, envp);
+	//cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = -1;

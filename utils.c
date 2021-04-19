@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/16 11:12:19 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/19 13:56:39 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,19 @@ char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más siti
 	return (NULL);
 }
 
-int	is_space_quote_redir_or_endofcmd(char c)
+int	is_space_quote_redir_or_endofcmd(t_letter c)
 {
-	if (c == ' ' || c == '"' || c == '\'' || c == '<' || c == '>'
-	|| c == ';' || c == '|' || c == '\0')
+	if (c.c == ' ' || (c.c == '"' && !c.esc) || (c.c == '\'' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
+	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
 		return (1);
 	else
 		return (0);
 }
 
-int	is_space_redir_or_endofcmd(char c)
+int	is_space_redir_or_endofcmd(t_letter c)
 {
-	if (c == ' ' || c == '<' || c == '>'
-	|| c == ';' || c == '|' || c == '\0')
+	if (c.c == ' ' || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
+	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
 		return (1);
 	else
 		return (0);
