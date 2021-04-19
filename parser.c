@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/16 12:15:06 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/19 12:30:22 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,10 +270,8 @@ void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 void	cmd_manager(t_data *data, char **envp)
 {
 	int		fd[2];
-	//int		pid;
 	int		fd_read;
 	t_list	*lst;
-	//int		r;
 	char	*sterr;
 	int		status;
 
@@ -353,7 +351,6 @@ void	parser(t_data *data, char *str, char **envp)
 	int     i;
 	t_list	*new;
 	t_cmd	*com;
-	//int		r;
 
 	i = 0;
 	com = NULL;
