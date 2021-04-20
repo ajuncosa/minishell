@@ -55,7 +55,10 @@ int	esc_size(char *str)
 		{
 			i++;
 			if (str[i] == '\0')
-				return (n);
+			{
+				write(2, "Error: open backslash\n", 23);
+				return (-1);
+			}
 		}
 		n++;
 		i++;

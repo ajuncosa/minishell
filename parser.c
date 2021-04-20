@@ -355,45 +355,66 @@ void	cmd_manager(t_data *data, char **envp)
 	}
 }
 
-t_letter	*str_to_struct(char *str)
+t_letter	*str_to_struct(char *str, int len)
 {
 	int			i;
 	int			j;
-	int			len;
 	int			quote;
 	t_letter	*line;
 
 	i = 0;
 	j = 0;
 	quote = 0;
-	len = esc_size(str);
 	//printf("len: %d, origi: %d\n", len, strlen(str));
 	line = malloc((len + 1) * sizeof(t_letter));
 	if (!line)
 		return (NULL);
-	while (str[i]) //TODO: error open '\'
+	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && quote != 2)
 		{
 			if (!quote)
 				quote = 1;
 			else if (quote == 1)
 				quote = 0;
+			i++;
 		}
-		else if (str[i] == '"')
+		else if (str[i] == '"' && quote != 1)
 		{
 			if (!quote)
 				quote = 2;
 			else if (quote == 2)
 				quote = 0;
+			i++;
 		}
+		if (quote == 1 || (quote == 2 && str[i] != '$' && str[i] != '\\' && str[i] != '"'))
+			line[j].esc = 1;
+		else
+			line[j].esc = 0;
+		if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
+		{
+			i++;
+			line[j].esc = 1;
+		}
+		line[j].c = str[i];
+		i++;
+		j++;
 	}
+	line[j].c = '\0';
+	i = 0;
+	while (i < len)
+	{
+		printf("str: %c esc: %d\n", line[i].c, line[i].esc);
+		i++;
+	}
+	return (line);
 }
 
 void	parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 	int   		i;
+	int			len;
 	t_list		*new;
 	t_cmd		*com;
 	t_letter	*line;
@@ -401,10 +422,19 @@ void	parser(t_data *data, char *str, char **envp)
 	i = 0;
 	com = NULL;
 	data->cmd_head = NULL;
-	line = str_to_struct(str);
+	len = esc_size(str);
+	if (len == -1)
+	{
+		data->ret = 0;
+		return ;
+	}
+		
+	line = str_to_struct(str, len);
 	if (!line)
 		ft_exit(data, com);
+	free(line);
 	//process_esc()
+
 	/*while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
