@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/19 14:25:19 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/20 11:49:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,34 +355,6 @@ void	cmd_manager(t_data *data, char **envp)
 	}
 }
 
-int	esc_strlen(char *str)
-{
-	int	i;
-	int	n;
-
-	i = 0;
-	n = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'')
-		{
-			i++;
-			n++;
-			while (str[i] != '\'' && str[i] != '\0')
-			{
-				i++;
-				n++;
-			}
-		}
-		if (str[i] == '\\')
-			i++;
-		if (str[i])
-			n++;
-		i++;
-	}
-	return (n);
-}
-
 t_letter	*str_to_struct(char *str)
 {
 	int			i;
@@ -394,8 +366,10 @@ t_letter	*str_to_struct(char *str)
 	i = 0;
 	j = 0;
 	quote = 0;
-	len = esc_strlen(str);
+	len = esc_size(str);
 	line = malloc((len + 1) * sizeof(t_letter));
+	if (!line)
+		return (NULL);
 	while (str[i])		//TODO: error open "\"
 	{
 		if (str[i] == '\'')
@@ -438,6 +412,8 @@ void	parser(t_data *data, char *str, char **envp)
 	com = NULL;
 	data->cmd_head = NULL;
 	line = str_to_struct(str);
+	if (!line)
+		ft_exit(data, com);
 	while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/19 13:55:40 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/20 11:44:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,8 @@ int		is_space_quote_redir_or_endofcmd(t_letter c);
 int		is_space_redir_or_endofcmd(t_letter c);
 int		filter_empty_args(t_cmd *com);
 void	error_msn(char *cmd, char *str, char *txt);
+int		esc_size(char *str);
+t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
+
 
 #endif
