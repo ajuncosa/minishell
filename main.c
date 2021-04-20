@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/16 11:31:01 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:33:11 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void ctrl_c(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, t
 		write(1, "\n", 1);
 }
 
-int		main(int argc, char **argv, char **envp)
+int		main(int argc, char **argv, char **envp)		//TODO: no usamos lstnew en ningún sitio pero igual nos viene bien??? WTF
 {
 	int		ctrl;
 	int		i;

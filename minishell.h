@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 12:41:53 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:05:41 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ int		is_space_redir_or_endofcmd(t_letter c);
 int		filter_empty_args(t_cmd *com);
 void	error_msn(char *cmd, char *str, char *txt);
 int		esc_size(char *str);
-t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
-t_letter	*esc_join(t_letter *s1, t_letter *s2);
+/*t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
+t_letter	*esc_join(t_letter *s1, t_letter *s2);*/
 
 
 #endif

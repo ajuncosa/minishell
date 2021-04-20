@@ -1,4 +1,51 @@
 
+t_letter	*str_to_struct(char *str)
+{
+	int			i;
+	int			j;
+	int			len;
+	int			quote;
+	t_letter	*line;
+
+	i = 0;
+	j = 0;
+	quote = 0;
+	len = esc_size(str);
+	line = malloc((len + 1) * sizeof(t_letter));
+	if (!line)
+		return (NULL);
+	while (str[i])		//TODO: error open "\"
+	{
+		if (str[i] == '\'')
+		{
+			if (!quote)
+				quote = 1;
+			else
+				quote = 0;
+		}
+		line[j].esc = 0;
+		if (str[i] == '\\' && !quote)
+		{
+			i++;
+			line[j].esc = 1;
+		}
+		line[j].c = str[i];
+		i++;
+		j++;
+	}
+	line[j].c = '\0';
+	return (line);
+	/*i = 0;
+	while (i < len)
+	{
+		printf("str: %c esc: %d\n", line[i].c, line[i].esc);
+		i++;
+	}
+	*/
+}
+
+
+
 // para multiline en el echo
 char	*dquote(char *str)
 {

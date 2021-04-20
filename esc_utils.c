@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   esc_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 12:54:11 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:15:45 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,45 @@ int	esc_size(char *str)
 		if (str[i] == '\'')
 		{
 			i++;
-			n++;
 			while (str[i] != '\'' && str[i] != '\0')
 			{
 				i++;
 				n++;
 			}
+			if (str[i] == '\'')
+				i++;
+			continue ;
+		}
+		if (str[i] == '"')
+		{
+			i++;
+			while (str[i] != '"' && str[i] != '\0')
+			{
+				if (str[i] == '\\' && (str[i + 1] == '$' || str[i + 1] == '"' || str[i + 1] == '\\'))
+				{
+					i++;
+					if (str[i] == '\0')
+						return (n);
+				}
+				i++;
+				n++;
+			}
+			if (str[i] == '"')
+				i++;
+			continue ;
 		}
 		if (str[i] == '\\')
+		{
 			i++;
-		if (str[i])
-			n++;
+			if (str[i] == '\0')
+				return (n);
+		}
+		n++;
 		i++;
 	}
 	return (n);
 }
-
+/*
 int	esc_strlen(t_letter *str) 
 {
 	int	i;
@@ -116,4 +139,4 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 	}
 	new[j].c = '\0';
 	return (new);
-}
+}*/
