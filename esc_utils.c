@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   esc_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 11:53:24 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/20 12:54:11 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,46 @@ int	esc_strlen(t_letter *str)
 	return (i);
 }
 
-t_letter	esc_dup
+t_letter	*esc_dup(t_letter *str)
+{
+	size_t		i;
+	t_letter	*copy;
+
+	if (!s1)
+		return (NULL);
+	copy = malloc((esc_strlen(str) + 1));
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (str[i].c != '\0')
+	{
+		copy[i] = s1[i];
+		i++;
+	}
+	copy[i].c = '\0';
+	return (copy);	
+}
+
+t_letter	*esc_join(t_letter *s1, t_letter *s2)
+{
+	t_letter	*new;
+	size_t	i;
+	size_t	j;
+
+	if (!s1)
+		return (NULL);
+	new = malloc(sizeof(t_letter) * (esc_strlen(s1) + esc_strlen(s2) + 1));
+	if (!new)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i].c != '\0')
+		new[i++] = s1[j++];
+	while (s2[i].c != '\0')
+		new[i++] = s2[j++];
+	new[i].c = '\0';
+	return (new);
+}
 
 t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 {

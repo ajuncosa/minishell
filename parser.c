@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 11:49:20 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/20 12:48:54 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,11 +135,11 @@ int		count_args(t_letter *str)
 
 int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 {
-	int		end;
-	int		space;
-	int		n;
-	char	*tmp1;
-	char	*tmp2;
+	int			end;
+	int			space;
+	int			n;
+	t_letter	*tmp1;
+	t_letter	*tmp2;
 
 	n = 0;
 	space = 1;
@@ -155,14 +155,14 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 					break;
 				end++;
 			}
-			/*if (!space)
+			if (!space)
 			{
-				tmp1 = ft_substr(str, *start, end - *start);
+				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
 				if (!dollar_finder(&data->env_head, &tmp1, data->ret))
 					return (0);
-				tmp2 = ft_strjoin(args[n], tmp1);
+				tmp2 = esc_join(args[n], tmp1);						//FIXME: hola ana :S
 				if (!tmp2)
 					return (0);
 				free(args[n]);
@@ -171,11 +171,11 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			}
 			else
 			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))
+				if (!(args[n] = ft_substr(str, *start, end - *start)))		// SAME
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}*/
+			}
 			*start = end + 1;
 		}
 		else if (str[*start].c == '\'' && !str[*start].esc)
@@ -184,12 +184,12 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while (str[end].c != '\'' && str[end].c != '\0')
 				end++;
-			/*if (!space)
+			if (!space)
 			{	
-				tmp1 = ft_substr(str, *start, end - *start);
+				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
-				tmp2 = ft_strjoin(args[n], tmp1);
+				tmp2 = esc_join(args[n], tmp1);
 				if (!tmp2)
 					return (0);
 				free(args[n]);
@@ -198,9 +198,9 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			}
 			else
 			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))
+				if (!(args[n] = ft_substr(str, *start, end - *start)))		// HMMM
 					return (0);
-			}*/
+			}
 			*start = end + 1;
 		}
 		else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
@@ -217,14 +217,14 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while (!is_space_quote_redir_or_endofcmd(str[end]))
 				end++;
-			/*if (!space)
+			if (!space)
 			{	
-				tmp1 = ft_substr(str, *start, end - *start);
+				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
 					return (0);
 				if (!dollar_finder(&data->env_head, &tmp1, data->ret))	
 					return (0);
-				tmp2 = ft_strjoin(args[n], tmp1);
+				tmp2 = esc_join(args[n], tmp1);
 				if (!tmp2)
 					return (0);
 				free(args[n]);
@@ -233,11 +233,11 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			}
 			else
 			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))
+				if (!(args[n] = ft_substr(str, *start, end - *start)))			// hello
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}*/
+			}
 			*start = end;
 		}
 		if (!is_space_redir_or_endofcmd(str[*start])
