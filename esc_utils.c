@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 14:15:45 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/21 16:14:44 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ int	esc_size(char *str)
 			}
 			if (str[i] == '\'')
 				i++;
+			else if (str[i] == '\0')
+			{
+				write(2, "Error: open quote\n", 18);
+				return (-1);
+			}
 			continue ;
 		}
 		if (str[i] == '"')
@@ -49,6 +54,11 @@ int	esc_size(char *str)
 			}
 			if (str[i] == '"')
 				i++;
+			else if (str[i] == '\0')
+			{
+				write(2, "Error: open dquote\n", 19);
+				return (-1);
+			}
 			continue ;
 		}
 		if (str[i] == '\\')
@@ -65,7 +75,7 @@ int	esc_size(char *str)
 	}
 	return (n);
 }
-/*
+
 int	esc_strlen(t_letter *str) 
 {
 	int	i;
@@ -81,7 +91,7 @@ t_letter	*esc_dup(t_letter *str)
 	size_t		i;
 	t_letter	*copy;
 
-	if (!s1)
+	if (!str)
 		return (NULL);
 	copy = malloc((esc_strlen(str) + 1));
 	if (!copy)
@@ -89,7 +99,7 @@ t_letter	*esc_dup(t_letter *str)
 	i = 0;
 	while (str[i].c != '\0')
 	{
-		copy[i] = s1[i];
+		copy[i] = str[i];
 		i++;
 	}
 	copy[i].c = '\0';
@@ -99,8 +109,8 @@ t_letter	*esc_dup(t_letter *str)
 t_letter	*esc_join(t_letter *s1, t_letter *s2)
 {
 	t_letter	*new;
-	size_t	i;
-	size_t	j;
+	size_t		i;
+	size_t		j;
 
 	if (!s1)
 		return (NULL);
@@ -109,9 +119,10 @@ t_letter	*esc_join(t_letter *s1, t_letter *s2)
 		return (NULL);
 	i = 0;
 	j = 0;
-	while (s1[i].c != '\0')
+	while (s1[j].c != '\0')
 		new[i++] = s1[j++];
-	while (s2[i].c != '\0')
+	j = 0;
+	while (s2[j].c != '\0')
 		new[i++] = s2[j++];
 	new[i].c = '\0';
 	return (new);
@@ -125,10 +136,10 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 
 	if (!str)
 		return (NULL);
-	if (str[0].c == '\0')
+	/*if (str[0].c == '\0')
 		return (esc_dup(""));
 	if (start > esc_strlen(str))
-		return (esc_dup(""));
+		return (esc_dup(""));*/
 	new = malloc(len + 1);
 	if (!new)
 		return (NULL);
@@ -142,4 +153,52 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 	}
 	new[j].c = '\0';
 	return (new);
-}*/
+}
+
+char	*struct_to_str(t_letter *struc, int start, int len)
+{
+	int		i;
+	int		j;
+	char	*str;
+
+	if (!struc)
+		return (NULL);
+	if (struc[0].c == '\0')
+		return (ft_strdup(""));
+	if (start > esc_strlen(struc))
+		return (ft_strdup(""));
+	str = malloc(len + 1);
+	if (!str)
+		return (NULL);
+	i = start;
+	j = 0;
+	while (i < (len + start))
+	{
+		str[j] = struc[i].c;
+		i++;
+		j++;
+	}
+	str[j] = '\0';
+	return (str);
+}
+
+t_letter	*str_to_struct(char *str)
+{
+	int			i;
+	t_letter	*new;
+
+	if (!str)
+		return (NULL);
+	new = malloc(ft_strlen(str) + 1);
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (str[i])
+	{
+		new[i].c = str[i];
+		new[i].esc = 1;
+		i++;
+	}
+	new[i].c = '\0';
+	return (new);
+}

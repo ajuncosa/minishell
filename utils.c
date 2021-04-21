@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 11:39:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/21 11:46:43 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	is_space_quote_redir_or_endofcmd(t_letter c)
 
 int	is_space_redir_or_endofcmd(t_letter c)
 {
-	if (c.c == ' ' || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
+	if ((c.c == ' ' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
 	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
 		return (1);
 	else

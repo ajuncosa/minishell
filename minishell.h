@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 14:05:41 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/21 15:36:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,17 @@ void	ft_cd(t_data *data, t_cmd *com);
 void 	ft_cmd(t_cmd *com, char **envp, t_data *data);
 int		check_if_redir(t_cmd *com);
 void	redir_manager(t_cmd *com, t_data *data, char **envp);
-int		dollar_finder(t_list **env_head, char **str, int ret);
+int		dollar_finder(t_list **env_head, t_letter **str, int ret);
 char	*is_in_env(t_list **env_head, char *str);
 int		is_space_quote_redir_or_endofcmd(t_letter c);
 int		is_space_redir_or_endofcmd(t_letter c);
 int		filter_empty_args(t_cmd *com);
 void	error_msn(char *cmd, char *str, char *txt);
 int		esc_size(char *str);
-/*t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
-t_letter	*esc_join(t_letter *s1, t_letter *s2);*/
+char	*struct_to_str(t_letter *struc, int start, int len);
+t_letter	*str_to_struct(char *str);
+t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
+t_letter	*esc_join(t_letter *s1, t_letter *s2);
 
 
 #endif

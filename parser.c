@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/20 14:49:58 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/21 16:19:49 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,39 +82,7 @@ int		count_args(t_letter *str)
 	{
 		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
 			break ;
-		if (str[i].c == '"' && !str[i].esc)
-		{
-			i++;
-			while (str[i].c != '\0')
-			{
-				if (str[i].c == '"' && !str[i].esc)
-					break;
-				i++;
-			}
-			if (str[i].c != '"')
-			{
-				write(2, "Error: open dquote\n", 20);
-				return (-1);
-			}
-			i++;
-			if (is_space_redir_or_endofcmd(str[i]))
-				n_args++;
-		}
-		else if (str[i].c == '\'' && !str[i].esc)
-		{
-			i++;
-			while (str[i].c != '\'' && str[i].c != '\0')
-				i++;
-			if (str[i].c != '\'')
-			{
-				write(2, "Error: open quote\n", 19);
-				return (-1);
-			}
-			i++;
-			if (is_space_redir_or_endofcmd(str[i]))
-				n_args++;
-		}
-		else if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
+		if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)	//TODO: GESTIONAR AQUI LOS SYNTAX ERRORS?
 		{
 			n_args++;
 			while((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
@@ -122,12 +90,11 @@ int		count_args(t_letter *str)
 		}
 		else
 		{
-			while (!is_space_quote_redir_or_endofcmd(str[i]))
+			while (!is_space_redir_or_endofcmd(str[i]))
 				i++;
-			if (str[i].c != '"' && str[i].c != '\'')
-				n_args++;
+			n_args++;
 		}
-		while (str[i].c == ' ')
+		while (str[i].c == ' ' && !str[i].esc)
 			i++;
 	}
 	return (n_args);
@@ -136,12 +103,35 @@ int		count_args(t_letter *str)
 int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 {
 	int			end;
-	int			space;
+	//int			space;
 	int			n;
-	t_letter	*tmp1;
-	t_letter	*tmp2;
+	//t_letter	*tmp1;
+	//t_letter	*tmp2;
 
-	n = 0;
+	dollar_finder(&data->env_head, &str, data->ret);
+	int i = 0;
+	/*while (str[i].c != '\0')
+	{
+		printf("%c\n", str[i].c);
+
+		//printf("str: %c esc: %d\n", str[i].c, str[i].esc);
+		i++;
+	}*/
+
+
+
+
+	/*n = 0;
+	while (n < n_args)
+	{
+		end = *start;
+		while (!is_space_redir_or_endofcmd(str[end]))
+		{
+			end++;
+		}
+	}*/
+
+/*
 	space = 1;
 	while (n < n_args)
 	{
@@ -155,7 +145,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 					break;
 				end++;
 			}
-			/*if (!space)
+			if (!space)
 			{
 				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -175,7 +165,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}*/
+			}
 			*start = end + 1;
 		}
 		else if (str[*start].c == '\'' && !str[*start].esc)
@@ -184,7 +174,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while (str[end].c != '\'' && str[end].c != '\0')
 				end++;
-			/*if (!space)
+			if (!space)
 			{	
 				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -200,7 +190,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			{
 				if (!(args[n] = ft_substr(str, *start, end - *start)))		// HMMM
 					return (0);
-			}*/
+			}
 			*start = end + 1;
 		}
 		else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
@@ -208,8 +198,8 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while ((str[end].c == '>' || str[end].c == '<') && !str[end].esc)
 				end++;
-			/*if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);*/
+			if (!(args[n] = ft_substr(str, *start, end - *start)))
+				return (0);
 			*start = end;
 		}
 		else
@@ -217,7 +207,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 			end = *start;
 			while (!is_space_quote_redir_or_endofcmd(str[end]))
 				end++;
-			/*if (!space)
+			if (!space)
 			{	
 				tmp1 = esc_substr(str, *start, end - *start);
 				if (!tmp1)
@@ -237,7 +227,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 					return (0);
 				if (!dollar_finder(&data->env_head, &args[n], data->ret))
 					return (0);
-			}*/
+			}
 			*start = end;
 		}
 		if (!is_space_redir_or_endofcmd(str[*start])
@@ -250,7 +240,7 @@ int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
 				*start += 1;
 			n++;
 		}
-	}
+	}*/
 	return (1);
 }
 
@@ -355,7 +345,7 @@ void	cmd_manager(t_data *data, char **envp)
 	}
 }
 
-t_letter	*str_to_struct(char *str, int len)
+t_letter	*line_to_struct(char *str, int len)
 {
 	int			i;
 	int			j;
@@ -378,6 +368,7 @@ t_letter	*str_to_struct(char *str, int len)
 			else if (quote == 1)
 				quote = 0;
 			i++;
+			continue;
 		}
 		else if (str[i] == '"' && quote != 1)
 		{
@@ -386,6 +377,8 @@ t_letter	*str_to_struct(char *str, int len)
 			else if (quote == 2)
 				quote = 0;
 			i++;
+			continue;
+
 		}
 		if (quote == 1 || (quote == 2 && str[i] != '$' && str[i] != '\\' && str[i] != '"'))
 			line[j].esc = 1;
@@ -401,12 +394,12 @@ t_letter	*str_to_struct(char *str, int len)
 		j++;
 	}
 	line[j].c = '\0';
-	i = 0;
+	/*i = 0;
 	while (i < len)
 	{
 		printf("str: %c esc: %d\n", line[i].c, line[i].esc);
 		i++;
-	}
+	}*/
 	return (line);
 }
 
@@ -420,6 +413,7 @@ void	parser(t_data *data, char *str, char **envp)
 	t_letter	*line;
 
 	i = 0;
+	line = NULL; 
 	com = NULL;
 	data->cmd_head = NULL;
 	len = esc_size(str);
@@ -428,14 +422,24 @@ void	parser(t_data *data, char *str, char **envp)
 		data->ret = 0;
 		return ;
 	}
-		
-	line = str_to_struct(str, len);
+	line = line_to_struct(str, len);
 	if (!line)
 		ft_exit(data, com);
-	free(line);
-	//process_esc()
 
-	/*while (line[i].c != '\0')
+
+	int n = count_args(line);
+	char **args;
+	printf("n_args: %d\n", n);
+	if (n > 0)
+	{		
+		if (!(args = malloc(n * sizeof(char *))))
+			ft_exit(data, com);
+	}
+	if (!(save_args(line, n, args, &i, data)))
+		ft_exit(data, com);
+
+/*
+	while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
@@ -491,21 +495,21 @@ void	parser(t_data *data, char *str, char **envp)
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		((t_cmd*)new->content)->n_args = count_args(&line[i]);
 		printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
-		if (((t_cmd*)new->content)->n_args == -1)
+		if (((t_cmd*)new->content)->n_args == -1) //FIXME:Esto solo se da si count_args tiene un parsing error
 		{
 			free(new);
 			free(com);
 			ft_lstclear(&data->cmd_head, &del_lst_cmd);
 			data->ret = 0;
 			return ;
-		}
-		if (((t_cmd*)new->content)->n_args == 0)
+		}*/
+		/*if (((t_cmd*)new->content)->n_args == 0)
 		{
 			free(new);
 			free(com);
 			continue;
-		}
-		if (((t_cmd*)new->content)->n_args > 0)
+		}*/
+	/*	if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
 				ft_exit(data, com);
@@ -535,13 +539,14 @@ void	parser(t_data *data, char *str, char **envp)
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&data->cmd_head, new);
 	}
-
+*/
 	//HACER  COMANDOS
-	cmd_manager(data, envp);
+	//cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = -1;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	ft_lstclear(&data->cmd_head, &del_lst_cmd);*/
+	//free(line);  		//FIXME: hacer free a line en los errores y/o exit //FIXME: FIXME: la he tenido que comentar porque al poner $ se me queja de que libero dos veces, checkear!!!
+	//ft_lstclear(&data->cmd_head, &del_lst_cmd);
 }
