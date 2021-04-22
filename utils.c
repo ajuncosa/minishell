@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 15:03:46 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 18:08:42 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,48 +68,6 @@ int	is_space_redir_or_endofcmd(t_letter c)
 		return (1);
 	else
 		return (0);
-}
-
-int filter_empty_args(t_cmd *com)
-{
-	char	**tmp;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	while (i < com->n_args)
-	{
-		if (com->args[i][0] != '\0')
-			j++;
-		i++;
-	}
-	tmp = malloc(j * sizeof(char *));
-	if (!tmp)
-		return (0);
-	i = 0;
-	j = 0;
-	while (i < com->n_args)
-	{
-		if (com->args[i][0] != '\0')
-		{
-			tmp[j] = ft_strdup(com->args[i]);
-			if (!tmp[j])
-				return (0);
-			j++;
-		}
-		free(com->args[i]);
-		i++;
-	}
-	free(com->args);
-	com->args = tmp;
-	com->n_args = j;
-	if (com->n_args == 0)
-	{
-		free(com->args);
-		com->args = NULL;
-	}
-	return (1);
 }
 
 void	error_msn(char *cmd, char *str, char *txt)

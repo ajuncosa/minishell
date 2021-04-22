@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 14:57:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 17:48:06 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,10 @@ void	ft_cd(t_data *data, t_cmd *com);
 void 	ft_cmd(t_cmd *com, char **envp, t_data *data);
 int		check_if_redir(t_cmd *com);
 void	redir_manager(t_cmd *com, t_data *data, char **envp);
-int		dollar_finder(t_list **env_head, t_letter **str, int ret);
+int		dollar_finder(t_list **env_head, t_letter **str, int ret, int *n_args);
 char	*is_in_env(t_list **env_head, char *str);
 int		is_space_quote_redir_or_endofcmd(t_letter c);
 int		is_space_redir_or_endofcmd(t_letter c);
-int		filter_empty_args(t_cmd *com);
 void	error_msn(char *cmd, char *str, char *txt);
 int		esc_size(char *str);
 char	*struct_to_str(t_letter *struc, int start, int len);

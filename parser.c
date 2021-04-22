@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 15:16:53 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 19:49:41 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,164 +100,47 @@ int		count_args(t_letter *str)
 	return (n_args);
 }
 
-int		save_args(t_letter **str, int n_args, char **args, int *start, t_data *data)
+int		save_args(t_letter **str, t_cmd *com, int *start, t_data *data)
 {
 	int			end;
-	//int			space;
 	int			n;
 	t_letter	*tmp;
-	//t_letter	*tmp1;
-	//t_letter	*tmp2;
 	
-	dollar_finder(&data->env_head, str, data->ret);
 	tmp = quote_hunter(*str);
 	if (!tmp)
 		return (0);
 	free(*str);
 	*str = tmp;
 	/*int i = 0;
-	while ((*str)[i].c != '\0')
+	while (i < esc_strlen(*str))
 	{
 		printf("str: %c esc: %d\n", (*str)[i].c, (*str)[i].esc);
 		i++;
 	}*/
-
+	while ((*str)[*start].c == ' ' && !(*str)[*start].esc)
+		*start += 1;
 	n = 0;
-	while (n < n_args)
+	while (n < com->n_args)
 	{
 		end = *start;
-		while (!is_space_redir_or_endofcmd((*str)[end]))
+		if (((*str)[*start].c == '>' || (*str)[*start].c == '<') && !(*str)[*start].esc)
 		{
-			end++;
-		}
-
-/*else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
-		{
-			end = *start;
-			while ((str[end].c == '>' || str[end].c == '<') && !str[end].esc)
+			while (((*str)[end].c == '>' || (*str)[end].c == '<') && !(*str)[end].esc)
 				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
-			*start = end;
-		}*/
-
-		args[n] = struct_to_str(*str, *start, end - *start);
-		if (!args[n])
+		}
+		else
+		{
+			while (!is_space_redir_or_endofcmd((*str)[end]))
+				end++;
+		}
+		com->args[n] = struct_to_str(*str, *start, end - *start);
+		if (!com->args[n])
 			return (0);
-		*start = end + 1;
+		*start = end;
+		while ((*str)[*start].c == ' ' && !(*str)[*start].esc)
+			*start += 1;
 		n++;
 	}
-
-/*
-	space = 1;
-	while (n < n_args)
-	{
-		if (str[*start].c == '"' && !str[*start].esc)
-		{
-			*start += 1;
-			end = *start;
-			while (str[end].c != '\0')	
-			{
-				if (str[end].c == '"' && !str[end].esc)
-					break;
-				end++;
-			}
-			if (!space)
-			{
-				tmp1 = esc_substr(str, *start, end - *start);
-				if (!tmp1)
-					return (0);
-				if (!dollar_finder(&data->env_head, &tmp1, data->ret))
-					return (0);
-				tmp2 = esc_join(args[n], tmp1);						//FIXME: hola ana :S
-				if (!tmp2)
-					return (0);
-				free(args[n]);
-				free(tmp1);
-				args[n] = tmp2;
-			}
-			else
-			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))		// SAME
-					return (0);
-				if (!dollar_finder(&data->env_head, &args[n], data->ret))
-					return (0);
-			}
-			*start = end + 1;
-		}
-		else if (str[*start].c == '\'' && !str[*start].esc)
-		{
-			*start += 1;
-			end = *start;
-			while (str[end].c != '\'' && str[end].c != '\0')
-				end++;
-			if (!space)
-			{	
-				tmp1 = esc_substr(str, *start, end - *start);
-				if (!tmp1)
-					return (0);
-				tmp2 = esc_join(args[n], tmp1);
-				if (!tmp2)
-					return (0);
-				free(args[n]);
-				free(tmp1);
-				args[n] = tmp2;
-			}
-			else
-			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))		// HMMM
-					return (0);
-			}
-			*start = end + 1;
-		}
-		else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
-		{
-			end = *start;
-			while ((str[end].c == '>' || str[end].c == '<') && !str[end].esc)
-				end++;
-			if (!(args[n] = ft_substr(str, *start, end - *start)))
-				return (0);
-			*start = end;
-		}
-		else
-		{
-			end = *start;
-			while (!is_space_quote_redir_or_endofcmd(str[end]))
-				end++;
-			if (!space)
-			{	
-				tmp1 = esc_substr(str, *start, end - *start);
-				if (!tmp1)
-					return (0);
-				if (!dollar_finder(&data->env_head, &tmp1, data->ret))	
-					return (0);
-				tmp2 = esc_join(args[n], tmp1);
-				if (!tmp2)
-					return (0);
-				free(args[n]);
-				free(tmp1);
-				args[n] = tmp2;
-			}
-			else
-			{
-				if (!(args[n] = ft_substr(str, *start, end - *start)))			// hello
-					return (0);
-				if (!dollar_finder(&data->env_head, &args[n], data->ret))
-					return (0);
-			}
-			*start = end;
-		}
-		if (!is_space_redir_or_endofcmd(str[*start])
-			&& !((str[*start - 1].c == '>' || str[*start - 1].c == '<') && !str[*start - 1].esc))
-			space = 0;
-		else
-		{
-			space = 1;
-			while (str[*start].c == ' ')
-				*start += 1;
-			n++;
-		}
-	}*/
 	return (1);
 }
 
@@ -442,29 +325,6 @@ void	parser(t_data *data, char *str, char **envp)
 	line = line_to_struct(str, len);
 	if (!line)
 		ft_exit(data, com);
-
-
-	int n = count_args(line);
-	char **args;
-	printf("n_args: %d\n", n);
-	if (n > 0)
-	{		
-		if (!(args = malloc(n * sizeof(char *))))
-			ft_exit(data, com);
-	}
-	if (!(save_args(&line, n, args, &i, data)))
-		ft_exit(data, com);
-
-	i = 0;
-	while (i < n)
-	{
-		printf("%s\n", args[i]);
-		free(args[i]);
-		i++;
-	}
-	free(args);
-
-/*
 	while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -491,6 +351,7 @@ void	parser(t_data *data, char *str, char **envp)
 				printf("syntax error near unexpected token `%c\'\n", line[i].c);
 				free(new);
 				free(com);
+				free(line);
 				data->ret = 258;
 				return ;
 			}
@@ -504,6 +365,7 @@ void	parser(t_data *data, char *str, char **envp)
 				printf("syntax error near unexpected token `%c\'\n", line[i].c);
 				free(new);
 				free(com);
+				free(line);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				data->ret = 258;
 				return ;
@@ -513,6 +375,7 @@ void	parser(t_data *data, char *str, char **envp)
 				printf("Error: open pipe\n");
 				free(new);
 				free(com);
+				free(line);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				data->ret = 258;
 				return ;
@@ -520,43 +383,45 @@ void	parser(t_data *data, char *str, char **envp)
 		}
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		((t_cmd*)new->content)->n_args = count_args(&line[i]);
-		printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
 		if (((t_cmd*)new->content)->n_args == -1) //FIXME:Esto solo se da si count_args tiene un parsing error
 		{
 			free(new);
 			free(com);
+			free(line);
 			ft_lstclear(&data->cmd_head, &del_lst_cmd);
 			data->ret = 0;
 			return ;
-		}*/
-		/*if (((t_cmd*)new->content)->n_args == 0)
-		{
-			free(new);
-			free(com);
-			continue;
-		}*/
-	/*	if (((t_cmd*)new->content)->n_args > 0)
-		{
-			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *))))
-				ft_exit(data, com);
 		}
-		// GUARDAR ARGUMENTOS
-		if (!(save_args(line, ((t_cmd*)new->content)->n_args, ((t_cmd*)new->content)->args, &i, data)))
-			ft_exit(data, com);
+		printf("n_args1: %d\n", ((t_cmd*)new->content)->n_args);
 
-		// CREAR ARRAY DE ARGS NUEVO ElIMINANDO LAS $ QUE NO EXISTEN
-		if (!filter_empty_args((t_cmd*)new->content))
-			ft_exit(data, com);
+		dollar_finder(&data->env_head, &line, data->ret, &((t_cmd*)new->content)->n_args);
+		printf("n_args2: %d\n", ((t_cmd*)new->content)->n_args);
+
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
 			free(new);
 			free(com);
 			continue;
 		}
+		if (((t_cmd*)new->content)->n_args > 0)
+		{
+			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *)))) //FIXME: alocando mas de lo que se debria a veces
+				ft_exit(data, com);
+		}
+
+		// GUARDAR ARGUMENTOS
+		if (!(save_args(&line, (t_cmd*)new->content, &i, data)))
+			ft_exit(data, com);	
+		int j = 0;
+		while (j < ((t_cmd*)new->content)->n_args)
+		{
+			printf("args: |%s|\n", ((t_cmd*)new->content)->args[j]);
+			j++;
+		}
 
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
-		if (!find_cmd((t_cmd*)new->content))
-			ft_exit(data, com);
+		/*if (!find_cmd((t_cmd*)new->content))
+			ft_exit(data, com);*/
 
 		// GUARDAR sep_1
 		if (str[i] == ';' || str[i] == '|')
@@ -565,7 +430,7 @@ void	parser(t_data *data, char *str, char **envp)
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&data->cmd_head, new);
 	}
-*/
+
 	//HACER  COMANDOS
 	//cmd_manager(data, envp);
 	
@@ -575,5 +440,5 @@ void	parser(t_data *data, char *str, char **envp)
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	free(line);  		//FIXME: hacer free a line en los errores y/o exit
 
-	//ft_lstclear(&data->cmd_head, &del_lst_cmd);
+	ft_lstclear(&data->cmd_head, &del_lst_cmd);
 }

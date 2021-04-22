@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   esc_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 14:58:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 19:51:56 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_letter	*esc_join(t_letter *s1, t_letter *s2)
 	size_t		i;
 	size_t		j;
 
-	if (!s1)
+	if (!s1 || !s2)
 		return (NULL);
 	new = malloc(sizeof(t_letter) * (esc_strlen(s1) + esc_strlen(s2) + 1));
 	if (!new)
@@ -122,10 +122,12 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 
 	if (!str)
 		return (NULL);
-	/*if (str[0].c == '\0')
-		return (esc_dup(""));
-	if (start > esc_strlen(str))
-		return (esc_dup(""));*/
+	if (str[0].c == '\0' || start > esc_strlen(str))
+	{
+		new[0].c = '\0';
+		new[0].esc = 0;
+		return (new);
+	}
 	new = malloc((len + 1) * sizeof(t_letter));
 	if (!new)
 		return (NULL);

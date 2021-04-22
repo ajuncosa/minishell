@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/22 14:00:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 19:55:56 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si echo $PW\D hace lo que tiene que hacer
+int	dollar_finder(t_list **env_head, t_letter **str, int ret, int *n_args)	//TODO: probar si echo $PW\D hace lo que tiene que hacer
 {
 	int			start;
 	int			end;
@@ -72,6 +72,20 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 			}
 			else
 			{
+				if ((start - 2) >= 0)
+				{
+					if (is_space_redir_or_endofcmd((*str)[start - 2]) && is_space_redir_or_endofcmd((*str)[end]))
+						*n_args -= 1;
+				}
+				else 
+				{
+					printf("entro\n");
+					printf("|%c|\n", (*str)[end].c);
+					if ((*str)[end].c == '\0')
+						printf("final\n");
+					if (is_space_redir_or_endofcmd((*str)[end]))
+						*n_args -= 1;
+				}	
 				tmp1 = esc_substr(*str, 0, start - 1);
 				if (!tmp1)
 					return (0);
