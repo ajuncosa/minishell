@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/21 11:46:43 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 15:03:46 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,39 @@ char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más siti
 	return (NULL);
 }
 
-int	is_space_quote_redir_or_endofcmd(t_letter c)
+int	is_space_quote_redir_or_endofcmd(t_letter c) //pude que no sirva
 {
 	if (c.c == ' ' || (c.c == '"' && !c.esc) || (c.c == '\'' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
 	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
 		return (1);
 	else
 		return (0);
+}
+
+t_letter	*quote_hunter(t_letter *str)
+{
+	int			i;
+	int			j;
+	t_letter	*new;
+
+	if (!str)
+		return (NULL);
+	new = malloc(sizeof(t_letter) * (esc_strlen(str) + 1));
+	if (!new)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i].c)
+	{
+		if (!((str[i].c == '\'' || str[i].c == '"') && !str[i].esc))
+		{
+			new[j] = str[i];
+			j++;
+		}
+		i++;
+	}
+	new[j].c = '\0';
+	return (new);
 }
 
 int	is_space_redir_or_endofcmd(t_letter c)

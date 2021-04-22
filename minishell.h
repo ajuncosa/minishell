@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/21 15:36:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 14:57:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ char	*struct_to_str(t_letter *struc, int start, int len);
 t_letter	*str_to_struct(char *str);
 t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
-
+int			esc_strlen(t_letter *str);
+t_letter	*quote_hunter(t_letter *str);
 
 #endif

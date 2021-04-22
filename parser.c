@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/21 16:19:49 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 15:16:53 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,36 +100,53 @@ int		count_args(t_letter *str)
 	return (n_args);
 }
 
-int		save_args(t_letter *str, int n_args, char **args, int *start, t_data *data)
+int		save_args(t_letter **str, int n_args, char **args, int *start, t_data *data)
 {
 	int			end;
 	//int			space;
 	int			n;
+	t_letter	*tmp;
 	//t_letter	*tmp1;
 	//t_letter	*tmp2;
-
-	dollar_finder(&data->env_head, &str, data->ret);
-	int i = 0;
-	/*while (str[i].c != '\0')
+	
+	dollar_finder(&data->env_head, str, data->ret);
+	tmp = quote_hunter(*str);
+	if (!tmp)
+		return (0);
+	free(*str);
+	*str = tmp;
+	/*int i = 0;
+	while ((*str)[i].c != '\0')
 	{
-		printf("%c\n", str[i].c);
-
-		//printf("str: %c esc: %d\n", str[i].c, str[i].esc);
+		printf("str: %c esc: %d\n", (*str)[i].c, (*str)[i].esc);
 		i++;
 	}*/
 
-
-
-
-	/*n = 0;
+	n = 0;
 	while (n < n_args)
 	{
 		end = *start;
-		while (!is_space_redir_or_endofcmd(str[end]))
+		while (!is_space_redir_or_endofcmd((*str)[end]))
 		{
 			end++;
 		}
-	}*/
+
+/*else if ((str[*start].c == '>' || str[*start].c == '<') && !str[*start].esc)
+		{
+			end = *start;
+			while ((str[end].c == '>' || str[end].c == '<') && !str[end].esc)
+				end++;
+			if (!(args[n] = ft_substr(str, *start, end - *start)))
+				return (0);
+			*start = end;
+		}*/
+
+		args[n] = struct_to_str(*str, *start, end - *start);
+		if (!args[n])
+			return (0);
+		*start = end + 1;
+		n++;
+	}
 
 /*
 	space = 1;
@@ -367,8 +384,7 @@ t_letter	*line_to_struct(char *str, int len)
 				quote = 1;
 			else if (quote == 1)
 				quote = 0;
-			i++;
-			continue;
+			line[j].esc = 0;
 		}
 		else if (str[i] == '"' && quote != 1)
 		{
@@ -376,18 +392,19 @@ t_letter	*line_to_struct(char *str, int len)
 				quote = 2;
 			else if (quote == 2)
 				quote = 0;
-			i++;
-			continue;
-
-		}
-		if (quote == 1 || (quote == 2 && str[i] != '$' && str[i] != '\\' && str[i] != '"'))
-			line[j].esc = 1;
-		else
 			line[j].esc = 0;
-		if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
+		}
+		else if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
 		{
 			i++;
 			line[j].esc = 1;
+		}
+		else
+		{
+			if (quote == 1 || (quote == 2 && str[i] != '$' && str[i] != '\\' && str[i] != '"'))
+				line[j].esc = 1;
+			else
+				line[j].esc = 0;
 		}
 		line[j].c = str[i];
 		i++;
@@ -435,8 +452,17 @@ void	parser(t_data *data, char *str, char **envp)
 		if (!(args = malloc(n * sizeof(char *))))
 			ft_exit(data, com);
 	}
-	if (!(save_args(line, n, args, &i, data)))
+	if (!(save_args(&line, n, args, &i, data)))
 		ft_exit(data, com);
+
+	i = 0;
+	while (i < n)
+	{
+		printf("%s\n", args[i]);
+		free(args[i]);
+		i++;
+	}
+	free(args);
 
 /*
 	while (line[i].c != '\0')
@@ -547,6 +573,7 @@ void	parser(t_data *data, char *str, char **envp)
 	pid = -1;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	//free(line);  		//FIXME: hacer free a line en los errores y/o exit //FIXME: FIXME: la he tenido que comentar porque al poner $ se me queja de que libero dos veces, checkear!!!
+	free(line);  		//FIXME: hacer free a line en los errores y/o exit
+
 	//ft_lstclear(&data->cmd_head, &del_lst_cmd);
 }

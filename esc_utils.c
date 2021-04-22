@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/21 16:14:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/22 14:58:44 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,54 +14,30 @@
 
 int	esc_size(char *str)
 {
+	int	quote;
 	int	i;
 	int	n;
 
 	i = 0;
 	n = 0;
+	quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && quote != 2)
 		{
-			i++;
-			while (str[i] != '\'' && str[i] != '\0')
-			{
-				i++;
-				n++;
-			}
-			if (str[i] == '\'')
-				i++;
-			else if (str[i] == '\0')
-			{
-				write(2, "Error: open quote\n", 18);
-				return (-1);
-			}
-			continue ;
+			if (!quote)
+				quote = 1;
+			else if (quote == 1)
+				quote = 0;
 		}
-		if (str[i] == '"')
+		else if (str[i] == '"' && quote != 1)
 		{
-			i++;
-			while (str[i] != '"' && str[i] != '\0')
-			{
-				if (str[i] == '\\' && (str[i + 1] == '$' || str[i + 1] == '"' || str[i + 1] == '\\'))
-				{
-					i++;
-					if (str[i] == '\0')
-						return (n);
-				}
-				i++;
-				n++;
-			}
-			if (str[i] == '"')
-				i++;
-			else if (str[i] == '\0')
-			{
-				write(2, "Error: open dquote\n", 19);
-				return (-1);
-			}
-			continue ;
+			if (!quote)
+				quote = 2;
+			else if (quote == 2)
+				quote = 0;
 		}
-		if (str[i] == '\\')
+		else if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
 		{
 			i++;
 			if (str[i] == '\0')
@@ -73,10 +49,20 @@ int	esc_size(char *str)
 		n++;
 		i++;
 	}
+	if (quote == 1)
+	{
+		write(2, "Error: open quote\n", 18);
+		return (-1);
+	}
+	else if (quote == 2)
+	{
+		write(2, "Error: open dquote\n", 19);
+		return (-1);
+	}
 	return (n);
 }
 
-int	esc_strlen(t_letter *str) 
+int	esc_strlen(t_letter *str)
 {
 	int	i;
 
@@ -93,7 +79,7 @@ t_letter	*esc_dup(t_letter *str)
 
 	if (!str)
 		return (NULL);
-	copy = malloc((esc_strlen(str) + 1));
+	copy = malloc(sizeof(t_letter) * (esc_strlen(str) + 1));
 	if (!copy)
 		return (NULL);
 	i = 0;
@@ -140,7 +126,7 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 		return (esc_dup(""));
 	if (start > esc_strlen(str))
 		return (esc_dup(""));*/
-	new = malloc(len + 1);
+	new = malloc((len + 1) * sizeof(t_letter));
 	if (!new)
 		return (NULL);
 	i = start;
@@ -189,7 +175,7 @@ t_letter	*str_to_struct(char *str)
 
 	if (!str)
 		return (NULL);
-	new = malloc(ft_strlen(str) + 1);
+	new = malloc(sizeof(t_letter) * (ft_strlen(str) + 1));
 	if (!new)
 		return (NULL);
 	i = 0;
