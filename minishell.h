@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 17:48:06 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/23 13:30:09 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,17 @@ typedef struct s_env
 	char	*value;
 }			t_env;
 
+typedef struct s_letter
+{
+	char	c;
+	int		esc;
+}				t_letter;
+
 typedef struct s_cmd
 {
 	char	*cmd;
-	char	**args;
+	char	**args_str;
+	t_letter	**args;
 	char	sep_0;
 	char	sep_1;
 	int		n_args;
@@ -55,12 +62,6 @@ typedef struct s_data
 	int 	std_out;
 }				t_data;
 
-typedef struct s_letter
-{
-	char	c;
-	int		esc;
-}				t_letter;
-
 
 char 	*user;
 pid_t	pid;
@@ -79,7 +80,7 @@ void	ft_cd(t_data *data, t_cmd *com);
 void 	ft_cmd(t_cmd *com, char **envp, t_data *data);
 int		check_if_redir(t_cmd *com);
 void	redir_manager(t_cmd *com, t_data *data, char **envp);
-int		dollar_finder(t_list **env_head, t_letter **str, int ret, int *n_args);
+int		dollar_finder(t_list **env_head, t_letter **str, int ret/*, int *n_args*/);
 char	*is_in_env(t_list **env_head, char *str);
 int		is_space_quote_redir_or_endofcmd(t_letter c);
 int		is_space_redir_or_endofcmd(t_letter c);
@@ -90,6 +91,7 @@ t_letter	*str_to_struct(char *str);
 t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
 int			esc_strlen(t_letter *str);
+t_letter	*esc_dup(t_letter *str);
 t_letter	*quote_hunter(t_letter *str);
 
 #endif

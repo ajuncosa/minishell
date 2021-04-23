@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 19:49:41 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/23 15:17:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,34 @@
 
 int	find_cmd(t_cmd *com)
 {
-	int 	i;
-	int		j;
-	int		n;
-	int		found;
-	char	**tmp;
+	int			i;
+	int			j;
+	int			n;
+	int			found;
+	char 		*arg;
+	t_letter	**tmp;
 
 	n = 0;
 	found = 0;
 	while (n < com->n_args)
 	{
-		if (strcmp(com->args[n], ">") && strcmp(com->args[n], "<") && strcmp(com->args[n], ">>"))
+		arg = struct_to_str(com->args[n], 0, esc_strlen(com->args[n]));
+		if (strcmp(arg, ">") && strcmp(arg, "<") && strcmp(arg, ">>"))
 		{
-			com->cmd = ft_strdup(com->args[n]);
+			com->cmd = arg;
 			if (!com->cmd)
 				return (0);
 			free(com->args[n]);
 			found = 1;
 			break;
 		}
+		free(arg);
 		n += 2;
 	}
 	if (found)
-		tmp = malloc((com->n_args - 1) * sizeof(char *));
+		tmp = malloc((com->n_args - 1) * sizeof(t_letter *));
 	else
-		tmp = malloc(com->n_args * sizeof(char *));
+		tmp = malloc(com->n_args * sizeof(t_letter *));
 	if (!tmp)
 		return (0);
 	i = 0;
@@ -50,7 +53,7 @@ int	find_cmd(t_cmd *com)
 			i++;
 			continue;
 		}
-		tmp[j] = ft_strdup(com->args[i]);
+		tmp[j] = esc_dup(com->args[i]);
 		if (!tmp[j])
 			return (0);
 		free(com->args[i]);
@@ -100,9 +103,9 @@ int		count_args(t_letter *str)
 	return (n_args);
 }
 
-int		save_args(t_letter **str, t_cmd *com, int *start, t_data *data)
+int		save_args(t_letter **str, t_cmd *com, int *start)
 {
-	int			end;
+	int			end;		//FIXME: echo $USER ; hola $aa (cuando acabas con la cosa esa que no existe), esto te divide el primer comando (echo $USER) en dos
 	int			n;
 	t_letter	*tmp;
 	
@@ -133,7 +136,7 @@ int		save_args(t_letter **str, t_cmd *com, int *start, t_data *data)
 			while (!is_space_redir_or_endofcmd((*str)[end]))
 				end++;
 		}
-		com->args[n] = struct_to_str(*str, *start, end - *start);
+		com->args[n] = esc_substr(*str, *start, end - *start);
 		if (!com->args[n])
 			return (0);
 		*start = end;
@@ -143,7 +146,7 @@ int		save_args(t_letter **str, t_cmd *com, int *start, t_data *data)
 	}
 	return (1);
 }
-
+/*
 void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 {
 	int len;
@@ -166,7 +169,7 @@ void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 	else
 		ft_cmd(com, envp, data);
 }
-
+*/
 void	cmd_manager(t_data *data, char **envp)
 {
 	int		fd[2];
@@ -183,10 +186,10 @@ void	cmd_manager(t_data *data, char **envp)
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
 				redir_manager(((t_cmd*)lst->content), data, envp);
-			else
-				cmd_caller(((t_cmd*)lst->content), data, envp);			
+			//else
+			//	cmd_caller(((t_cmd*)lst->content), data, envp);			
 		}
-		if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
+		/*if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
 		{
 			pipe(fd);
 			pid = fork();
@@ -240,7 +243,7 @@ void	cmd_manager(t_data *data, char **envp)
 			data->ret = WEXITSTATUS(status);
 			close(fd_read);
 			fd_read = 0;
-		}
+		}*/
 		lst = lst->next;
 	}
 }
@@ -306,6 +309,8 @@ t_letter	*line_to_struct(char *str, int len)
 void	parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
+					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
+					//TODO: cambiar casteos por com
 	int   		i;
 	int			len;
 	t_list		*new;
@@ -325,6 +330,8 @@ void	parser(t_data *data, char *str, char **envp)
 	line = line_to_struct(str, len);
 	if (!line)
 		ft_exit(data, com);
+	dollar_finder(&data->env_head, &line, data->ret/*, &((t_cmd*)new->content)->n_args*/);
+	
 	while (line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -338,6 +345,7 @@ void	parser(t_data *data, char *str, char **envp)
 		((t_cmd*)new->content)->sep_0 = '0';
 		((t_cmd*)new->content)->sep_1 = '0';
 		((t_cmd*)new->content)->args = NULL;
+		((t_cmd*)new->content)->args_str = NULL;
 		((t_cmd*)new->content)->cmd = NULL;
 	
 		while (line[i].c == ' ')
@@ -392,10 +400,8 @@ void	parser(t_data *data, char *str, char **envp)
 			data->ret = 0;
 			return ;
 		}
-		printf("n_args1: %d\n", ((t_cmd*)new->content)->n_args);
+		printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
 
-		dollar_finder(&data->env_head, &line, data->ret, &((t_cmd*)new->content)->n_args);
-		printf("n_args2: %d\n", ((t_cmd*)new->content)->n_args);
 
 		if (((t_cmd*)new->content)->n_args == 0)
 		{
@@ -403,25 +409,24 @@ void	parser(t_data *data, char *str, char **envp)
 			free(com);
 			continue;
 		}
+		
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
-			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(char *)))) //FIXME: alocando mas de lo que se debria a veces
+			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(t_letter *)))) //FIXME: alocando mas de lo que se debria a veces
+				ft_exit(data, com);
+			if (!(((t_cmd*)new->content)->args_str = malloc(((t_cmd*)new->content)->n_args * sizeof(char *)))) //FIXME: alocando mas de lo que se debria a veces
 				ft_exit(data, com);
 		}
 
+
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(&line, (t_cmd*)new->content, &i, data)))
+		if (!(save_args(&line, (t_cmd*)new->content, &i)))
 			ft_exit(data, com);	
-		int j = 0;
-		while (j < ((t_cmd*)new->content)->n_args)
-		{
-			printf("args: |%s|\n", ((t_cmd*)new->content)->args[j]);
-			j++;
-		}
+
 
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
-		/*if (!find_cmd((t_cmd*)new->content))
-			ft_exit(data, com);*/
+		if (!find_cmd((t_cmd*)new->content))
+			ft_exit(data, com);
 
 		// GUARDAR sep_1
 		if (str[i] == ';' || str[i] == '|')
@@ -431,8 +436,27 @@ void	parser(t_data *data, char *str, char **envp)
 		ft_lstadd_back(&data->cmd_head, new);
 	}
 
+	t_list *lst = data->cmd_head;
+	while (lst)
+	{
+		int j = 0;
+			printf("cmd: %s\n", ((t_cmd*)lst->content)->cmd);
+		int k = 0;
+		while (k < ((t_cmd*)lst->content)->n_args)
+		{
+			j = 0;
+			printf("arg %d\n", k);
+			while (((t_cmd*)lst->content)->args[k][j].c != '\0')
+			{
+				printf("str: %c esc: %d\n", ((t_cmd*)lst->content)->args[k][j].c, ((t_cmd*)lst->content)->args[k][j].esc);
+				j++;
+			}
+			k++;
+		}
+		lst = lst->next;
+	}
 	//HACER  COMANDOS
-	//cmd_manager(data, envp);
+	cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
 	pid = -1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/15 11:45:37 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/23 12:58:04 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,27 @@ void	del_lst_cmd(void *cmd)
 
 	if (((t_cmd*)cmd)->cmd)
 		free(((t_cmd*)cmd)->cmd);
-	j = 0;
-	while (j < ((t_cmd*)cmd)->n_args)
+	if (((t_cmd*)cmd)->args_str)
 	{
-		free(((t_cmd*)cmd)->args[j]);
-		j++;
+		/*j = 0;		TODO: recorrer args_str hasta el \0 (y hacer que al crearlo haya un \0 al final del array de strings) para que no den problemas los frees si se sale antes de haber ejecutado los comandos, que es cuando vamos a crear el array de strings
+		while (j < ((t_cmd*)cmd)->n_args)
+		{
+			free(((t_cmd*)cmd)->args_str[j]);
+			j++;
+		}*/
+		free(((t_cmd*)cmd)->args_str);
 	}
+
 	if (((t_cmd*)cmd)->args)
+	{
+		j = 0;
+		while (j < ((t_cmd*)cmd)->n_args)
+		{
+			free(((t_cmd*)cmd)->args[j]);
+			j++;
+		}
 		free(((t_cmd*)cmd)->args);
+	}
 	free((t_cmd*)cmd);
 }
 
@@ -54,23 +67,23 @@ void	ft_exit(t_data *data, t_cmd *com)
 			if (com->n_args > 0)
 			{
 				i = 0;
-				data->ret = ft_atoi(com->args[0]);
+				data->ret = ft_atoi(com->args_str[0]);
 				if (data->ret >= 256)
 					data->ret -= 256;
 				else if (data->ret < 0)
 					data->ret += 256;
-				if (com->args[0][0] == '-')
+				if (com->args_str[0][0] == '-')
 				{
-					if (com->args[0][1] == '-' && com->args[0][2] == '\0')
+					if (com->args_str[0][1] == '-' && com->args_str[0][2] == '\0')
 						i = 2;
-					else if (ft_isdigit(com->args[0][1]))
+					else if (ft_isdigit(com->args_str[0][1]))
 						i = 1;
 				}
-				while(com->args[0][i])
+				while(com->args_str[0][i])
 				{
-					if (!ft_isdigit(com->args[0][i]))
+					if (!ft_isdigit(com->args_str[0][i]))
 					{
-						printf("exit: %s: numeric argument required\n", com->args[0]);
+						printf("exit: %s: numeric argument required\n", com->args_str[0]);
 						data->ret = 255;
 						break ;
 					}

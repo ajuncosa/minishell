@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/13 16:04:33 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/23 15:22:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,19 @@
 
 int		check_if_redir(t_cmd *com)
 {
-	int	i;
+	int		i;
+	char	*arg;
 
 	i = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
-		|| !ft_strcmp(com->args[i], "<"))
+		arg = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
+		if ((!ft_strcmp(arg, ">") || !ft_strcmp(arg, ">>") || !ft_strcmp(arg, "<")) && !com->args[i][0].esc)
+		{
+			free(arg);
 		    return (1);
+		}
+		free(arg);
 		i++;
 	}
 	return (0);
@@ -29,15 +34,17 @@ int		check_if_redir(t_cmd *com)
 
 void		count_redir(t_cmd *com)
 {
-	int	i;
+	int		i;
+	char	*arg;
 
 	i = 0;
 	com->n_redir = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
-		|| !ft_strcmp(com->args[i], "<"))
+		arg = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
+		if ((!ft_strcmp(arg, ">") || !ft_strcmp(arg, ">>") || !ft_strcmp(arg, "<")) && !com->args[i][0].esc)
 		    com->n_redir++;
+		free(arg);
 		i++;
 	}
 }
@@ -112,12 +119,13 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 
 	data->ret = 0;
 	count_redir(com);
+	printf("n_redir: %d\n", com->n_redir);
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
 		ft_exit(data, com);
 	if (!arg_cleaner(com, redir))
 		ft_exit(data, com);
-	last_in = -1;
+	/*last_in = -1;
 	last_out = -1;
 	fdin = -1;
 	fdout = -1;
@@ -234,5 +242,5 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		free(redir[i].file);
 		i++;
 	}
-	free(redir);
+	free(redir);*/
 }
