@@ -37,13 +37,13 @@ typedef struct s_letter
 
 typedef struct s_cmd
 {
-	char	*cmd;
-	char	**args_str;
+	char		*cmd;
+	char		**args_str;
 	t_letter	**args;
-	char	sep_0;
-	char	sep_1;
-	int		n_args;
-	int		n_redir;
+	char		sep_0;
+	char		sep_1;
+	int			n_args;
+	int			n_redir;
 }			t_cmd;
 
 typedef struct s_redir
@@ -54,12 +54,13 @@ typedef struct s_redir
 
 typedef struct s_data
 {
-	t_list	*env_head;
-	t_list	*cmd_head;
+	t_list		*env_head;
+	t_list		*cmd_head;
+	t_letter	*line;
 	//char	*user;
-	int		ret;
-	int		std_in;
-	int 	std_out;
+	int			ret;
+	int			std_in;
+	int 		std_out;
 }				t_data;
 
 
@@ -73,6 +74,7 @@ void	del_lst(void *env);
 void	del_lst_cmd(void *cmd);
 void	parser(t_data *data, char *str, char **envp);
 void	cmd_caller(t_cmd *com, t_data *data, char **envp);
+int		create_args_str(t_cmd *com);
 void	ft_pwd(t_data *data, char **args);
 void	ft_export(t_data *data, t_cmd *com);
 void	ft_unset(t_data *data, t_cmd *com);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	dollar_finder(t_list **env_head, t_letter **str, int ret/*, int *n_args*/)	//TODO: probar si echo $PW\D hace lo que tiene que hacer
+int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si echo $PW\D hace lo que tiene que hacer
 {
 	int			start;
 	int			end;

@@ -96,12 +96,8 @@ int		arg_cleaner(t_cmd *com, t_redir *redir)
 		i++;
 	}
 	free(com->args);
+	com->args = NULL;
 	com->n_args = com->n_args - n_del;
-	/*if (com->n_args == 0)
-	{
-		free(com->args_str);
-		com->args_str = NULL;
-	}*/
 	return(1);
 }
 

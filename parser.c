@@ -177,7 +177,6 @@ void	cmd_manager(t_data *data, char **envp)
 	t_list	*lst;
 	char	*sterr;
 	int		status;
-	int		i;
 
 	lst = data->cmd_head;
 	fd_read = 0;
@@ -187,22 +186,10 @@ void	cmd_manager(t_data *data, char **envp)
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
 				redir_manager(((t_cmd*)lst->content), data, envp);
-			else //TODO: coger todo este else (excepto el cmd_caller) y ponerlo en otra función, sustituyendo el casteo raro por una variable sencilla, tal vez devolviendo 0 en caso de error y que el ft_exit lo haga aquí
+			else
 			{
-				if (((t_cmd*)lst->content)->n_args > 0)
-				{
-					((t_cmd*)lst->content)->args_str = malloc(((t_cmd*)lst->content)->n_args  * sizeof(char *));
-					if (!((t_cmd*)lst->content)->args_str)
-						ft_exit(data, ((t_cmd*)lst->content));
-				}
-				i = 0;
-				while (i < ((t_cmd*)lst->content)->n_args)
-				{
-					((t_cmd*)lst->content)->args_str[i] = struct_to_str(((t_cmd*)lst->content)->args[i], 0, esc_strlen(((t_cmd*)lst->content)->args[i]));
-					free(((t_cmd*)lst->content)->args[i]);
-					i++;
-				}
-				free(((t_cmd*)lst->content)->args);
+				if (!create_args_str((t_cmd*)lst->content))
+					ft_exit(data, (t_cmd*)lst->content);
 				cmd_caller(((t_cmd*)lst->content), data, envp);
 			}
 		}
@@ -327,15 +314,14 @@ void	parser(t_data *data, char *str, char **envp)
 {					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
-					//TODO: cambiar casteos por com
 	int   		i;
 	int			len;
 	t_list		*new;
 	t_cmd		*com;
-	t_letter	*line;
+	//t_letter	*line;
 
 	i = 0;
-	line = NULL; 
+	data->line = NULL; 
 	com = NULL;
 	data->cmd_head = NULL;
 	len = esc_size(str);
@@ -344,12 +330,12 @@ void	parser(t_data *data, char *str, char **envp)
 		data->ret = 0;
 		return ;
 	}
-	line = line_to_struct(str, len);
-	if (!line)
+	data->line = line_to_struct(str, len);
+	if (!data->line)
 		ft_exit(data, com);
-	dollar_finder(&data->env_head, &line, data->ret/*, &((t_cmd*)new->content)->n_args*/);
+	dollar_finder(&data->env_head, &data->line, data->ret);
 	
-	while (line[i].c != '\0')
+	while (data->line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
 		if (!(new = malloc(sizeof(t_list))))
@@ -359,93 +345,89 @@ void	parser(t_data *data, char *str, char **envp)
 		new->content = com;
 
 		// INICIALIZAR COSAS
-		((t_cmd*)new->content)->sep_0 = '0';
-		((t_cmd*)new->content)->sep_1 = '0';
-		((t_cmd*)new->content)->args = NULL;
-		((t_cmd*)new->content)->args_str = NULL;
-		((t_cmd*)new->content)->cmd = NULL;
+		com->sep_0 = '0';
+		com->sep_1 = '0';
+		com->args = NULL;
+		com->args_str = NULL;
+		com->cmd = NULL;
 	
-		while (line[i].c == ' ')
+		while (data->line[i].c == ' ')
 			i++;
 
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
-		if ((line[i].c == ';' || line[i].c == '|') && !line[i].esc)
+		if ((data->line[i].c == ';' || data->line[i].c == '|') && !data->line[i].esc)
 		{
 			if (!data->cmd_head)
 			{
-				printf("syntax error near unexpected token `%c\'\n", line[i].c);
+				printf("syntax error near unexpected token `%c\'\n", data->line[i].c);
 				free(new);
 				free(com);
-				free(line);
+				free(data->line);
 				data->ret = 258;
 				return ;
 			}
 			else
-				((t_cmd*)new->content)->sep_0 = line[i].c;
+				com->sep_0 = data->line[i].c;
 			i++;
-			while (line[i].c == ' ')
+			while (data->line[i].c == ' ')
 				i++;
-			if ((line[i].c == ';' || line[i].c == '|') && !line[i].esc)
+			if ((data->line[i].c == ';' || data->line[i].c == '|') && !data->line[i].esc)
 			{
-				printf("syntax error near unexpected token `%c\'\n", line[i].c);
+				printf("syntax error near unexpected token `%c\'\n", data->line[i].c);
 				free(new);
 				free(com);
-				free(line);
+				free(data->line);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				data->ret = 258;
 				return ;
 			}
-			if (((t_cmd*)new->content)->sep_0 == '|' && line[i].c == '\0')
+			if (com->sep_0 == '|' && data->line[i].c == '\0')
 			{
 				printf("Error: open pipe\n");
 				free(new);
 				free(com);
-				free(line);
+				free(data->line);
 				ft_lstclear(&data->cmd_head, &del_lst_cmd);
 				data->ret = 258;
 				return ;
 			}
 		}
+
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
-		((t_cmd*)new->content)->n_args = count_args(&line[i]);
-		if (((t_cmd*)new->content)->n_args == -1) //FIXME:Esto solo se da si count_args tiene un parsing error
+		com->n_args = count_args(&data->line[i]);
+		if (com->n_args == -1) //FIXME:Esto solo se da si count_args tiene un parsing error
 		{
 			free(new);
 			free(com);
-			free(line);
+			free(data->line);
 			ft_lstclear(&data->cmd_head, &del_lst_cmd);
 			data->ret = 0;
 			return ;
 		}
-		//printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
-
-
-		if (((t_cmd*)new->content)->n_args == 0)
+		//printf("n_args: %d\n", (com)->n_args);
+		else if (com->n_args == 0)
 		{
 			free(new);
 			free(com);
 			continue;
 		}
-		
-		if (((t_cmd*)new->content)->n_args > 0)
+		else if (com->n_args > 0)
 		{
-			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(t_letter *)))) //FIXME: alocando mas de lo que se debria a veces
+			if (!(com->args = malloc(com->n_args * sizeof(t_letter *))))
 				ft_exit(data, com);
 		}
 
-
 		// GUARDAR ARGUMENTOS
-		if (!(save_args(&line, (t_cmd*)new->content, &i)))
+		if (!(save_args(&data->line, com, &i)))
 			ft_exit(data, com);	
 
-
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
-		if (!find_cmd((t_cmd*)new->content))
+		if (!find_cmd(com))
 			ft_exit(data, com);
 
 		// GUARDAR sep_1
 		if (str[i] == ';' || str[i] == '|')
-			 ((t_cmd*)new->content)->sep_1 = str[i];
+			 (com)->sep_1 = str[i];
 
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&data->cmd_head, new);
@@ -479,7 +461,7 @@ void	parser(t_data *data, char *str, char **envp)
 	pid = -1;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
-	free(line);  		//FIXME: hacer free a line en los errores y/o exit
+	free(data->line);
 
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
 }

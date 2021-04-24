@@ -26,7 +26,7 @@ char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más siti
 	return (NULL);
 }
 
-int	is_space_quote_redir_or_endofcmd(t_letter c) //pude que no sirva
+int	is_space_quote_redir_or_endofcmd(t_letter c) //puede que no sirva
 {
 	if (c.c == ' ' || (c.c == '"' && !c.esc) || (c.c == '\'' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
 	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
@@ -59,6 +59,28 @@ t_letter	*quote_hunter(t_letter *str)
 	}
 	new[j].c = '\0';
 	return (new);
+}
+
+int	create_args_str(t_cmd *com)
+{
+	int	i;
+	
+	if (com->n_args > 0)
+	{
+		com->args_str = malloc(com->n_args  * sizeof(char *));
+		if (!com->args_str)
+			return (0);
+	}
+	i = 0;
+	while (i < com->n_args)
+	{
+		com->args_str[i] = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
+		free(com->args[i]);
+		i++;
+	}
+	free(com->args);
+	com->args = NULL;
+	return (1);
 }
 
 int	is_space_redir_or_endofcmd(t_letter c)

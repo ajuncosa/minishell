@@ -36,7 +36,7 @@ void	del_lst_cmd(void *cmd)
 		free(((t_cmd*)cmd)->args_str);
 	}
 
-	/*if (((t_cmd*)cmd)->args)
+	if (((t_cmd*)cmd)->args)
 	{
 		j = 0;
 		while (j < ((t_cmd*)cmd)->n_args)
@@ -45,7 +45,7 @@ void	del_lst_cmd(void *cmd)
 			j++;
 		}
 		free(((t_cmd*)cmd)->args);
-	}*/
+	}
 	free((t_cmd*)cmd);
 }
 
@@ -94,6 +94,8 @@ void	ft_exit(t_data *data, t_cmd *com)
 	}
 	if (user)
 		free(user);
+	if (data->line)
+		free(data->line);
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
 	ft_lstclear(&data->env_head, &del_lst);
 	exit(data->ret);
