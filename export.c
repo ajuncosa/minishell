@@ -47,7 +47,7 @@ void	ft_export(t_data *data, t_cmd *com)
 	//int		r;
 
 	data->ret = 0;
-	if (com->args == NULL)
+	if (com->args_str == NULL)
 	{
 		list = data->env_head;
 		while (list)
@@ -68,18 +68,18 @@ void	ft_export(t_data *data, t_cmd *com)
 		len_id = 0;
 		len_v = 0;
 
-		if (!export_errors(com->args[i]))
+		if (!export_errors(com->args_str[i]))
 		{
 			i++;
 			data->ret = 1;
 			continue ;
 		}
-		if (!ft_strchr(com->args[i], '='))
+		if (!ft_strchr(com->args_str[i], '='))
 		{
 			list = data->env_head;
 			while (list)
 			{
-				if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
+				if (!ft_strcmp(((t_env*)list->content)->id, com->args_str[i]))
 				{
 					flag = 1;
 					break;
@@ -95,7 +95,7 @@ void	ft_export(t_data *data, t_cmd *com)
 				if (!new)
 					ft_exit(data, com);
 				new->content = env;
-				((t_env*)new->content)->id = ft_strdup(com->args[i]);
+				((t_env*)new->content)->id = ft_strdup(com->args_str[i]);
 				if (!((t_env*)new->content)->id)
 					ft_exit(data, com);
 				((t_env*)new->content)->value = NULL;
@@ -104,16 +104,16 @@ void	ft_export(t_data *data, t_cmd *com)
 			i++;
 			continue ;
 		}
-		while (com->args[i][len_id] != '=')
+		while (com->args_str[i][len_id] != '=')
 			len_id++;
-		len_v = ft_strlen(&com->args[i][len_id + 1]);
+		len_v = ft_strlen(&com->args_str[i][len_id + 1]);
 		list = data->env_head;
 		while (list)
 		{
-			if (!ft_strncmp(((t_env*)list->content)->id, com->args[i], len_id))
+			if (!ft_strncmp(((t_env*)list->content)->id, com->args_str[i], len_id))
 			{
 				free(((t_env *)list->content)->value);
-				((t_env *)list->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
+				((t_env *)list->content)->value = ft_substr(com->args_str[i], len_id + 1, len_v);
 				flag = 1;
 				break;
 			}
@@ -128,10 +128,10 @@ void	ft_export(t_data *data, t_cmd *com)
 			if (!env)
 				ft_exit(data, com);
 			new->content = env;
-			((t_env *)new->content)->id = ft_substr(com->args[i], 0, len_id);
+			((t_env *)new->content)->id = ft_substr(com->args_str[i], 0, len_id);
 			if (!((t_env *)new->content)->id)
 				ft_exit(data, com);
-			((t_env *)new->content)->value = ft_substr(com->args[i], len_id + 1, len_v);
+			((t_env *)new->content)->value = ft_substr(com->args_str[i], len_id + 1, len_v);
 			if (!((t_env *)new->content)->value)
 				ft_exit(data, com);
 			ft_lstadd_back(&data->env_head, new);

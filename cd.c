@@ -28,22 +28,22 @@ void	ft_cd(t_data *data, t_cmd *com)
 		}
 		list = list->next;
 	}
-	if (com->args == NULL || !ft_strcmp(com->args[0], "~"))
+	if (com->args_str == NULL || !ft_strcmp(com->args_str[0], "~"))
 	{
 		path = ft_strjoin("/Users/", user);
 		if (chdir(path) == -1)
 		{
 			sterr = strerror(errno);
-			error_msn("cd", com->args[0], sterr);
+			error_msn("cd", com->args_str[0], sterr);
 		}
 		free(path);
 		data->ret = 0;
 		return ;
 	}
-	if (chdir(com->args[0]) == -1)
+	if (chdir(com->args_str[0]) == -1)
 	{
 		sterr = strerror(errno);
-		error_msn("cd", com->args[0], sterr);
+		error_msn("cd", com->args_str[0], sterr);
 		data->ret = 1;
 		return ;
 	}

@@ -46,7 +46,7 @@ void	ft_unset(t_data *data, t_cmd *com)
 	i = 0;
 	while (i < com->n_args)
 	{
-		if (!unset_errors(com->args[i]))
+		if (!unset_errors(com->args_str[i]))
 		{
 			i++;
 			data->ret = 1;
@@ -55,7 +55,7 @@ void	ft_unset(t_data *data, t_cmd *com)
 		list = data->env_head;
 		while (list)
 		{
-			if (!ft_strcmp(((t_env*)list->content)->id, com->args[i]))
+			if (!ft_strcmp(((t_env*)list->content)->id, com->args_str[i]))
 			{
 				if (list == data->env_head)
 				{

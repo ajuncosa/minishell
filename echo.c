@@ -46,16 +46,16 @@ void	ft_echo(t_data *data, t_cmd *com)
 	int	i;
 
 	i = 0;
-	if (!com->args)
+	if (!com->args_str)
 	{
 		write(1, "\n", 1);
 		data->ret = 0;
 		return ;
 	}
-	n = n_option(com->args, &i);
+	n = n_option(com->args_str, &i);
 	while (i < com->n_args)
 	{
-		write(1, com->args[i], ft_strlen(com->args[i]));
+		write(1, com->args_str[i], ft_strlen(com->args_str[i]));
 		if (i < com->n_args - 1)
 			write(1, " ", 1);
 		i++;

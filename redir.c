@@ -51,55 +51,57 @@ void		count_redir(t_cmd *com)
 
 int		arg_cleaner(t_cmd *com, t_redir *redir)
 {
-	char	**new;
 	int		i;
 	int		j;
 	int		k;
 	int		n_del;
+	char	*arg;
 
 	n_del = com->n_redir * 2;
-	new = malloc((com->n_args - n_del)  * sizeof(char *));
-	if (!new)
-		return (0);
+	if ((com->n_args - n_del) > 0)
+	{
+		com->args_str = malloc((com->n_args - n_del)  * sizeof(char *));
+		if (!com->args_str)
+			return (0);
+	}
 	i = 0;
 	j = 0;
 	k = 0;
 	while (i < com->n_args)
 	{
-		if (!ft_strcmp(com->args[i], ">") || !ft_strcmp(com->args[i], ">>") 
-		|| !ft_strcmp(com->args[i], "<"))
+		arg = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
+		if ((!ft_strcmp(arg, ">") || !ft_strcmp(arg, ">>") || !ft_strcmp(arg, "<")) && !com->args[i][0].esc)
 		{
-			redir[k].type = ft_strdup(com->args[i]);
+			redir[k].type = ft_strdup(arg);
 			if (!redir[k].type)
 				return (0);
-			redir[k].file = ft_strdup(com->args[i + 1]);
+			free(arg);
+			arg = struct_to_str(com->args[i + 1], 0, esc_strlen(com->args[i + 1]));
+			redir[k].file = ft_strdup(arg);
 			if (!redir[k].file)
 				return (0);
+			free(com->args[i]);
 			k++;
 			i++;
 		}
 		else 
 		{
-			new[j] = ft_strdup(com->args[i]);
-			if (!new[j])
+			com->args_str[j] = ft_strdup(arg);
+			if (!com->args_str[j])
 				return(0);
 			j++;
 		}
-		i++;
-	}
-	i = 0;
-	while (i < com->n_args)
-	{
 		free(com->args[i]);
+		free(arg);
 		i++;
 	}
 	free(com->args);
 	com->n_args = com->n_args - n_del;
-	com->args = NULL;
-	if (com->n_args > 0)
-		com->args = new;
-	else
-		free(new);
+	/*if (com->n_args == 0)
+	{
+		free(com->args_str);
+		com->args_str = NULL;
+	}*/
 	return(1);
 }
 
@@ -119,13 +121,25 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 
 	data->ret = 0;
 	count_redir(com);
-	printf("n_redir: %d\n", com->n_redir);
+	//printf("n_redir: %d\n", com->n_redir);
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
 		ft_exit(data, com);
 	if (!arg_cleaner(com, redir))
 		ft_exit(data, com);
-	/*last_in = -1;
+	/*i = 0;
+	while (i < com->n_args)
+	{
+		printf("post-clean arg[%d]: %s\n", i, com->args_str[i]);
+		i++;
+	}*/
+	/*i = 0;
+	while (i < com->n_redir)
+	{
+		printf("type: %s, file: %s\n", redir[i].type, redir[i].file);
+		i++;
+	}*/
+	last_in = -1;
 	last_out = -1;
 	fdin = -1;
 	fdout = -1;
@@ -242,5 +256,5 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		free(redir[i].file);
 		i++;
 	}
-	free(redir);*/
+	free(redir);
 }

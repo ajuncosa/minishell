@@ -146,7 +146,7 @@ int		save_args(t_letter **str, t_cmd *com, int *start)
 	}
 	return (1);
 }
-/*
+
 void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 {
 	int len;
@@ -155,7 +155,7 @@ void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 	if (!ft_strcmp(com->cmd, "echo"))
 		ft_echo(data, com);
 	else if (!ft_strcmp(com->cmd, "pwd"))
-		ft_pwd(data, com->args);
+		ft_pwd(data, com->args_str);
 	else if (!ft_strcmp(com->cmd, "export"))
 		ft_export(data, com);
 	else if (!ft_strcmp(com->cmd, "cd"))
@@ -163,13 +163,13 @@ void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 	else if (!ft_strcmp(com->cmd, "unset"))
 		ft_unset(data, com);
 	else if (!ft_strcmp(com->cmd, "env"))
-		ft_env(data, com->args);
+		ft_env(data, com->args_str);
 	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(data, com);
 	else
 		ft_cmd(com, envp, data);
 }
-*/
+
 void	cmd_manager(t_data *data, char **envp)
 {
 	int		fd[2];
@@ -177,6 +177,7 @@ void	cmd_manager(t_data *data, char **envp)
 	t_list	*lst;
 	char	*sterr;
 	int		status;
+	int		i;
 
 	lst = data->cmd_head;
 	fd_read = 0;
@@ -186,8 +187,24 @@ void	cmd_manager(t_data *data, char **envp)
 		{
 			if (check_if_redir(((t_cmd*)lst->content)))
 				redir_manager(((t_cmd*)lst->content), data, envp);
-			//else
-			//	cmd_caller(((t_cmd*)lst->content), data, envp);			
+			else //TODO: coger todo este else (excepto el cmd_caller) y ponerlo en otra función, sustituyendo el casteo raro por una variable sencilla, tal vez devolviendo 0 en caso de error y que el ft_exit lo haga aquí
+			{
+				if (((t_cmd*)lst->content)->n_args > 0)
+				{
+					((t_cmd*)lst->content)->args_str = malloc(((t_cmd*)lst->content)->n_args  * sizeof(char *));
+					if (!((t_cmd*)lst->content)->args_str)
+						ft_exit(data, ((t_cmd*)lst->content));
+				}
+				i = 0;
+				while (i < ((t_cmd*)lst->content)->n_args)
+				{
+					((t_cmd*)lst->content)->args_str[i] = struct_to_str(((t_cmd*)lst->content)->args[i], 0, esc_strlen(((t_cmd*)lst->content)->args[i]));
+					free(((t_cmd*)lst->content)->args[i]);
+					i++;
+				}
+				free(((t_cmd*)lst->content)->args);
+				cmd_caller(((t_cmd*)lst->content), data, envp);
+			}
 		}
 		/*if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
 		{
@@ -400,7 +417,7 @@ void	parser(t_data *data, char *str, char **envp)
 			data->ret = 0;
 			return ;
 		}
-		printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
+		//printf("n_args: %d\n", ((t_cmd*)new->content)->n_args);
 
 
 		if (((t_cmd*)new->content)->n_args == 0)
@@ -413,8 +430,6 @@ void	parser(t_data *data, char *str, char **envp)
 		if (((t_cmd*)new->content)->n_args > 0)
 		{
 			if (!(((t_cmd*)new->content)->args = malloc(((t_cmd*)new->content)->n_args * sizeof(t_letter *)))) //FIXME: alocando mas de lo que se debria a veces
-				ft_exit(data, com);
-			if (!(((t_cmd*)new->content)->args_str = malloc(((t_cmd*)new->content)->n_args * sizeof(char *)))) //FIXME: alocando mas de lo que se debria a veces
 				ft_exit(data, com);
 		}
 
@@ -436,7 +451,7 @@ void	parser(t_data *data, char *str, char **envp)
 		ft_lstadd_back(&data->cmd_head, new);
 	}
 
-	t_list *lst = data->cmd_head;
+	/*t_list *lst = data->cmd_head;
 	while (lst)
 	{
 		int j = 0;
@@ -454,7 +469,9 @@ void	parser(t_data *data, char *str, char **envp)
 			k++;
 		}
 		lst = lst->next;
-	}
+	}*/
+
+
 	//HACER  COMANDOS
 	cmd_manager(data, envp);
 	

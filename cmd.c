@@ -97,7 +97,7 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	j = 0;
 	while (j < com->n_args)
 	{
-		argv[i] = ft_strdup(com->args[j]);
+		argv[i] = ft_strdup(com->args_str[j]);
 		if (!argv[i])
 			ft_exit(data, com);
 		i++;

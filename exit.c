@@ -27,16 +27,16 @@ void	del_lst_cmd(void *cmd)
 		free(((t_cmd*)cmd)->cmd);
 	if (((t_cmd*)cmd)->args_str)
 	{
-		/*j = 0;		TODO: recorrer args_str hasta el \0 (y hacer que al crearlo haya un \0 al final del array de strings) para que no den problemas los frees si se sale antes de haber ejecutado los comandos, que es cuando vamos a crear el array de strings
+		j = 0;
 		while (j < ((t_cmd*)cmd)->n_args)
 		{
 			free(((t_cmd*)cmd)->args_str[j]);
 			j++;
-		}*/
+		}
 		free(((t_cmd*)cmd)->args_str);
 	}
 
-	if (((t_cmd*)cmd)->args)
+	/*if (((t_cmd*)cmd)->args)
 	{
 		j = 0;
 		while (j < ((t_cmd*)cmd)->n_args)
@@ -45,7 +45,7 @@ void	del_lst_cmd(void *cmd)
 			j++;
 		}
 		free(((t_cmd*)cmd)->args);
-	}
+	}*/
 	free((t_cmd*)cmd);
 }
 
