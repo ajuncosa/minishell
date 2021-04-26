@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/23 15:17:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/26 13:15:01 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,34 +78,55 @@ int		count_args(t_letter *str)
 {
 	int i;
 	int	n_args;
-	
+	int	redir;
+
+	redir = 0;
 	i = 0;
 	n_args = 0;
 	while (str[i].c != '\0')
 	{
 		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
+		{
+			if (redir)
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i].c);
+				return (-1);
+			}
 			break ;
+		}
 		if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)	//TODO: GESTIONAR AQUI LOS SYNTAX ERRORS?
 		{
+			if (redir)
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i].c);
+				return (-1);
+			}
 			n_args++;
 			while((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 				i++;
+			redir = 1;
 		}
 		else
 		{
 			while (!is_space_redir_or_endofcmd(str[i]))
 				i++;
 			n_args++;
+			redir = 0;
 		}
 		while (str[i].c == ' ' && !str[i].esc)
 			i++;
+	}
+	if (redir)
+	{
+		printf("syntax error near unexpected token `newline\'\n");
+		return (-1);
 	}
 	return (n_args);
 }
 
 int		save_args(t_letter **str, t_cmd *com, int *start)
 {
-	int			end;		//FIXME: echo $USER ; hola $aa (cuando acabas con la cosa esa que no existe), esto te divide el primer comando (echo $USER) en dos
+	int			end;
 	int			n;
 	t_letter	*tmp;
 	
@@ -193,7 +214,7 @@ void	cmd_manager(t_data *data, char **envp)
 				cmd_caller(((t_cmd*)lst->content), data, envp);
 			}
 		}
-		/*if (((t_cmd*)lst->content)->sep_1 == '|')	//FIXME: si hay pipes con un comando que no existe, tiene que dar el mensaje de command not found aunque el comando que no existe sea el primero. e.g. "fasdjh | ls"; si es el segundo el que no existe, no hace el primero (sólo imprime el error del segundo, el nuestro esto lo hace bien); si no existe ninguno, pone todos los mensajes de error
+		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
 			pipe(fd);
 			pid = fork();
@@ -210,7 +231,11 @@ void	cmd_manager(t_data *data, char **envp)
 				if (check_if_redir(((t_cmd*)lst->content)))
 					redir_manager(((t_cmd*)lst->content), data, envp);
 				else
+				{
+					if (!create_args_str((t_cmd*)lst->content))
+						ft_exit(data, (t_cmd*)lst->content);
 					cmd_caller(((t_cmd*)lst->content), data, envp);
+				}
 				exit(data->ret);
 			}
 			else if (pid < 0)
@@ -235,7 +260,11 @@ void	cmd_manager(t_data *data, char **envp)
 				if (check_if_redir(((t_cmd*)lst->content)))
 					redir_manager(((t_cmd*)lst->content), data, envp);
 				else
+				{
+					if (!create_args_str((t_cmd*)lst->content))
+						ft_exit(data, (t_cmd*)lst->content);
 					cmd_caller(((t_cmd*)lst->content), data, envp);
+				}
 				exit(data->ret);
 			}
 			else if (pid < 0)
@@ -247,7 +276,7 @@ void	cmd_manager(t_data *data, char **envp)
 			data->ret = WEXITSTATUS(status);
 			close(fd_read);
 			fd_read = 0;
-		}*/
+		}
 		lst = lst->next;
 	}
 }
@@ -311,7 +340,7 @@ t_letter	*line_to_struct(char *str, int len)
 }
 
 void	parser(t_data *data, char *str, char **envp)
-{					//FIXME: errores a gestionar: {< | hola} {ls ; <} {< ;}  {<} {>} {<  <} {> >} {=>}, si pones {>|} ignora el pipe (creo), si acaba en redirección
+{
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
 	int   		i;
@@ -333,8 +362,7 @@ void	parser(t_data *data, char *str, char **envp)
 	data->line = line_to_struct(str, len);
 	if (!data->line)
 		ft_exit(data, com);
-	dollar_finder(&data->env_head, &data->line, data->ret);
-	
+	dollar_finder(&data->env_head, &data->line, data->ret);	
 	while (data->line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -401,7 +429,7 @@ void	parser(t_data *data, char *str, char **envp)
 			free(com);
 			free(data->line);
 			ft_lstclear(&data->cmd_head, &del_lst_cmd);
-			data->ret = 0;
+			data->ret = 258;
 			return ;
 		}
 		//printf("n_args: %d\n", (com)->n_args);
@@ -419,15 +447,15 @@ void	parser(t_data *data, char *str, char **envp)
 
 		// GUARDAR ARGUMENTOS
 		if (!(save_args(&data->line, com, &i)))
-			ft_exit(data, com);	
+			ft_exit(data, com);
 
 		// BUSCAR COMANDO Y GUARDAR POR SEPARADO
 		if (!find_cmd(com))
 			ft_exit(data, com);
 
 		// GUARDAR sep_1
-		if (str[i] == ';' || str[i] == '|')
-			 (com)->sep_1 = str[i];
+		if ((data->line[i].c == ';' || data->line[i].c == '|') && !data->line[i].esc)
+			 (com)->sep_1 = data->line[i].c;
 
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&data->cmd_head, new);
@@ -462,6 +490,6 @@ void	parser(t_data *data, char *str, char **envp)
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	free(data->line);
-
+	data->line = NULL;
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
 }

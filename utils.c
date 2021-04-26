@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 18:08:42 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/26 10:58:03 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más sitios!! 
+char	*is_in_env(t_list **env_head, char *str)
 {
 	t_list *list;
 
@@ -26,7 +26,7 @@ char	*is_in_env(t_list **env_head, char *str) //TODO: se puede usar en más siti
 	return (NULL);
 }
 
-int	is_space_quote_redir_or_endofcmd(t_letter c) //puede que no sirva
+int	is_space_quote_redir_or_endofcmd(t_letter c) // TODO: puede que no estemos usando esta función en ningún sitio?
 {
 	if (c.c == ' ' || (c.c == '"' && !c.esc) || (c.c == '\'' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
 	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
