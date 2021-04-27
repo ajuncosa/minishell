@@ -3,18 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/22 11:47:54 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/13 15:49:58 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/27 19:47:24 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	unsetter(t_data *data, char **args_str, int *i)
+{
+	t_list	*prev;
+	t_list	*list;
+
+	list = data->env_head;
+	while (list)
+	{
+		if (!ft_strcmp(((t_env *)list->content)->id, args_str[*i]))
+		{
+			if (list == data->env_head)
+			{
+				data->env_head = list->next;
+				ft_lstdelone(list, &del_lst);
+			}
+			else
+			{
+				prev->next = list->next;
+				ft_lstdelone(list, &del_lst);
+			}
+			break ;
+		}
+		prev = list;
+		list = list->next;
+	}
+}
+
 int	unset_errors(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -36,12 +63,8 @@ int	unset_errors(char *str)
 
 void	ft_unset(t_data *data, t_cmd *com)
 {
-	t_list	*prev;
-	t_list	*list;
 	int		i;
-	//int		r;
 
-	//r = 0;
 	data->ret = 0;
 	i = 0;
 	while (i < com->n_args)
@@ -52,26 +75,7 @@ void	ft_unset(t_data *data, t_cmd *com)
 			data->ret = 1;
 			continue ;
 		}
-		list = data->env_head;
-		while (list)
-		{
-			if (!ft_strcmp(((t_env*)list->content)->id, com->args_str[i]))
-			{
-				if (list == data->env_head)
-				{
-					data->env_head = list->next;
-					ft_lstdelone(list, &del_lst);
-				}
-				else
-				{
-					prev->next = list->next;
-					ft_lstdelone(list, &del_lst);
-				}
-				break ;
-			}
-			prev = list;
-			list = list->next;
-		}
+		unsetter(data, com->args_str, &i);
 		i++;
 	}
 }

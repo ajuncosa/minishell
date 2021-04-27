@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 15:50:53 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/27 18:12:57 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@ void	ft_env(t_data *data, char **args)
 	lst = data->env_head;
 	while (lst)
 	{
-		if (((t_env*)lst->content)->value != NULL)
-			printf("%s=%s\n",((t_env*)lst->content)->id, ((t_env*)lst->content)->value);
+		if (((t_env *)lst->content)->value != NULL)
+			printf("%s=%s\n", ((t_env *)lst->content)->id,
+				((t_env *)lst->content)->value);
 		lst = lst->next;
 	}
 	data->ret = 0;

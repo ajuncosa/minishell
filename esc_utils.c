@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/22 19:51:56 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/27 19:24:45 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_letter	*esc_dup(t_letter *str)
 		i++;
 	}
 	copy[i].c = '\0';
-	return (copy);	
+	return (copy);
 }
 
 t_letter	*esc_join(t_letter *s1, t_letter *s2)
