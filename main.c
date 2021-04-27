@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/26 13:26:27 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/27 14:24:18 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,44 @@ void ctrl_c(int sig)	//FIXME: si ejecutas la minishell dentro de la minishell, t
 		write(1, "\n", 1);
 }
 
+void	ctrl_d(int ctrl, char **str, t_data *data)
+{
+	char *buf;
+	char *tmp;
+
+	buf = NULL;
+	tmp = NULL;
+	if ((*str)[0] != '\0')
+		buf = *str;
+	while (ctrl == 0 && buf)
+	{
+		ctrl = get_next_line(0, str);
+		tmp = ft_strjoin(buf, *str);
+		free(buf);
+		buf = tmp;
+		free(*str);
+	}
+	if (buf)
+		*str = buf;
+	if (!ctrl && !buf)
+	{
+		free(*str);
+		ft_exit(data, NULL);
+	}
+}
+
 int		main(int argc, char **argv, char **envp)		//TODO: no usamos lstnew en ningún sitio pero igual nos viene bien??? WTF
 {
 	int		ctrl;
 	int		i;
-	//int		ret;
-	//char	str[1024];								//FIXME: 1024
 	char	**line;
 	char	*str;
-	//char	*user;
 	char	*oldpwd;
-	//t_list	*head;
 	t_list	*new;
 	t_list	*lst;
 	t_env	*env;
 	size_t	user_len;
-	char	*tmp;
-	t_data	data;		//TODO: a lo mejor queremos cambiar todos los returns y utilizar el data.ret en todas las funciones?? se podría??
+	t_data	data;
 
 
 	signal(SIGINT, ctrl_c);
@@ -109,17 +130,16 @@ int		main(int argc, char **argv, char **envp)		//TODO: no usamos lstnew en ning�
 	pid = -1;
 	while (1)
 	{
+		data.line = NULL; 
+
 		write(1, "\033[1;37m", 7);
 		write(1, user, user_len);
 		write(1, "> ", 2);
 		write(1, "\033[0m", 4);
 		ctrl = get_next_line(0, &str);	//TODO: revisar buffersize??
+		if (!ctrl)
+			ctrl_d(ctrl, &str, &data);
 		parser(&data, str, envp);
-		if (!ctrl && str[0] == '\0')			 //FIXME: no funciona
-		{
-			free(str);
-			ft_exit(&data, NULL);
-		}
 		free(str);
 	}
 	ft_exit(&data, NULL);

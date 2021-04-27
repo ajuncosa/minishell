@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/26 11:05:10 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/27 14:05:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void	ft_exit(t_data *data, t_cmd *com)
 			}
 		}
 	}
+
 	if (user)
 		free(user);
 	if (data->line)

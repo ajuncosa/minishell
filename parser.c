@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/26 13:15:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/27 14:07:03 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,17 +340,15 @@ t_letter	*line_to_struct(char *str, int len)
 }
 
 void	parser(t_data *data, char *str, char **envp)
-{
+{					//FIXME: syntax error si viene un | > sin nada entre medias
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
 	int   		i;
 	int			len;
 	t_list		*new;
 	t_cmd		*com;
-	//t_letter	*line;
 
 	i = 0;
-	data->line = NULL; 
 	com = NULL;
 	data->cmd_head = NULL;
 	len = esc_size(str);
