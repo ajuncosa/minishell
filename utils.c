@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 18:25:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 21:07:16 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	create_args_str(t_cmd *com)
 	while (i < com->n_args)
 	{
 		com->args_str[i] = struct_to_str(com->args[i], 0,
-			esc_strlen(com->args[i]));
+				esc_strlen(com->args[i]));
 		free(com->args[i]);
 		i++;
 	}

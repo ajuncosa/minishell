@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/27 19:53:53 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:41:18 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	export_list(t_data *data, char **args_str, t_list *list)
+void	export_list(t_data *data, char **args_str)
 {
+	t_list *list;
+
 	if (args_str == NULL)
 	{
 		list = data->env_head;
@@ -64,7 +66,7 @@ void	ft_export(t_data *data, t_cmd *com)
 	int		flag;
 
 	data->ret = 0;
-	export_list(data, com->args_str, list);
+	export_list(data, com->args_str);
 	i = 0;
 	while (i < com->n_args)
 	{

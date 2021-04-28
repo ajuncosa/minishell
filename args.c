@@ -6,11 +6,35 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:03:30 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 15:49:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 21:07:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	redir_filter(t_cmd *com, int *found)
+{
+	int		n;
+	char	*arg;
+
+	n = 0;
+	while (n < com->n_args)
+	{
+		arg = struct_to_str(com->args[n], 0, esc_strlen(com->args[n]));
+		if (ft_strcmp(arg, ">") && ft_strcmp(arg, "<") && ft_strcmp(arg, ">>"))
+		{
+			com->cmd = arg;
+			if (!com->cmd)
+				return (-1);
+			free(com->args[n]);
+			*found = 1;
+			return (n);
+		}
+		free(arg);
+		n += 2;
+	}
+	return (n);
+}
 
 int	find_cmd(t_cmd *com)
 {
@@ -18,26 +42,13 @@ int	find_cmd(t_cmd *com)
 	int			j;
 	int			n;
 	int			found;
-	char 		*arg;
 	t_letter	**tmp;
 
 	n = 0;
 	found = 0;
-	while (n < com->n_args)
-	{
-		arg = struct_to_str(com->args[n], 0, esc_strlen(com->args[n]));
-		if (strcmp(arg, ">") && strcmp(arg, "<") && strcmp(arg, ">>"))
-		{
-			com->cmd = arg;
-			if (!com->cmd)
-				return (0);
-			free(com->args[n]);
-			found = 1;
-			break;
-		}
-		free(arg);
-		n += 2;
-	}
+	n = redir_filter(com, &found);
+	if (n == -1)
+		return (0);
 	if (found)
 		tmp = malloc((com->n_args - 1) * sizeof(t_letter *));
 	else
@@ -51,7 +62,7 @@ int	find_cmd(t_cmd *com)
 		if (found && i == n)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		tmp[j] = esc_dup(com->args[i]);
 		if (!tmp[j])
@@ -74,9 +85,9 @@ int	find_cmd(t_cmd *com)
 	return (1);
 }
 
-int		count_args(t_letter *str)
+int	count_args(t_letter *str)
 {
-	int i;
+	int	i;
 	int	n_args;
 
 	i = 0;
@@ -88,7 +99,7 @@ int		count_args(t_letter *str)
 		if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 		{
 			n_args++;
-			while((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
+			while ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 				i++;
 		}
 		else
@@ -103,12 +114,12 @@ int		count_args(t_letter *str)
 	return (n_args);
 }
 
-int		save_args(t_letter **str, t_cmd *com, int *start)
+int	save_args(t_letter **str, t_cmd *com, int *start)
 {
 	int			end;
 	int			n;
 	t_letter	*tmp;
-	
+
 	tmp = quote_hunter(*str);
 	if (!tmp)
 		return (0);
@@ -120,9 +131,11 @@ int		save_args(t_letter **str, t_cmd *com, int *start)
 	while (n < com->n_args)
 	{
 		end = *start;
-		if (((*str)[*start].c == '>' || (*str)[*start].c == '<') && !(*str)[*start].esc)
+		if (((*str)[*start].c == '>' || (*str)[*start].c == '<')
+				&& !(*str)[*start].esc)
 		{
-			while (((*str)[end].c == '>' || (*str)[end].c == '<') && !(*str)[end].esc)
+			while (((*str)[end].c == '>' || (*str)[end].c == '<')
+				&& !(*str)[end].esc)
 				end++;
 		}
 		else
