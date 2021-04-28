@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/23 11:58:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 17:14:34 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si echo $PW\D hace lo que tiene que hacer
+int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: echo $PW\D: si pones \ a mitad del nombre de la var no deberia funcionar lol 
 {
 	int			start;
 	int			end;
@@ -33,8 +33,8 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 			start++;
 			end = start;
 			if ((*str)[start].c == ' ' || (*str)[start].c == '\0')
-				return (1);
-			while (ft_isalnum((*str)[end].c) || (*str)[end].c == '_')	//TODO: si pones \ a mitad del nombre de la var no deberia funcionar lol 
+				continue ;
+			while ((ft_isalnum((*str)[end].c) || (*str)[end].c == '_') && !(*str)[end].esc)	
 				end++;
 			check = struct_to_str(*str, start, end - start);
 			if (!check)
@@ -42,6 +42,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 			if ((*str)[start].c == '?')
 			{
 				value = ft_itoa(ret);
+				end++;
 				if (!value)
 					return (0);
 			}
@@ -55,7 +56,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 					return (0);
 				tmp1 = esc_substr(*str, 0, start - 1);
 				if (!tmp1)
-					return (0);
+				return (0);
 				tmp2 = esc_join(tmp1, struct_val);
 				if (!tmp2)
 					return (0);
@@ -72,20 +73,6 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 			}
 			else
 			{
-				/*if ((start - 2) >= 0)
-				{
-					if (is_space_redir_or_endofcmd((*str)[start - 2]) && is_space_redir_or_endofcmd((*str)[end]))
-						*n_args -= 1;
-				}
-				else 
-				{
-					//printf("entro\n");
-					if (is_space_redir_or_endofcmd((*str)[end]))
-						*n_args -= 1;
-				}*/
-				/*printf("|%c|\n", (*str)[end].c);
-					if ((*str)[end].c == '\0')
-						printf("final\n");*/
 				tmp1 = esc_substr(*str, 0, start - 1);
 				if (!tmp1)
 					return (0);
@@ -96,7 +83,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: probar si 
 				*str = tmp2;
 				free(tmp1);
 			}
-			start -= 2;		//TODO: checkear si esto me ha roto algo en estas envs
+			start -= 2;
 		}
 		start++;
 	}

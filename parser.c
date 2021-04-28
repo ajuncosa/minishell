@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 15:48:14 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 17:18:21 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,6 @@ int	syntax_errors(t_letter *str)
 
 void	parser(t_data *data, char *str, char **envp)
 {
-					//TODO: añadir parse errors de >>> <<< ><>< y eso
-					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
 	int   		i;
 	int			len;
 	t_list		*new;

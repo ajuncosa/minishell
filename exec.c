@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd.c                                              :+:      :+:    :+:   */
+/*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 12:07:24 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 16:20:53 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	int 	i;
 	int		j;
 	t_list	*lst;
-	//pid_t	pid;
 	char	*path;
 	char	**argv;
 	char	*sterr;

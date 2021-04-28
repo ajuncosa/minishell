@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:03:30 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 15:30:12 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 15:49:08 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,6 @@ int		save_args(t_letter **str, t_cmd *com, int *start)
 		return (0);
 	free(*str);
 	*str = tmp;
-	/*int i = 0;
-	while (i < esc_strlen(*str))
-	{
-		printf("str: %c esc: %d\n", (*str)[i].c, (*str)[i].esc);
-		i++;
-	}*/
 	while ((*str)[*start].c == ' ' && !(*str)[*start].esc)
 		*start += 1;
 	n = 0;

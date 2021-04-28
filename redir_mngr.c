@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_mngr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 12:15:08 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 15:51:26 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 	int     fd;
 	int 	fdin;
 	int		fdout;
-	//int     pid;
-	//int		r;
 	int		status;
 	char 	*sterr;
 	int		last_in;
@@ -28,24 +26,11 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 
 	data->ret = 0;
 	count_redir(com);
-	//printf("n_redir: %d\n", com->n_redir);
 	redir = malloc(com->n_redir * sizeof(t_redir));
 	if (!redir)
 		ft_exit(data, com);
 	if (!arg_cleaner(com, redir))
 		ft_exit(data, com);
-	/*i = 0;
-	while (i < com->n_args)
-	{
-		printf("post-clean arg[%d]: %s\n", i, com->args_str[i]);
-		i++;
-	}*/
-	/*i = 0;
-	while (i < com->n_redir)
-	{
-		printf("type: %s, file: %s\n", redir[i].type, redir[i].file);
-		i++;
-	}*/
 	last_in = -1;
 	last_out = -1;
 	fdin = -1;
