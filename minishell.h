@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 12:17:54 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 12:32:19 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_data
 	t_list		*env_head;
 	t_list		*cmd_head;
 	t_letter	*line;
-	//char	*user;
 	int			ret;
 	int			std_in;
 	int 		std_out;
@@ -70,29 +69,29 @@ pid_t	pid;
 void		quit(int sig);
 void		ctrl_c(int sig);
 void		ctrl_d(int ctrl, char **str, t_data *data);
+void		parser(t_data *data, char *str, char **envp);
 int			count_args(t_letter *str);
 int			save_args(t_letter **str, t_cmd *com, int *start);
 int			find_cmd(t_cmd *com);
 void		cmd_manager(t_data *data, char **envp);
+void		cmd_caller(t_cmd *com, t_data *data, char **envp);
 void		ft_echo(t_data *data, t_cmd *com);
 void		ft_env(t_data *data, char **args);
-void		ft_exit(t_data *data, t_cmd *com);
-void		del_lst(void *env);
-void		del_lst_cmd(void *cmd);
-void		parser(t_data *data, char *str, char **envp);
-void		cmd_caller(t_cmd *com, t_data *data, char **envp);
-int			create_args_str(t_cmd *com);
 void		ft_pwd(t_data *data, char **args);
 void		ft_export(t_data *data, t_cmd *com);
 void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);
 void 		ft_cmd(t_cmd *com, char **envp, t_data *data);
 char		*ft_pathfinder(char *cmd, t_data *data);
+void		ft_exit(t_data *data, t_cmd *com);
+void		del_lst(void *env);
+void		del_lst_cmd(void *cmd);
+int			create_args_str(t_cmd *com);
 int			check_if_redir(t_cmd *com);
 void		count_redir(t_cmd *com);
 int			arg_cleaner(t_cmd *com, t_redir *redir);
 void		redir_manager(t_cmd *com, t_data *data, char **envp);
-int			dollar_finder(t_list **env_head, t_letter **str, int ret/*, int *n_args*/);
+int			dollar_finder(t_list **env_head, t_letter **str, int ret);
 char		*is_in_env(t_list **env_head, char *str);
 int			is_space_quote_redir_or_endofcmd(t_letter c);
 int			is_space_redir_or_endofcmd(t_letter c);

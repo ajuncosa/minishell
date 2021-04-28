@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 12:10:16 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 12:52:58 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	parser(t_data *data, char *str, char **envp)
 
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
 		com->n_args = count_args(&data->line[i]);
-		if (com->n_args == -1) //FIXME:Esto solo se da si count_args tiene un parsing error
+		if (com->n_args == -1)
 		{
 			free(new);
 			free(com);
