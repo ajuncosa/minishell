@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/26 10:58:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 11:41:29 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,6 @@ char	*is_in_env(t_list **env_head, char *str)
 		list = list->next;
 	}
 	return (NULL);
-}
-
-int	is_space_quote_redir_or_endofcmd(t_letter c) // TODO: puede que no estemos usando esta función en ningún sitio?
-{
-	if (c.c == ' ' || (c.c == '"' && !c.esc) || (c.c == '\'' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
-	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
-		return (1);
-	else
-		return (0);
 }
 
 t_letter	*quote_hunter(t_letter *str)

@@ -6,61 +6,11 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/27 19:24:45 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 12:09:57 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	esc_size(char *str)
-{
-	int	quote;
-	int	i;
-	int	n;
-
-	i = 0;
-	n = 0;
-	quote = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' && quote != 2)
-		{
-			if (!quote)
-				quote = 1;
-			else if (quote == 1)
-				quote = 0;
-		}
-		else if (str[i] == '"' && quote != 1)
-		{
-			if (!quote)
-				quote = 2;
-			else if (quote == 2)
-				quote = 0;
-		}
-		else if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
-		{
-			i++;
-			if (str[i] == '\0')
-			{
-				write(2, "Error: open backslash\n", 23);
-				return (-1);
-			}
-		}
-		n++;
-		i++;
-	}
-	if (quote == 1)
-	{
-		write(2, "Error: open quote\n", 18);
-		return (-1);
-	}
-	else if (quote == 2)
-	{
-		write(2, "Error: open dquote\n", 19);
-		return (-1);
-	}
-	return (n);
-}
 
 int	esc_strlen(t_letter *str)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/23 13:30:09 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 12:17:54 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,28 +67,39 @@ typedef struct s_data
 char 	*user;
 pid_t	pid;
 
-void	ft_echo(t_data *data, t_cmd *com);
-void	ft_env(t_data *data, char **args);
-void	ft_exit(t_data *data, t_cmd *com);
-void	del_lst(void *env);
-void	del_lst_cmd(void *cmd);
-void	parser(t_data *data, char *str, char **envp);
-void	cmd_caller(t_cmd *com, t_data *data, char **envp);
-int		create_args_str(t_cmd *com);
-void	ft_pwd(t_data *data, char **args);
-void	ft_export(t_data *data, t_cmd *com);
-void	ft_unset(t_data *data, t_cmd *com);
-void	ft_cd(t_data *data, t_cmd *com);
-void 	ft_cmd(t_cmd *com, char **envp, t_data *data);
-int		check_if_redir(t_cmd *com);
-void	redir_manager(t_cmd *com, t_data *data, char **envp);
-int		dollar_finder(t_list **env_head, t_letter **str, int ret/*, int *n_args*/);
-char	*is_in_env(t_list **env_head, char *str);
-int		is_space_quote_redir_or_endofcmd(t_letter c);
-int		is_space_redir_or_endofcmd(t_letter c);
-void	error_msn(char *cmd, char *str, char *txt);
-int		esc_size(char *str);
-char	*struct_to_str(t_letter *struc, int start, int len);
+void		quit(int sig);
+void		ctrl_c(int sig);
+void		ctrl_d(int ctrl, char **str, t_data *data);
+int			count_args(t_letter *str);
+int			save_args(t_letter **str, t_cmd *com, int *start);
+int			find_cmd(t_cmd *com);
+void		cmd_manager(t_data *data, char **envp);
+void		ft_echo(t_data *data, t_cmd *com);
+void		ft_env(t_data *data, char **args);
+void		ft_exit(t_data *data, t_cmd *com);
+void		del_lst(void *env);
+void		del_lst_cmd(void *cmd);
+void		parser(t_data *data, char *str, char **envp);
+void		cmd_caller(t_cmd *com, t_data *data, char **envp);
+int			create_args_str(t_cmd *com);
+void		ft_pwd(t_data *data, char **args);
+void		ft_export(t_data *data, t_cmd *com);
+void		ft_unset(t_data *data, t_cmd *com);
+void		ft_cd(t_data *data, t_cmd *com);
+void 		ft_cmd(t_cmd *com, char **envp, t_data *data);
+char		*ft_pathfinder(char *cmd, t_data *data);
+int			check_if_redir(t_cmd *com);
+void		count_redir(t_cmd *com);
+int			arg_cleaner(t_cmd *com, t_redir *redir);
+void		redir_manager(t_cmd *com, t_data *data, char **envp);
+int			dollar_finder(t_list **env_head, t_letter **str, int ret/*, int *n_args*/);
+char		*is_in_env(t_list **env_head, char *str);
+int			is_space_quote_redir_or_endofcmd(t_letter c);
+int			is_space_redir_or_endofcmd(t_letter c);
+void		error_msn(char *cmd, char *str, char *txt);
+int			esc_size(char *str);
+t_letter	*line_to_struct(char *str, int len);
+char		*struct_to_str(t_letter *struc, int start, int len);
 t_letter	*str_to_struct(char *str);
 t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
