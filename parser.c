@@ -3,17 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 12:52:58 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 15:48:14 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	syntax_errors(t_letter *str)
+{
+	int		i;
+	int		check;
+	char	flag;
+
+	i = 0;
+	flag = 0;
+	while (str[i].c == ' ' && !str[i].esc)
+		i++;
+	if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
+	{
+		printf("syntax error near unexpected token `%c\'\n", str[i].c);
+		return (0);
+	}
+	while(str[i].c != '\0')
+	{
+		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
+		{
+			if (flag)
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i].c);
+				return (0);
+			}
+			if (str[i].c == ';')
+				flag = ';';
+			else if (str[i].c == '|')
+				flag = '|';
+			i++;
+		}
+		else if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
+		{
+			if (flag)
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i].c);
+				return (0);
+			}
+			flag = 'r';
+			check = i;
+			if (str[i].c == '>')
+			{
+				while(str[i].c == '>' && !str[i].esc && (i - check) < 2)
+					i++;
+			}
+			else if (str[i].c == '<')
+			{
+				while(str[i].c == '<' && !str[i].esc && (i - check) < 1)
+					i++;
+			}
+			if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
+			{
+				printf("syntax error near unexpected token `%c\'\n", str[i - 1].c);
+				return (0);
+			}
+		}
+		else
+		{
+			flag = 0;
+			while (!is_space_redir_or_endofcmd(str[i]))
+				i++;
+		}
+		while (str[i].c == ' ' && !str[i].esc)
+			i++;
+	}
+	if (flag == '|')
+	{
+		printf("Error: open pipe\n");
+		return (0);
+	}
+	if (flag == 'r')
+	{
+		printf("syntax error near unexpected token `newline\'\n");
+		return (0);
+	}
+	return (1);
+}
+
 void	parser(t_data *data, char *str, char **envp)
-{					//FIXME: syntax error si viene un | > sin nada entre medias
+{
 					//TODO: añadir parse errors de >>> <<< ><>< y eso
 					//FIXME: echo hola ; $aaa | echo hola => tiene que hacer los dos comandos aunque el del medio esté vacío, no dar syntax error
 	int   		i;
@@ -33,7 +110,13 @@ void	parser(t_data *data, char *str, char **envp)
 	data->line = line_to_struct(str, len);
 	if (!data->line)
 		ft_exit(data, com);
-	dollar_finder(&data->env_head, &data->line, data->ret);	
+	dollar_finder(&data->env_head, &data->line, data->ret);
+	if (!syntax_errors(data->line))
+	{
+		free(data->line);
+		data->ret = 258;
+		return ;
+	}
 	while (data->line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
@@ -50,46 +133,16 @@ void	parser(t_data *data, char *str, char **envp)
 		com->args_str = NULL;
 		com->cmd = NULL;
 	
-		while (data->line[i].c == ' ')
+		while (data->line[i].c == ' ' && !data->line[i].esc)
 			i++;
 
 		// BUSCAR sep_0 (el separador de comandos (; o |) que viene antes del comando actual)
 		if ((data->line[i].c == ';' || data->line[i].c == '|') && !data->line[i].esc)
 		{
-			if (!data->cmd_head)
-			{
-				printf("syntax error near unexpected token `%c\'\n", data->line[i].c);
-				free(new);
-				free(com);
-				free(data->line);
-				data->ret = 258;
-				return ;
-			}
-			else
-				com->sep_0 = data->line[i].c;
+			com->sep_0 = data->line[i].c;
 			i++;
-			while (data->line[i].c == ' ')
+			while (data->line[i].c == ' ' && !data->line[i].esc)
 				i++;
-			if ((data->line[i].c == ';' || data->line[i].c == '|') && !data->line[i].esc)
-			{
-				printf("syntax error near unexpected token `%c\'\n", data->line[i].c);
-				free(new);
-				free(com);
-				free(data->line);
-				ft_lstclear(&data->cmd_head, &del_lst_cmd);
-				data->ret = 258;
-				return ;
-			}
-			if (com->sep_0 == '|' && data->line[i].c == '\0')
-			{
-				printf("Error: open pipe\n");
-				free(new);
-				free(com);
-				free(data->line);
-				ft_lstclear(&data->cmd_head, &del_lst_cmd);
-				data->ret = 258;
-				return ;
-			}
 		}
 
 		// CONTAR ARGUMENTOS Y ALOCAR ARGS
@@ -131,27 +184,6 @@ void	parser(t_data *data, char *str, char **envp)
 		//GUARDAR COMANDO EN LISTA
 		ft_lstadd_back(&data->cmd_head, new);
 	}
-
-	/*t_list *lst = data->cmd_head;
-	while (lst)
-	{
-		int j = 0;
-			printf("cmd: %s\n", ((t_cmd*)lst->content)->cmd);
-		int k = 0;
-		while (k < ((t_cmd*)lst->content)->n_args)
-		{
-			j = 0;
-			printf("arg %d\n", k);
-			while (((t_cmd*)lst->content)->args[k][j].c != '\0')
-			{
-				printf("str: %c esc: %d\n", ((t_cmd*)lst->content)->args[k][j].c, ((t_cmd*)lst->content)->args[k][j].esc);
-				j++;
-			}
-			k++;
-		}
-		lst = lst->next;
-	}*/
-
 
 	//HACER  COMANDOS
 	cmd_manager(data, envp);

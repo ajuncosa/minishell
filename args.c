@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:03:30 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 12:04:10 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 15:30:12 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,48 +78,27 @@ int		count_args(t_letter *str)
 {
 	int i;
 	int	n_args;
-	int	redir;
 
-	redir = 0;
 	i = 0;
 	n_args = 0;
 	while (str[i].c != '\0')
 	{
 		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
-		{
-			if (redir)
-			{
-				printf("syntax error near unexpected token `%c\'\n", str[i].c);
-				return (-1);
-			}
 			break ;
-		}
-		if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)	//TODO: GESTIONAR AQUI LOS SYNTAX ERRORS?
+		if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 		{
-			if (redir)
-			{
-				printf("syntax error near unexpected token `%c\'\n", str[i].c);
-				return (-1);
-			}
 			n_args++;
 			while((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
 				i++;
-			redir = 1;
 		}
 		else
 		{
 			while (!is_space_redir_or_endofcmd(str[i]))
 				i++;
 			n_args++;
-			redir = 0;
 		}
 		while (str[i].c == ' ' && !str[i].esc)
 			i++;
-	}
-	if (redir)
-	{
-		printf("syntax error near unexpected token `newline\'\n");
-		return (-1);
 	}
 	return (n_args);
 }
