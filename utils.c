@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 11:41:29 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:25:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 char	*is_in_env(t_list **env_head, char *str)
 {
-	t_list *list;
+	t_list	*list;
 
 	list = *env_head;
 	while (list)
 	{
-		if (!ft_strcmp(str, ((t_env*)list->content)->id))
-			return (((t_env*)list->content)->value);
+		if (!ft_strcmp(str, ((t_env *)list->content)->id))
+			return (((t_env *)list->content)->value);
 		list = list->next;
 	}
 	return (NULL);
@@ -55,17 +55,18 @@ t_letter	*quote_hunter(t_letter *str)
 int	create_args_str(t_cmd *com)
 {
 	int	i;
-	
+
 	if (com->n_args > 0)
 	{
-		com->args_str = malloc(com->n_args  * sizeof(char *));
+		com->args_str = malloc(com->n_args * sizeof(char *));
 		if (!com->args_str)
 			return (0);
 	}
 	i = 0;
 	while (i < com->n_args)
 	{
-		com->args_str[i] = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
+		com->args_str[i] = struct_to_str(com->args[i], 0,
+			esc_strlen(com->args[i]));
 		free(com->args[i]);
 		i++;
 	}
@@ -76,8 +77,9 @@ int	create_args_str(t_cmd *com)
 
 int	is_space_redir_or_endofcmd(t_letter c)
 {
-	if ((c.c == ' ' && !c.esc) || (c.c == '<' && !c.esc) || (c.c == '>' && !c.esc)
-	|| (c.c == ';' && !c.esc) || (c.c == '|' && !c.esc) || c.c == '\0')
+	if ((c.c == ' ' && !c.esc) || (c.c == '<' && !c.esc)
+		|| (c.c == '>' && !c.esc) || (c.c == ';' && !c.esc)
+		|| (c.c == '|' && !c.esc) || c.c == '\0')
 		return (1);
 	else
 		return (0);

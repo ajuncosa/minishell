@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 17:18:21 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:09:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,11 @@ void	parser(t_data *data, char *str, char **envp)
 	while (data->line[i].c != '\0')
 	{
 		// ALOCAR LISTA Y CONTENT
-		if (!(new = malloc(sizeof(t_list))))
-			ft_exit(data, com);
+		
 		if (!(com = malloc(sizeof(t_cmd))))
 			ft_exit(data, com);
-		new->content = com;
+		if (!(new = ft_lstnew(com)))
+			ft_exit(data, com);
 
 		// INICIALIZAR COSAS
 		com->sep_0 = '0';
@@ -187,7 +187,7 @@ void	parser(t_data *data, char *str, char **envp)
 	cmd_manager(data, envp);
 	
 	//REINICIAR PID PARA PODER HACER CTRL-C CUANDO UN PROCESO DEJE LA PID CAMBIADA AL TERMINAR
-	pid = -1;
+	g_pid = -1;
 
 	// FREES DE ESTA LÍNEA DE COMANDOS
 	free(data->line);

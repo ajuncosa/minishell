@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/27 14:05:20 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:08:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void	ft_exit(t_data *data, t_cmd *com)
 		}
 	}
 
-	if (user)
-		free(user);
+	if (g_user)
+		free(g_user);
 	if (data->line)
 		free(data->line);
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);

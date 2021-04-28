@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 16:20:53 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:10:59 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	}
 	
 	//EJECUTAR CON EXECVE
-	pid = fork();
-	if (pid == 0)
+	g_pid = fork();
+	if (g_pid == 0)
 	{
 		if (execve(com->cmd, argv, envp) == -1)
 		{
@@ -75,12 +75,12 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		}
 		exit(127);
 	}
-	else if (pid < 0)
+	else if (g_pid < 0)
 	{
 		sterr = strerror(errno);
 		error_msn(NULL, NULL, sterr);
 	}
-	waitpid(pid, &status, 0);
+	waitpid(g_pid, &status, 0);
 	data->ret = WEXITSTATUS(status);
 	i = 0;
 	while (argv[i])

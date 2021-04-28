@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 17:14:34 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:25:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	dollar_finder(t_list **env_head, t_letter **str, int ret)	//TODO: echo $PW\D: si pones \ a mitad del nombre de la var no deberia funcionar lol 
+int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 {
 	int			start;
 	int			end;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_mngr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 12:05:23 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:11:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void	cmd_manager(t_data *data, char **envp)
 		if (((t_cmd*)lst->content)->sep_1 == '|')
 		{
 			pipe(fd);
-			pid = fork();
-			if (pid == 0)
+			g_pid = fork();
+			if (g_pid == 0)
 			{
 				if (fd_read)
 				{
@@ -82,7 +82,7 @@ void	cmd_manager(t_data *data, char **envp)
 				}
 				exit(data->ret);
 			}
-			else if (pid < 0)
+			else if (g_pid < 0)
 			{
 				sterr = strerror(errno);
 				error_msn(NULL, NULL, sterr);
@@ -96,8 +96,8 @@ void	cmd_manager(t_data *data, char **envp)
 		}
 		else if (((t_cmd*)lst->content)->sep_0 == '|')
 		{
-			pid = fork();
-			if (pid == 0)
+			g_pid = fork();
+			if (g_pid == 0)
 			{
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
@@ -111,7 +111,7 @@ void	cmd_manager(t_data *data, char **envp)
 				}
 				exit(data->ret);
 			}
-			else if (pid < 0)
+			else if (g_pid < 0)
 			{
 				sterr = strerror(errno);
 				error_msn(NULL, NULL, sterr);

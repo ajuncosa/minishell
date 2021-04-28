@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 15:51:26 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/28 18:10:24 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,8 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		}
 		i++;
 	}
-	pid = fork();
-	if (pid == 0)
+	g_pid = fork();
+	if (g_pid == 0)
 	{
 		if (last_out != -1)
 		{
@@ -134,7 +134,7 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		}
 		exit(data->ret);
 	}
-	else if (pid < 0)
+	else if (g_pid < 0)
 	{
 		sterr = strerror(errno);
 		error_msn(NULL, NULL, sterr);
