@@ -49,23 +49,6 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	int		status;
 
 	argv = alloc_arg_array(data, com);
-	argv = malloc((com->n_args + 2) * sizeof(char *));
-	if (!argv)
-		ft_exit(data, com);
-	argv[0] = ft_strdup(com->cmd);
-	if (!argv[0])
-		ft_exit(data, com);
-	i = 1;
-	j = 0;
-	while (j < com->n_args)
-	{
-		argv[i] = ft_strdup(com->args_str[j]);
-		if (!argv[i])
-			ft_exit(data, com);
-		i++;
-		j++;
-	}
-	argv[i] = NULL;
 	//BUSCAR CMD EN PATH (si no tiene formato de path con alguna '/')
 	if (!ft_strchr(com->cmd, '/'))
 	{

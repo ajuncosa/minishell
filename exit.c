@@ -48,7 +48,7 @@ void	del_lst_cmd(void *cmd)
 	free((t_cmd *)cmd);
 }
 
-void	check_args(t_data *data, t_cmd *com)
+void	check_exit_args(t_data *data, t_cmd *com)
 {
 	int	i;
 
@@ -93,7 +93,7 @@ void	ft_exit(t_data *data, t_cmd *com)
 				return ;
 			}
 			if (com->n_args > 0)
-				check_args(data, com);
+				check_exit_args(data, com);
 		}
 	}
 	if (g_user)
