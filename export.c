@@ -12,24 +12,20 @@
 
 #include "minishell.h"
 
-void	export_list(t_data *data, char **args_str)
+void	print_export_list(t_data *data)
 {
 	t_list	*list;
 
-	if (args_str == NULL)
+	list = data->env_head;
+	while (list)
 	{
-		list = data->env_head;
-		while (list)
-		{
-			if (((t_env *)list->content)->value)
-				printf("declare -x %s=\"%s\"\n", ((t_env *)list->content)->id, ((t_env *)list->content)->value);
-			else
-				printf("declare -x %s\n", ((t_env *)list->content)->id);
-			list = list->next;
-		}
-		data->ret = 0;
-		return ;
+		if (((t_env *)list->content)->value)
+			printf("declare -x %s=\"%s\"\n", ((t_env *)list->content)->id, ((t_env *)list->content)->value);
+		else
+			printf("declare -x %s\n", ((t_env *)list->content)->id);
+		list = list->next;
 	}
+	data->ret = 0;
 }
 
 int	export_errors(char *str)
@@ -54,25 +50,108 @@ int	export_errors(char *str)
 	return (1);
 }
 
-void	ft_export(t_data *data, t_cmd *com)
+int	create_new_env(t_data *data, t_cmd *com, char *id, char **value)
 {
 	t_list	*new;
-	t_list	*list;
 	t_env	*env;
-	int		i;
-	int		j;
-	int		len_id;
-	int		len_v;
+
+	env = malloc(sizeof(t_env));
+	if (!env)
+		return (0);
+	new = ft_lstnew(env);
+	if (!new)
+		return (0);
+	env->id = ft_strdup(id);
+	if (!env->id)
+		return (0);
+	if (value)
+		env->value = *value;
+	else
+		env->value = NULL;
+	ft_lstadd_back(&data->env_head, new);
+	return (1);
+}
+
+void	no_equal_sign(t_data *data, t_cmd *com, char *arg)
+{
+	t_list	*list;
 	int		flag;
 
+	flag = 0;
+	list = data->env_head;
+	while (list)
+	{
+		if (!ft_strcmp(((t_env *)list->content)->id, arg))
+		{
+			flag = 1;
+			break ;
+		}
+		list = list->next;
+	}
+	if (!flag)
+		if (!create_new_env(data, com, arg, NULL))
+			ft_exit(data, com);
+}
+
+int	separate_id_value(char *arg, char **id, char **value)
+{
+	int		len_id;
+	int		len_v;
+
+	len_id = 0;
+	while (arg[len_id] != '=')
+		len_id++;
+	len_v = ft_strlen(&arg[len_id + 1]);
+	*id = ft_substr(arg, 0, len_id);
+	if (!*id)
+		return (0);
+	*value = ft_substr(arg, len_id + 1, len_v);
+	if (!*value)
+		return (0);
+	return (1);
+}
+
+void	yes_equal_sign(t_data *data, t_cmd *com, char *arg)
+{
+	char	*id;
+	char	*value;
+	int		flag;
+	t_list	*list;
+
+	flag = 0;
+	if (!separate_id_value(arg, &id, &value))
+		ft_exit(data, com);
+	list = data->env_head;
+	while (list)
+	{
+		if (!ft_strcmp(((t_env *)list->content)->id, id))
+		{
+			free(((t_env *)list->content)->value);
+			((t_env *)list->content)->value = value;
+			flag = 1;
+			break ;
+		}
+		list = list->next;
+	}
+	if (!flag)
+		if (!create_new_env(data, com, id, &value))
+			ft_exit(data, com);
+	free(id);
+}
+
+void	ft_export(t_data *data, t_cmd *com)
+{
+	int		i;
+
 	data->ret = 0;
-	export_list(data, com->args_str);
+	if (com->args_str == NULL)
+	{
+		print_export_list(data);
+		return ;
+	}
 	i = 0;
 	while (i < com->n_args)
 	{
-		flag = 0;
-		len_id = 0;
-		len_v = 0;
 		if (!export_errors(com->args_str[i]))
 		{
 			i++;
@@ -80,67 +159,9 @@ void	ft_export(t_data *data, t_cmd *com)
 			continue ;
 		}
 		if (!ft_strchr(com->args_str[i], '='))
-		{
-			list = data->env_head;
-			while (list)
-			{
-				if (!ft_strcmp(((t_env *)list->content)->id, com->args_str[i]))
-				{
-					flag = 1;
-					break ;
-				}
-				list = list->next;
-			}
-			if (!flag)
-			{
-				new = malloc(sizeof(t_list));
-				if (!new)
-					ft_exit(data, com);
-				env = malloc(sizeof(t_env));
-				if (!new)
-					ft_exit(data, com);
-				new->content = env;
-				((t_env *)new->content)->id = ft_strdup(com->args_str[i]);
-				if (!((t_env *)new->content)->id)
-					ft_exit(data, com);
-				((t_env *)new->content)->value = NULL;
-				ft_lstadd_back(&data->env_head, new);
-			}
-			i++;
-			continue ;
-		}
-		while (com->args_str[i][len_id] != '=')
-			len_id++;
-		len_v = ft_strlen(&com->args_str[i][len_id + 1]);
-		list = data->env_head;
-		while (list)
-		{
-			if (!ft_strncmp(((t_env *)list->content)->id, com->args_str[i], len_id))
-			{
-				free(((t_env *)list->content)->value);
-				((t_env *)list->content)->value = ft_substr(com->args_str[i], len_id + 1, len_v);
-				flag = 1;
-				break ;
-			}
-			list = list->next;
-		}
-		if (!flag)
-		{
-			new = malloc(sizeof(t_list));
-			if (!new)
-				ft_exit(data, com);
-			env = malloc(sizeof(t_env));
-			if (!env)
-				ft_exit(data, com);
-			new->content = env;
-			((t_env *)new->content)->id = ft_substr(com->args_str[i], 0, len_id);
-			if (!((t_env *)new->content)->id)
-				ft_exit(data, com);
-			((t_env *)new->content)->value = ft_substr(com->args_str[i], len_id + 1, len_v);
-			if (!((t_env *)new->content)->value)
-				ft_exit(data, com);
-			ft_lstadd_back(&data->env_head, new);
-		}
+			no_equal_sign(data, com, com->args_str[i]);
+		else
+			yes_equal_sign(data, com, com->args_str[i]);
 		i++;
 	}
 }
