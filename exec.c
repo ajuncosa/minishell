@@ -3,26 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 18:10:59 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 20:19:48 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_cmd(t_cmd *com, char **envp, t_data *data)
+char	**alloc_arg_array(t_data *data, t_cmd *com)
 {
-	int 	i;
-	int		j;
-	t_list	*lst;
-	char	*path;
 	char	**argv;
-	char	*sterr;
-	int		status;
+	int		i;
+	int		j;
 
-	// ALOCAR NUEVO ARRAY DE ARGUMENTOS PARA PASAR A EXECVE
 	argv = malloc((com->n_args + 2) * sizeof(char *));
 	if (!argv)
 		ft_exit(data, com);
@@ -40,7 +35,37 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		j++;
 	}
 	argv[i] = NULL;
+	return (argv);
+}
 
+void	ft_cmd(t_cmd *com, char **envp, t_data *data)
+{
+	int		i;
+	int		j;
+	t_list	*lst;
+	char	*path;
+	char	**argv;
+	char	*sterr;
+	int		status;
+
+	argv = alloc_arg_array(data, com);
+	argv = malloc((com->n_args + 2) * sizeof(char *));
+	if (!argv)
+		ft_exit(data, com);
+	argv[0] = ft_strdup(com->cmd);
+	if (!argv[0])
+		ft_exit(data, com);
+	i = 1;
+	j = 0;
+	while (j < com->n_args)
+	{
+		argv[i] = ft_strdup(com->args_str[j]);
+		if (!argv[i])
+			ft_exit(data, com);
+		i++;
+		j++;
+	}
+	argv[i] = NULL;
 	//BUSCAR CMD EN PATH (si no tiene formato de path con alguna '/')
 	if (!ft_strchr(com->cmd, '/'))
 	{
@@ -62,7 +87,6 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		free(com->cmd);
 		com->cmd = path;
 	}
-	
 	//EJECUTAR CON EXECVE
 	g_pid = fork();
 	if (g_pid == 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_mngr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 18:10:24 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 19:29:25 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 {
 	int		i;
 	t_redir	*redir;
-	int     fd;
-	int 	fdin;
+	int		fd;
+	int		fdin;
 	int		fdout;
 	int		status;
-	char 	*sterr;
+	char	*sterr;
 	int		last_in;
 	int		last_out;
 
@@ -42,7 +42,7 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 	{
 		if (!ft_strcmp(redir[i].type, ">"))
 		{
-			fd = open(redir[i].file, O_WRONLY |  O_TRUNC | O_CREAT, 0777);
+			fd = open(redir[i].file, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 			if (fd == -1)
 			{
 				sterr = strerror(errno);
@@ -63,7 +63,7 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		}
 		else if (!ft_strcmp(redir[i].type, ">>"))
 		{
-			fd = open(redir[i].file, O_WRONLY |  O_APPEND | O_CREAT, 0777);
+			fd = open(redir[i].file, O_WRONLY | O_APPEND | O_CREAT, 0777);
 			if (fd == -1)
 			{
 				sterr = strerror(errno);
@@ -111,9 +111,9 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		if (last_out != -1)
 		{
 			if (!ft_strcmp(redir[last_out].type, ">"))
-				fdout = open(redir[last_out].file, O_WRONLY |  O_TRUNC | O_CREAT, 0777);
+				fdout = open(redir[last_out].file, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 			else if (!ft_strcmp(redir[last_out].type, ">>"))
-				fdout = open(redir[last_out].file, O_WRONLY |  O_APPEND | O_CREAT, 0777);
+				fdout = open(redir[last_out].file, O_WRONLY | O_APPEND | O_CREAT, 0777);
 		}
 		if (last_in != -1)
 			fdin = open(redir[last_in].file, O_RDONLY);

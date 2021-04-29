@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 12:07:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 12:08:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 19:25:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	syntax_errors(t_letter *str)
 		printf("syntax error near unexpected token `%c\'\n", str[i].c);
 		return (0);
 	}
-	while(str[i].c != '\0')
+	while (str[i].c != '\0')
 	{
 		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
 		{
@@ -53,12 +53,12 @@ int	syntax_errors(t_letter *str)
 			check = i;
 			if (str[i].c == '>')
 			{
-				while(str[i].c == '>' && !str[i].esc && (i - check) < 2)
+				while (str[i].c == '>' && !str[i].esc && (i - check) < 2)
 					i++;
 			}
 			else if (str[i].c == '<')
 			{
-				while(str[i].c == '<' && !str[i].esc && (i - check) < 1)
+				while (str[i].c == '<' && !str[i].esc && (i - check) < 1)
 					i++;
 			}
 			if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)

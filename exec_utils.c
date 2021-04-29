@@ -6,37 +6,45 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:06:51 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 12:07:20 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/29 20:17:28 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char	**fill_path(t_data *data)
+{
+	char		**paths;
+	t_list		*lst;
+
+	lst = data->env_head;
+	while (lst)
+	{
+		if (!ft_strcmp(((t_env *)lst->content)->id, "PATH"))
+		{
+			if (((t_env *)lst->content)->value)
+			{
+				paths = ft_split(((t_env *)lst->content)->value, ':');
+				if (!paths)
+					ft_exit(data, NULL);
+			}
+			break ;
+		}
+		lst = lst->next;
+	}
+	return (paths);
+}
+
 char	*ft_pathfinder(char *cmd, t_data *data)
 {
-	t_list		*lst;
 	char		**paths;
 	char		*joined;
 	char		*tmp;
 	int			i;
 	struct stat	stat;
-	
-	lst = data->env_head;
+
 	paths = NULL;
-	while (lst)
-	{
-		if (!ft_strcmp(((t_env*)lst->content)->id, "PATH"))
-		{
-			if (((t_env*)lst->content)->value)
-			{
-				paths = ft_split(((t_env*)lst->content)->value, ':');
-				if (!paths)
-					ft_exit(data, NULL);
-			}
-			break;
-		}
-		lst = lst->next;
-	}
+	paths = fill_path(data);
 	if (paths)
 	{
 		i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 18:25:32 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 19:27:54 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 	char		*check;
 	char		*value;
 	t_letter	*struct_val;
-	t_letter 	*tmp1;
+	t_letter	*tmp1;
 	t_letter	*tmp2;
 	t_letter	*tmp3;
-
-	int i;
 
 	start = 0;
 	while ((*str)[start].c != '\0')
@@ -34,7 +32,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 			end = start;
 			if ((*str)[start].c == ' ' || (*str)[start].c == '\0')
 				continue ;
-			while ((ft_isalnum((*str)[end].c) || (*str)[end].c == '_') && !(*str)[end].esc)	
+			while ((ft_isalnum((*str)[end].c) || (*str)[end].c == '_') && !(*str)[end].esc)
 				end++;
 			check = struct_to_str(*str, start, end - start);
 			if (!check)
@@ -56,7 +54,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 					return (0);
 				tmp1 = esc_substr(*str, 0, start - 1);
 				if (!tmp1)
-				return (0);
+					return (0);
 				tmp2 = esc_join(tmp1, struct_val);
 				if (!tmp2)
 					return (0);

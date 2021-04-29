@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_mngr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 18:11:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 17:45:11 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 {
-	int len;
+	int	len;
 
 	len = ft_strlen(com->cmd);
 	if (!ft_strcmp(com->cmd, "echo"))
@@ -47,18 +47,18 @@ void	cmd_manager(t_data *data, char **envp)
 	fd_read = 0;
 	while (lst)
 	{
-		if (((t_cmd*)lst->content)->sep_0 != '|' && ((t_cmd*)lst->content)->sep_1 != '|')
+		if (((t_cmd *)lst->content)->sep_0 != '|' && ((t_cmd *)lst->content)->sep_1 != '|')
 		{
-			if (check_if_redir(((t_cmd*)lst->content)))
-				redir_manager(((t_cmd*)lst->content), data, envp);
+			if (check_if_redir(((t_cmd *)lst->content)))
+				redir_manager(((t_cmd *)lst->content), data, envp);
 			else
 			{
-				if (!create_args_str((t_cmd*)lst->content))
-					ft_exit(data, (t_cmd*)lst->content);
-				cmd_caller(((t_cmd*)lst->content), data, envp);
+				if (!create_args_str((t_cmd *)lst->content))
+					ft_exit(data, (t_cmd *)lst->content);
+				cmd_caller(((t_cmd *)lst->content), data, envp);
 			}
 		}
-		if (((t_cmd*)lst->content)->sep_1 == '|')
+		if (((t_cmd *)lst->content)->sep_1 == '|')
 		{
 			pipe(fd);
 			g_pid = fork();
@@ -72,13 +72,13 @@ void	cmd_manager(t_data *data, char **envp)
 				close(fd[0]);
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[1]);
-				if (check_if_redir(((t_cmd*)lst->content)))
-					redir_manager(((t_cmd*)lst->content), data, envp);
+				if (check_if_redir(((t_cmd *)lst->content)))
+					redir_manager(((t_cmd *)lst->content), data, envp);
 				else
 				{
-					if (!create_args_str((t_cmd*)lst->content))
-						ft_exit(data, (t_cmd*)lst->content);
-					cmd_caller(((t_cmd*)lst->content), data, envp);
+					if (!create_args_str((t_cmd *)lst->content))
+						ft_exit(data, (t_cmd *)lst->content);
+					cmd_caller(((t_cmd *)lst->content), data, envp);
 				}
 				exit(data->ret);
 			}
@@ -94,20 +94,20 @@ void	cmd_manager(t_data *data, char **envp)
 			fd_read = fd[0];
 			close(fd[1]);
 		}
-		else if (((t_cmd*)lst->content)->sep_0 == '|')
+		else if (((t_cmd *)lst->content)->sep_0 == '|')
 		{
 			g_pid = fork();
 			if (g_pid == 0)
 			{
 				dup2(fd_read, STDIN_FILENO);
 				close(fd_read);
-				if (check_if_redir(((t_cmd*)lst->content)))
-					redir_manager(((t_cmd*)lst->content), data, envp);
+				if (check_if_redir(((t_cmd *)lst->content)))
+					redir_manager(((t_cmd *)lst->content), data, envp);
 				else
 				{
-					if (!create_args_str((t_cmd*)lst->content))
-						ft_exit(data, (t_cmd*)lst->content);
-					cmd_caller(((t_cmd*)lst->content), data, envp);
+					if (!create_args_str((t_cmd *)lst->content))
+						ft_exit(data, (t_cmd *)lst->content);
+					cmd_caller(((t_cmd *)lst->content), data, envp);
 				}
 				exit(data->ret);
 			}

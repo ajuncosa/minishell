@@ -3,14 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   esc_mngr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:09:37 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 17:13:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 18:17:23 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	esc_loop(char *str, int quote, int *i)
+{
+	if (str[*i] == '\'' && quote != 2)
+	{
+		if (!quote)
+			quote = 1;
+		else if (quote == 1)
+			quote = 0;
+	}
+	else if (str[*i] == '"' && quote != 1)
+	{
+		if (!quote)
+			quote = 2;
+		else if (quote == 2)
+			quote = 0;
+	}
+	else if (str[*i] == '\\' && (!quote || (quote == 2 && (str[*i + 1] == '$'
+					|| str[*i + 1] == '\\' || str[*i + 1] == '"'))))
+	{
+		*i += 1;
+		if (str[*i] == '\0')
+		{
+			write(2, "Error: open backslash\n", 23);
+			return (0);
+		}
+	}
+	return (1);
+}
 
 int	esc_size(char *str)
 {
@@ -23,29 +52,8 @@ int	esc_size(char *str)
 	quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && quote != 2)
-		{
-			if (!quote)
-				quote = 1;
-			else if (quote == 1)
-				quote = 0;
-		}
-		else if (str[i] == '"' && quote != 1)
-		{
-			if (!quote)
-				quote = 2;
-			else if (quote == 2)
-				quote = 0;
-		}
-		else if (str[i] == '\\' && (!quote || (quote == 2 && (str[i + 1] == '$' || str[i + 1] == '\\' || str[i + 1] == '"'))))
-		{
-			i++;
-			if (str[i] == '\0')
-			{
-				write(2, "Error: open backslash\n", 23);
-				return (-1);
-			}
-		}
+		if (!esc_loop(str, quote, &i))
+			return (-1);
 		n++;
 		i++;
 	}
