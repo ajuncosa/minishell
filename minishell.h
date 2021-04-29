@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 10:27:31 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 13:32:30 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,15 @@ void		ctrl_c(int sig);
 void		ctrl_d(int ctrl, char **str, t_data *data);
 /* Parser */
 void		parser(t_data *data, char *str, char **envp);
+int			syntax_errors(t_letter *str);
+void		parser_alloc_init(t_data *data, t_cmd **com, t_list **new);
+int			countalloc_args(t_cmd *com, t_data *data, t_list *new, t_letter *line);
 int			count_args(t_letter *str);
+void		save_cmd_args(t_data *data, t_cmd *com, int *i);
 t_letter	*quote_hunter(t_letter *str);
 int			save_args(t_letter **str, t_cmd *com, int *start);
 int			find_cmd(t_cmd *com);
+int			find_arg_seps(t_data *data, t_cmd *com, int i, int sep);
 /* Commands */
 void		cmd_manager(t_data *data, char **envp);
 int			create_args_str(t_cmd *com);
