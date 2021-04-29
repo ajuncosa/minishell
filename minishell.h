@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 18:06:17 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/29 10:27:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,12 @@ void		ctrl_d(int ctrl, char **str, t_data *data);
 /* Parser */
 void		parser(t_data *data, char *str, char **envp);
 int			count_args(t_letter *str);
+t_letter	*quote_hunter(t_letter *str);
 int			save_args(t_letter **str, t_cmd *com, int *start);
 int			find_cmd(t_cmd *com);
 /* Commands */
 void		cmd_manager(t_data *data, char **envp);
+int			create_args_str(t_cmd *com);
 void		cmd_caller(t_cmd *com, t_data *data, char **envp);
 void		ft_echo(t_data *data, t_cmd *com);
 void		ft_env(t_data *data, char **args);
@@ -91,19 +93,22 @@ void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);
 void		ft_cmd(t_cmd *com, char **envp, t_data *data);
 char		*ft_pathfinder(char *cmd, t_data *data);
+/* Exit */
 void		ft_exit(t_data *data, t_cmd *com);
 void		del_lst(void *env);
 void		del_lst_cmd(void *cmd);
-int			create_args_str(t_cmd *com);
+/* Redirections and Dollars */
 int			check_if_redir(t_cmd *com);
 void		count_redir(t_cmd *com);
 int			arg_cleaner(t_cmd *com, t_redir *redir);
 void		redir_manager(t_cmd *com, t_data *data, char **envp);
 int			dollar_finder(t_list **env_head, t_letter **str, int ret);
+/* Misc utils */
 char		*is_in_env(t_list **env_head, char *str);
 int			is_space_quote_redir_or_endofcmd(t_letter c);
 int			is_space_redir_or_endofcmd(t_letter c);
 void		error_msn(char *cmd, char *str, char *txt);
+/* Escapes struct */
 int			esc_size(char *str);
 t_letter	*line_to_struct(char *str, int len);
 char		*struct_to_str(t_letter *struc, int start, int len);
@@ -112,6 +117,5 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
 int			esc_strlen(t_letter *str);
 t_letter	*esc_dup(t_letter *str);
-t_letter	*quote_hunter(t_letter *str);
 
 #endif
