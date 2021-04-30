@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:09:37 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 18:38:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 19:27:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,21 +91,10 @@ t_letter	*line_to_struct(char *str, int len)
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] == '\'' && quote != 2)
+		if ((str[i] == '\'' && quote != 2) || (str[i] == '"' && quote != 1))
 		{
-			if (!quote)
-				quote = 1;
-			else if (quote == 1)
-				quote = 0;
 			line[j].esc = 0;
-		}
-		else if (str[i] == '"' && quote != 1)
-		{
-			if (!quote)
-				quote = 2;
-			else if (quote == 2)
-				quote = 0;
-			line[j].esc = 0;
+			quote = quote_flagger(str[i], quote);
 		}
 		else if (str[i] == '\\' && (!quote || (quote == 2
 					&& (str[i + 1] == '$' || str[i + 1] == '\\'
