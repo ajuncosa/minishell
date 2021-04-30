@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 13:33:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 18:50:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,13 @@ void	parser_loop(t_data *data)
 	}
 }
 
-void	parser(t_data *data, char *str, char **envp)
+void	parser(t_data *data, char *str)
 {
 	data->cmd_head = NULL;
 	if (!transform_line(str, data))
 		return ;
 	parser_loop(data);
-	cmd_manager(data, envp);
+	cmd_manager(data);
 	g_pid = -1;
 	free(data->line);
 	data->line = NULL;

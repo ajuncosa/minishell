@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 12:50:08 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 18:52:18 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**alloc_arg_array(t_data *data, t_cmd *com)
 	return (argv);
 }
 
-void	exec_cmd(t_data *data, t_cmd *com, char **envp, char **argv)
+void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 {
 	char	*sterr;
 	int		status;
@@ -46,7 +46,7 @@ void	exec_cmd(t_data *data, t_cmd *com, char **envp, char **argv)
 	g_pid = fork();
 	if (g_pid == 0)
 	{
-		if (execve(com->cmd, argv, envp) == -1)
+		if (execve(com->cmd, argv, data->envp) == -1)
 		{
 			dup2(data->std_out, STDOUT_FILENO);
 			sterr = strerror(errno);
@@ -76,7 +76,7 @@ void	free_str_array(char ***argv)
 	free(*argv);
 }
 
-void	ft_cmd(t_cmd *com, char **envp, t_data *data)
+void	ft_cmd(t_cmd *com, t_data *data)
 {
 	char	*path;
 	char	**argv;
@@ -96,6 +96,6 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 		free(com->cmd);
 		com->cmd = path;
 	}
-	exec_cmd(data, com, envp, argv);
+	exec_cmd(data, com, argv);
 	free_str_array(&argv);
 }

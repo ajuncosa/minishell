@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 17:35:22 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 18:51:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	redir_manager(t_cmd *com, t_data *data, char **envp)
+void	redir_manager(t_cmd *com, t_data *data)
 {
 	int		i;
 	t_redir	*redir;
@@ -130,7 +130,7 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 				dup2(fdin, STDIN_FILENO);
 				close(fdin);
 			}			
-			cmd_caller(com, data, envp);
+			cmd_caller(com, data);
 		}
 		exit(data->ret);
 	}

@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 17:39:28 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 18:56:21 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cmd_caller(t_cmd *com, t_data *data, char **envp)
+void	cmd_caller(t_cmd *com, t_data *data)
 {
 	int	len;
 
@@ -32,24 +32,23 @@ void	cmd_caller(t_cmd *com, t_data *data, char **envp)
 	else if (!ft_strcmp(com->cmd, "exit"))
 		ft_exit(data, com);
 	else
-		ft_cmd(com, envp, data);
+		ft_cmd(com, data);
 }
 
-void	redirs_and_exec(t_data *data, t_cmd *com, char **envp)
+void	redirs_and_exec(t_data *data, t_cmd *com)
 {
 	if (check_if_redir(com))
-		redir_manager(com, data, envp);
+		redir_manager(com, data);
 	else
 	{
 		if (!create_args_str(com))
 			ft_exit(data, com);
-		cmd_caller(com, data, envp);
+		cmd_caller(com, data);
 	}
 }
 
-void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
+void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 {
-	int		fd[2];
 	int		status;
 
 	pipe(fd);
@@ -64,7 +63,7 @@ void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		redirs_and_exec(data, com, envp);
+		redirs_and_exec(data, com);
 		exit(data->ret);
 	}
 	else if (g_pid < 0)
@@ -77,7 +76,7 @@ void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
 	close(fd[1]);
 }
 
-void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
+void	handle_pipe_input(t_data *data, t_cmd *com, int *fd_read)
 {
 	char	*sterr;
 	int		status;
@@ -87,7 +86,7 @@ void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
 	{
 		dup2(*fd_read, STDIN_FILENO);
 		close(*fd_read);
-		redirs_and_exec(data, com, envp);
+		redirs_and_exec(data, com);
 		exit(data->ret);
 	}
 	else if (g_pid < 0)
@@ -98,8 +97,9 @@ void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
 	*fd_read = 0;
 }
 
-void	cmd_manager(t_data *data, char **envp)
+void	cmd_manager(t_data *data)
 {
+	int		fd[2];
 	int		fd_read;
 	t_list	*lst;
 
@@ -109,11 +109,11 @@ void	cmd_manager(t_data *data, char **envp)
 	{
 		if (((t_cmd *)lst->content)->sep_0 != '|'
 			&& ((t_cmd *)lst->content)->sep_1 != '|')
-			redirs_and_exec(data, (t_cmd *)lst->content, envp);
+			redirs_and_exec(data, (t_cmd *)lst->content);
 		if (((t_cmd *)lst->content)->sep_1 == '|')
-			handle_pipe_output(data, envp, (t_cmd *)lst->content, &fd_read);
+			handle_pipe_output(data, (t_cmd *)lst->content, fd, &fd_read);
 		else if (((t_cmd *)lst->content)->sep_0 == '|')
-			handle_pipe_input(data, envp, (t_cmd *)lst->content, &fd_read);
+			handle_pipe_input(data, (t_cmd *)lst->content, &fd_read);
 		lst = lst->next;
 	}
 }
