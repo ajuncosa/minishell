@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/29 20:19:48 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 12:50:08 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,39 +38,11 @@ char	**alloc_arg_array(t_data *data, t_cmd *com)
 	return (argv);
 }
 
-void	ft_cmd(t_cmd *com, char **envp, t_data *data)
+void	exec_cmd(t_data *data, t_cmd *com, char **envp, char **argv)
 {
-	int		i;
-	int		j;
-	t_list	*lst;
-	char	*path;
-	char	**argv;
 	char	*sterr;
 	int		status;
 
-	argv = alloc_arg_array(data, com);
-	//BUSCAR CMD EN PATH (si no tiene formato de path con alguna '/')
-	if (!ft_strchr(com->cmd, '/'))
-	{
-		path = ft_pathfinder(com->cmd, data);
-		if (path == NULL)
-		{
-			dup2(data->std_out, STDOUT_FILENO);
-			error_msn(com->cmd, NULL, "command not found");
-			i = 0;
-			while (argv[i])
-			{
-				free(argv[i]);
-				i++;
-			}
-			free(argv);
-			data->ret = 127;
-			return ;
-		}
-		free(com->cmd);
-		com->cmd = path;
-	}
-	//EJECUTAR CON EXECVE
 	g_pid = fork();
 	if (g_pid == 0)
 	{
@@ -89,11 +61,41 @@ void	ft_cmd(t_cmd *com, char **envp, t_data *data)
 	}
 	waitpid(g_pid, &status, 0);
 	data->ret = WEXITSTATUS(status);
+}
+
+void	free_str_array(char ***argv)
+{
+	int	i;
+
 	i = 0;
-	while (argv[i])
+	while ((*argv)[i])
 	{
-		free(argv[i]);
+		free((*argv)[i]);
 		i++;
 	}
-	free(argv);
+	free(*argv);
+}
+
+void	ft_cmd(t_cmd *com, char **envp, t_data *data)
+{
+	char	*path;
+	char	**argv;
+
+	argv = alloc_arg_array(data, com);
+	if (!ft_strchr(com->cmd, '/'))
+	{
+		path = ft_pathfinder(com->cmd, data);
+		if (path == NULL)
+		{
+			dup2(data->std_out, STDOUT_FILENO);
+			error_msn(com->cmd, NULL, "command not found");
+			free_str_array(&argv);
+			data->ret = 127;
+			return ;
+		}
+		free(com->cmd);
+		com->cmd = path;
+	}
+	exec_cmd(data, com, envp, argv);
+	free_str_array(&argv);
 }

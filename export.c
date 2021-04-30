@@ -6,49 +6,11 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 20:21:02 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 12:31:43 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	print_export_list(t_data *data)
-{
-	t_list	*list;
-
-	list = data->env_head;
-	while (list)
-	{
-		if (((t_env *)list->content)->value)
-			printf("declare -x %s=\"%s\"\n", ((t_env *)list->content)->id, ((t_env *)list->content)->value);
-		else
-			printf("declare -x %s\n", ((t_env *)list->content)->id);
-		list = list->next;
-	}
-	data->ret = 0;
-}
-
-int	export_errors(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] != '=' && str[i] != '\0')
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-		{
-			error_msn("export", str, "not a valid identifier");
-			return (0);
-		}
-		i++;
-	}
-	if (!ft_isalpha(str[0]) && str[0] != '_')
-	{
-		error_msn("export", str, "not a valid identifier");
-		return (0);
-	}
-	return (1);
-}
 
 int	create_new_env(t_data *data, t_cmd *com, char *id, char **value)
 {

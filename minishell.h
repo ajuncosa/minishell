@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 13:32:30 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 12:31:25 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void		ft_echo(t_data *data, t_cmd *com);
 void		ft_env(t_data *data, char **args);
 void		ft_pwd(t_data *data, char **args);
 void		ft_export(t_data *data, t_cmd *com);
+void		print_export_list(t_data *data);
+int			export_errors(char *str);
 void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);
 void		ft_cmd(t_cmd *com, char **envp, t_data *data);

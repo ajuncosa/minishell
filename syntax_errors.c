@@ -6,16 +6,85 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 12:07:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 19:25:18 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 12:19:22 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	flag_loop2(t_letter *str, char *flag, int *i)
+{
+	if (*flag)
+	{
+		printf("syntax error near unexpected token `%c\'\n", str[*i].c);
+		return (0);
+	}
+	if (str[*i].c == ';')
+		*flag = ';';
+	else if (str[*i].c == '|')
+		*flag = '|';
+	*i += 1;
+	return (1);
+}
+
+int	flag_loop3(t_letter *str, char *flag, int *i)
+{
+	int	check;
+
+	if (*flag)
+	{
+		printf("syntax error near unexpected token `%c\'\n", str[*i].c);
+		return (0);
+	}
+	*flag = 'r';
+	check = *i;
+	if (str[*i].c == '>')
+	{
+		while (str[*i].c == '>' && !str[*i].esc && (*i - check) < 2)
+			*i += 1;
+	}
+	else if (str[*i].c == '<')
+	{
+		while (str[*i].c == '<' && !str[*i].esc && (*i - check) < 1)
+			*i += 1;
+	}
+	if ((str[*i].c == '>' || str[*i].c == '<') && !str[*i].esc)
+	{
+		printf("syntax error near unexpected token `%c\'\n", str[*i - 1].c);
+		return (0);
+	}
+	return (1);
+}
+
+int	flag_loop(t_letter *str, char *flag, int *i)
+{
+	while (str[*i].c != '\0')
+	{
+		if ((str[*i].c == ';' || str[*i].c == '|') && !str[*i].esc)
+		{
+			if (!flag_loop2(str, flag, i))
+				return (0);
+		}
+		else if ((str[*i].c == '>' || str[*i].c == '<') && !str[*i].esc)
+		{
+			if (!flag_loop3(str, flag, i))
+				return (0);
+		}
+		else
+		{
+			*flag = 0;
+			while (!is_space_redir_or_endofcmd(str[*i]))
+				*i += 1;
+		}
+		while (str[*i].c == ' ' && !str[*i].esc)
+			*i += 1;
+	}
+	return (1);
+}
+
 int	syntax_errors(t_letter *str)
 {
 	int		i;
-	int		check;
 	char	flag;
 
 	i = 0;
@@ -27,55 +96,8 @@ int	syntax_errors(t_letter *str)
 		printf("syntax error near unexpected token `%c\'\n", str[i].c);
 		return (0);
 	}
-	while (str[i].c != '\0')
-	{
-		if ((str[i].c == ';' || str[i].c == '|') && !str[i].esc)
-		{
-			if (flag)
-			{
-				printf("syntax error near unexpected token `%c\'\n", str[i].c);
-				return (0);
-			}
-			if (str[i].c == ';')
-				flag = ';';
-			else if (str[i].c == '|')
-				flag = '|';
-			i++;
-		}
-		else if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
-		{
-			if (flag)
-			{
-				printf("syntax error near unexpected token `%c\'\n", str[i].c);
-				return (0);
-			}
-			flag = 'r';
-			check = i;
-			if (str[i].c == '>')
-			{
-				while (str[i].c == '>' && !str[i].esc && (i - check) < 2)
-					i++;
-			}
-			else if (str[i].c == '<')
-			{
-				while (str[i].c == '<' && !str[i].esc && (i - check) < 1)
-					i++;
-			}
-			if ((str[i].c == '>' || str[i].c == '<') && !str[i].esc)
-			{
-				printf("syntax error near unexpected token `%c\'\n", str[i - 1].c);
-				return (0);
-			}
-		}
-		else
-		{
-			flag = 0;
-			while (!is_space_redir_or_endofcmd(str[i]))
-				i++;
-		}
-		while (str[i].c == ' ' && !str[i].esc)
-			i++;
-	}
+	if (!flag_loop(str, &flag, &i))
+		return (0);
 	if (flag == '|')
 	{
 		printf("Error: open pipe\n");
