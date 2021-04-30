@@ -35,18 +35,25 @@ char	**fill_path(t_data *data)
 	return (paths);
 }
 
-char	*ft_pathfinder(char *cmd, t_data *data)
+void	start_stat()
 {
-	char		**paths;
 	char		*joined;
 	char		*tmp;
 	int			i;
 	struct stat	stat;
 
+
+}
+
+char	*ft_pathfinder(char *cmd, t_data *data)
+{
+	char		**paths;
+
 	paths = NULL;
 	paths = fill_path(data);
 	if (paths)
 	{
+		is_in_path();
 		i = 0;
 		while (paths[i])
 		{
@@ -60,25 +67,13 @@ char	*ft_pathfinder(char *cmd, t_data *data)
 			lstat(joined, &stat);
 			if (S_ISREG(stat.st_mode))
 			{
-				i = 0;
-				while (paths[i])
-				{
-					free(paths[i]);
-					i++;
-				}
-				free(paths);
+				free_str_array(paths);
 				return (joined);
 			}
 			free(joined);
 			i++;
 		}
-		i = 0;
-		while (paths[i])
-		{
-			free(paths[i]);
-			i++;
-		}
-		free(paths);
+		free_str_array(paths);
 	}
 	return (NULL);
 }

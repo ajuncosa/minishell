@@ -63,19 +63,6 @@ void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 	data->ret = WEXITSTATUS(status);
 }
 
-void	free_str_array(char ***argv)
-{
-	int	i;
-
-	i = 0;
-	while ((*argv)[i])
-	{
-		free((*argv)[i]);
-		i++;
-	}
-	free(*argv);
-}
-
 void	ft_cmd(t_cmd *com, t_data *data)
 {
 	char	*path;
@@ -89,7 +76,7 @@ void	ft_cmd(t_cmd *com, t_data *data)
 		{
 			dup2(data->std_out, STDOUT_FILENO);
 			error_msn(com->cmd, NULL, "command not found");
-			free_str_array(&argv);
+			free_str_array(argv);
 			data->ret = 127;
 			return ;
 		}
@@ -97,5 +84,5 @@ void	ft_cmd(t_cmd *com, t_data *data)
 		com->cmd = path;
 	}
 	exec_cmd(data, com, argv);
-	free_str_array(&argv);
+	free_str_array(argv);
 }

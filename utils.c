@@ -112,3 +112,16 @@ void	fork_errors(void)
 	sterr = strerror(errno);
 	error_msn(NULL, NULL, sterr);
 }
+
+void	free_str_array(char **argv)
+{
+	int	i;
+
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
+}

@@ -116,6 +116,7 @@ char		*is_in_env(t_list **env_head, char *str);
 int			is_space_quote_redir_or_endofcmd(t_letter c);
 int			is_space_redir_or_endofcmd(t_letter c);
 void		error_msn(char *cmd, char *str, char *txt);
+void		free_str_array(char **argv);
 void		fork_errors(void);
 /* Escapes struct */
 int			esc_size(char *str);
