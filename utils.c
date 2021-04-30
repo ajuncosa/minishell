@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 17:26:21 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 21:07:16 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 17:31:08 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +103,12 @@ void	error_msn(char *cmd, char *str, char *txt)
 		write(2, txt, ft_strlen(txt));
 		write(2, "\n", 1);
 	}
+}
+
+void	fork_errors(void)
+{
+	char	*sterr;
+
+	sterr = strerror(errno);
+	error_msn(NULL, NULL, sterr);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/30 12:31:25 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 17:31:29 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ char		*is_in_env(t_list **env_head, char *str);
 int			is_space_quote_redir_or_endofcmd(t_letter c);
 int			is_space_redir_or_endofcmd(t_letter c);
 void		error_msn(char *cmd, char *str, char *txt);
+void		fork_errors(void);
 /* Escapes struct */
 int			esc_size(char *str);
 t_letter	*line_to_struct(char *str, int len);

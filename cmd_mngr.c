@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 13:27:12 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/04/30 17:39:28 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,9 @@ void	redirs_and_exec(t_data *data, t_cmd *com, char **envp)
 	}
 }
 
-void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
+void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
 {
 	int		fd[2];
-	char	*sterr;
 	int		status;
 
 	pipe(fd);
@@ -69,10 +68,7 @@ void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
 		exit(data->ret);
 	}
 	else if (g_pid < 0)
-	{
-		sterr = strerror(errno);
-		error_msn(NULL, NULL, sterr);
-	}
+		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);
 	if (*fd_read)
@@ -81,7 +77,7 @@ void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
 	close(fd[1]);
 }
 
-void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
+void	handle_pipe_input(t_data *data, char **envp, t_cmd *com, int *fd_read)
 {
 	char	*sterr;
 	int		status;
@@ -95,10 +91,7 @@ void	handle_pipe_output(t_data *data, char **envp, t_cmd *com, int *fd_read)
 		exit(data->ret);
 	}
 	else if (g_pid < 0)
-	{
-		sterr = strerror(errno);
-		error_msn(NULL, NULL, sterr);
-	}
+		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);
 	close(*fd_read);
@@ -118,9 +111,9 @@ void	cmd_manager(t_data *data, char **envp)
 			&& ((t_cmd *)lst->content)->sep_1 != '|')
 			redirs_and_exec(data, (t_cmd *)lst->content, envp);
 		if (((t_cmd *)lst->content)->sep_1 == '|')
-			handle_pipe_input(data, envp, (t_cmd *)lst->content, &fd_read);
-		else if (((t_cmd *)lst->content)->sep_0 == '|')
 			handle_pipe_output(data, envp, (t_cmd *)lst->content, &fd_read);
+		else if (((t_cmd *)lst->content)->sep_0 == '|')
+			handle_pipe_input(data, envp, (t_cmd *)lst->content, &fd_read);
 		lst = lst->next;
 	}
 }

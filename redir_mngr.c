@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_mngr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/29 19:29:25 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 17:35:22 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,10 +135,7 @@ void	redir_manager(t_cmd *com, t_data *data, char **envp)
 		exit(data->ret);
 	}
 	else if (g_pid < 0)
-	{
-		sterr = strerror(errno);
-		error_msn(NULL, NULL, sterr);
-	}
+		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);
 	i = 0;
