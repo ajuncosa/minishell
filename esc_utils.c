@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   esc_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/28 12:09:57 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/03 09:37:34 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,4 +139,11 @@ t_letter	*str_to_struct(char *str)
 	}
 	new[i].c = '\0';
 	return (new);
+}
+
+int	is_escapable(char c, int quote)
+{
+	if (!quote || (quote == 2 && (c == '$' || c == '\\' || c == '"')))
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:09:37 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 19:27:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/03 09:39:04 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,31 @@ int	esc_size(char *str)
 	return (open_quote_checks(quote, n));
 }
 
+int	is_escaped(char c, char next, int *quote, int *dollar)
+{
+	if ((c == '\'' && *quote != 2) || (c == '"' && *quote != 1))
+	{
+		*quote = quote_flagger(c, *quote);
+		return (0);
+	}
+	else if (c == '\\' && is_escapable(next, *quote))
+		return (1);
+	else
+	{
+		if (*dollar && !ft_isalnum(c) && c != '_')
+			*dollar = 0;
+		if (!*dollar && (*quote == 1 || (*quote == 2 && c != '$'
+					&& c != '\\' && c != '"')))
+			return (1);
+		else
+		{
+			if (c == '$')
+				*dollar = 1;
+			return (0);
+		}
+	}
+}
+
 t_letter	*line_to_struct(char *str, int len)
 {
 	int			i;
@@ -82,41 +107,18 @@ t_letter	*line_to_struct(char *str, int len)
 	int			dollar;
 	t_letter	*line;
 
+	line = malloc((len + 1) * sizeof(t_letter));
+	if (!line)
+		return (NULL);
 	i = 0;
 	j = 0;
 	quote = 0;
 	dollar = 0;
-	line = malloc((len + 1) * sizeof(t_letter));
-	if (!line)
-		return (NULL);
 	while (str[i])
 	{
-		if ((str[i] == '\'' && quote != 2) || (str[i] == '"' && quote != 1))
-		{
-			line[j].esc = 0;
-			quote = quote_flagger(str[i], quote);
-		}
-		else if (str[i] == '\\' && (!quote || (quote == 2
-					&& (str[i + 1] == '$' || str[i + 1] == '\\'
-						|| str[i + 1] == '"'))))
-		{
+		line[j].esc = is_escaped(str[i], str[i + 1], &quote, &dollar);
+		if (str[i] == '\\' && is_escapable(str[i + 1], quote))
 			i++;
-			line[j].esc = 1;
-		}
-		else
-		{
-			if (dollar && !ft_isalnum(str[i]) && str[i] != '_')
-				dollar = 0;
-			if (!dollar && (quote == 1 || (quote == 2 && str[i] != '$'
-						&& str[i] != '\\' && str[i] != '"')))
-				line[j].esc = 1;
-			else
-			{
-				line[j].esc = 0;
-				if (str[i] == '$')
-					dollar = 1;
-			}
-		}
 		line[j].c = str[i];
 		i++;
 		j++;
