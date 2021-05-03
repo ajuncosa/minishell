@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:06:51 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/29 20:17:28 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 20:24:20 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,42 +35,45 @@ char	**fill_path(t_data *data)
 	return (paths);
 }
 
-void	start_stat()
+char	*is_in_path(char **paths, char *cmd, t_data *data, int *i)
 {
 	char		*joined;
 	char		*tmp;
-	int			i;
 	struct stat	stat;
 
-
+	tmp = ft_strjoin(paths[*i], "/");
+	if (!tmp)
+		ft_exit(data, NULL);
+	joined = ft_strjoin(tmp, cmd);
+	if (!joined)
+		ft_exit(data, NULL);
+	free(tmp);
+	lstat(joined, &stat);
+	if (S_ISREG(stat.st_mode))
+	{
+		free_str_array(paths);
+		return (joined);
+	}
+	free(joined);
+	return (NULL);
 }
 
 char	*ft_pathfinder(char *cmd, t_data *data)
 {
-	char		**paths;
+	int		i;
+	char	*joined;
+	char	**paths;
 
 	paths = NULL;
 	paths = fill_path(data);
 	if (paths)
 	{
-		is_in_path();
 		i = 0;
 		while (paths[i])
 		{
-			tmp = ft_strjoin(paths[i], "/");
-			if (!tmp)
-				ft_exit(data, NULL);
-			joined = ft_strjoin(tmp, cmd);
-			if (!joined)
-				ft_exit(data, NULL);
-			free(tmp);
-			lstat(joined, &stat);
-			if (S_ISREG(stat.st_mode))
-			{
-				free_str_array(paths);
+			joined = is_in_path(paths, cmd, data, &i);
+			if (joined)
 				return (joined);
-			}
-			free(joined);
 			i++;
 		}
 		free_str_array(paths);

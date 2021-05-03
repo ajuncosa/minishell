@@ -3,14 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   var_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/29 19:27:54 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/04/30 20:51:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	no_name(char *value, t_letter **str, int start, int end)
+{
+	t_letter	*tmp1;
+	t_letter	*tmp2;
+	t_letter	*tmp3;
+	t_letter	*struct_val;
+
+	struct_val = str_to_struct(value);
+	if (!struct_val)
+		return (0);
+	tmp1 = esc_substr(*str, 0, start - 1);
+	if (!tmp1)
+		return (0);
+	tmp2 = esc_join(tmp1, struct_val);
+	if (!tmp2)
+		return (0);
+	tmp3 = esc_join(tmp2, &(*str)[end]);
+	if (!tmp3)
+		return (0);
+	if ((*str)[start].c == '?')
+		free(value);
+	free(*str);
+	*str = tmp3;
+	free(tmp1);
+	free(tmp2);
+	free(struct_val);
+	return (1);
+}
+
 
 int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 {
@@ -18,7 +48,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 	int			end;
 	char		*check;
 	char		*value;
-	t_letter	*struct_val;
+	//t_letter	*struct_val;
 	t_letter	*tmp1;
 	t_letter	*tmp2;
 	t_letter	*tmp3;
@@ -49,6 +79,9 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 			free(check);
 			if (value)
 			{
+				if (!no_name(value, str, start, end))
+					return (0);
+				/*
 				struct_val = str_to_struct(value);
 				if (!struct_val)
 					return (0);
@@ -68,6 +101,7 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 				free(tmp1);
 				free(tmp2);
 				free(struct_val);
+				*/
 			}
 			else
 			{
