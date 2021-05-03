@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:11:43 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/28 21:05:43 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/03 14:18:14 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,31 @@ void	count_redir(t_cmd *com)
 	}
 }
 
+int	fill_redir_array(t_redir *redir, char **tmp, t_letter **args, int *i)
+{
+	int	k;
+
+	k = 0;
+	redir[k].type = ft_strdup(*tmp);
+	if (!redir[k].type)
+		return (0);
+	free(*tmp);
+	*tmp = struct_to_str(args[*i + 1], 0,
+			esc_strlen(args[*i + 1]));
+	redir[k].file = ft_strdup(*tmp);
+	if (!redir[k].file)
+		return (0);
+	free(args[*i]);
+	k++;
+	*i += 1;
+	return (1);
+}
+
 int	arg_cleaner(t_cmd *com, t_redir *redir)
 {
 	int		i;
 	int		j;
-	int		k;
+	//int		k;
 	int		n_del;
 	char	*arg;
 
@@ -68,13 +88,17 @@ int	arg_cleaner(t_cmd *com, t_redir *redir)
 	}
 	i = 0;
 	j = 0;
-	k = 0;
+	//k = 0;
 	while (i < com->n_args)
 	{		
 		arg = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
 		if ((!ft_strcmp(arg, ">") || !ft_strcmp(arg, ">>")
 				|| !ft_strcmp(arg, "<")) && !com->args[i][0].esc)
 		{
+
+			if (!fill_redir_array(redir, &arg, com->args, &i))		//FIXME: no funciona
+				return (0);
+			/*
 			redir[k].type = ft_strdup(arg);
 			if (!redir[k].type)
 				return (0);
@@ -87,6 +111,7 @@ int	arg_cleaner(t_cmd *com, t_redir *redir)
 			free(com->args[i]);
 			k++;
 			i++;
+			*/
 		}
 		else
 		{

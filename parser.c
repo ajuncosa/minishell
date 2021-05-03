@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/30 18:50:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/03 13:42:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	transform_line(char *str, t_data *data)
 	data->line = line_to_struct(str, len);
 	if (!data->line)
 		ft_exit(data, NULL);
-	dollar_finder(&data->env_head, &data->line, data->ret);
+	if (!dollar_finder(&data->env_head, &data->line, data->ret))
+		return (0);
 	if (!syntax_errors(data->line))
 	{
 		free(data->line);
