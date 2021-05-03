@@ -59,12 +59,27 @@ void	redir_inits(t_data *data, t_cmd *com, t_redir **redir, int *last)
 	data->ret = 0;
 	count_redir(com);
 	*redir = malloc(com->n_redir * sizeof(t_redir));
-	if (!redir)
+	if (!*redir)
 		ft_exit(data, com);
 	last[0] = -1;
 	last[1] = -1;
 	data->std_out = 1;
 	data->std_in = 0;
+}
+
+void	redirs_dups(t_data *data, int fdout, int fdin)
+{
+	if (fdout != -1)
+	{
+		dup2(STDOUT_FILENO, data->std_out);
+		dup2(fdout, STDOUT_FILENO);
+		close(fdout);
+	}
+	if (fdin != -1)
+	{
+		dup2(fdin, STDIN_FILENO);
+		close(fdin);
+	}		
 }
 
 void	do_redirs(t_data *data, t_cmd *com, t_redir *redir, int *last)
@@ -89,43 +104,16 @@ void	do_redirs(t_data *data, t_cmd *com, t_redir *redir, int *last)
 		fdin = open(last_in_file, O_RDONLY);
 	if (com->cmd)
 	{
-		if (fdout != -1)
-		{
-			dup2(STDOUT_FILENO, data->std_out);
-			dup2(fdout, STDOUT_FILENO);
-			close(fdout);
-		}
-		if (fdin != -1)
-		{
-			dup2(fdin, STDIN_FILENO);
-			close(fdin);
-		}			
+		redirs_dups(data, fdout, fdin);
 		cmd_caller(com, data);
 	}
 }
 
-/* last[0] contains the index of the last redir of < type
-last[1] contains the index of the last redir of > or >> type */
-void	redir_manager(t_cmd *com, t_data *data)
+void	redir_and_execute(t_data *data, t_cmd *com, t_redir *redir, int *last)
 {
-	int		i;
-	t_redir	*redir;
-	int		status;
-	int		last[2];
+	int	status;
+	int	i;
 
-	redir_inits(data, com, &redir, last);
-	if (!arg_cleaner(com, redir))
-		ft_exit(data, com);
-	i = 0;
-	while (i < com->n_redir)
-	{		
-		if (!redir_open_files(data, redir[i], last, i))
-		{
-			redir_open_error(data, redir, i, com->n_redir);
-			return ;
-		}
-		i++;
-	}
 	g_pid = fork();
 	if (g_pid == 0)
 	{
@@ -144,4 +132,28 @@ void	redir_manager(t_cmd *com, t_data *data)
 		i++;
 	}
 	free(redir);
+}
+
+/* last[0] contains the index of the last redir of < type
+last[1] contains the index of the last redir of > or >> type */
+void	redir_manager(t_cmd *com, t_data *data)
+{
+	int		i;
+	t_redir	*redir;
+	int		last[2];
+
+	redir_inits(data, com, &redir, last);
+	if (!arg_cleaner(com, redir))
+		ft_exit(data, com);
+	i = 0;
+	while (i < com->n_redir)
+	{
+		if (!redir_open_files(data, redir[i], last, i))
+		{
+			redir_open_error(data, redir, i, com->n_redir);
+			return ;
+		}
+		i++;
+	}
+	redir_and_execute(data, com, redir, last);
 }
