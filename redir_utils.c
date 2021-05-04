@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:11:43 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 12:36:42 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:27:23 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,74 +51,44 @@ void	count_redir(t_cmd *com)
 	}
 }
 
-int	create_redir_array(t_cmd *com, t_redir *redir, int i, int j)
+void	redir_open_error(t_data *data, t_redir *redir, int i, int n_redir)
 {
-	if ((!esc_cmp(com->args[i], ">") || !esc_cmp(com->args[i], ">>")
-				|| !esc_cmp(com->args[i], "<")) && !com->args[i][0].esc)
-	{
-		redir->type = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
-		if (!redir->type)
-			return (0);
-		redir->file = struct_to_str(com->args[i + 1], 0, esc_strlen(com->args[i + 1]));;
-		if (!redir->file)
-			return (0);
-		return (1);
-	}
-	else
-	{
-		com->args_str[j] = struct_to_str(com->args[i], 0, esc_strlen(com->args[i]));
-		if (!com->args_str[j])
-			return (0);
-		return (2);
-	}
-}
+	char	*sterr;
 
-int	cleaner_loop(t_cmd *com, t_redir *redir)
-{
-	int		i;
-	int		j;
-	int		k;
-	int		r;
-
+	sterr = strerror(errno);
+	error_msn(redir[i].file, NULL, sterr);
 	i = 0;
-	j = 0;
-	k = 0;
-	while (i < com->n_args)
-    {
-		r = create_redir_array(com, &redir[k], i, j);
-		free(com->args[i]);
-		if (r == 0)
-			return (0);
-		else if (r == 1)
-		{
-			free(com->args[i + 1]);
-			k++;
-			i += 2;
-		}
-		else if (r == 2)
-		{
-			i++;
-			j++;
-		}
-    }
-	return (1);
+	while (i < n_redir)
+	{
+		free(redir[i].type);
+		free(redir[i].file);
+		i++;
+	}
+	free(redir);
+	data->ret = 1;
 }
 
-int	arg_cleaner(t_cmd *com, t_redir *redir)
+int	redir_open_files(t_data *data, t_redir redir, int *last, int i)
 {
-	int		n_del;
+	int	fd;
 
-	n_del = com->n_redir * 2;
-	if ((com->n_args - n_del) > 0)
+	if (!ft_strcmp(redir.type, ">"))
 	{
-		com->args_str = malloc((com->n_args - n_del) * sizeof(char *));
-		if (!com->args_str)
-			return (0);
+		last[1] = i;
+		fd = open(redir.file, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 	}
-	if (!cleaner_loop(com, redir))
+	else if (!ft_strcmp(redir.type, ">>"))
+	{
+		last[1] = i;
+		fd = open(redir.file, O_WRONLY | O_APPEND | O_CREAT, 0777);
+	}
+	else if (!ft_strcmp(redir.type, "<"))
+	{
+		last[0] = i;
+		fd = open(redir.file, O_RDONLY);
+	}
+	if (fd == -1)
 		return (0);
-	free(com->args);
-	com->args = NULL;
-	com->n_args = com->n_args - n_del;
+	close(fd);
 	return (1);
 }

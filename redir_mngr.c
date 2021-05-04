@@ -6,53 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/03 14:03:00 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:27:15 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	redir_open_error(t_data *data, t_redir *redir, int i, int n_redir)
-{
-	char	*sterr;
-
-	sterr = strerror(errno);
-	error_msn(redir[i].file, NULL, sterr);
-	i = 0;
-	while (i < n_redir)
-	{
-		free(redir[i].type);
-		free(redir[i].file);
-		i++;
-	}
-	free(redir);
-	data->ret = 1;
-}
-
-int	redir_open_files(t_data *data, t_redir redir, int *last, int i)
-{
-	int	fd;
-
-	if (!ft_strcmp(redir.type, ">"))
-	{
-		last[1] = i;
-		fd = open(redir.file, O_WRONLY | O_TRUNC | O_CREAT, 0777);
-	}
-	else if (!ft_strcmp(redir.type, ">>"))
-	{
-		last[1] = i;
-		fd = open(redir.file, O_WRONLY | O_APPEND | O_CREAT, 0777);
-	}
-	else if (!ft_strcmp(redir.type, "<"))
-	{
-		last[0] = i;
-		fd = open(redir.file, O_RDONLY);
-	}
-	if (fd == -1)
-		return (0);
-	close(fd);
-	return (1);
-}
 
 void	redir_inits(t_data *data, t_cmd *com, t_redir **redir, int *last)
 {

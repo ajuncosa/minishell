@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 12:23:36 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:29:25 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_redir
 
 typedef struct s_data
 {
-	char 		**envp;
+	char		**envp;
 	t_list		*env_head;
 	t_list		*cmd_head;
 	t_letter	*line;
@@ -80,7 +80,8 @@ void		ctrl_d(int ctrl, char **str, t_data *data);
 void		parser(t_data *data, char *str);
 int			syntax_errors(t_letter *str);
 void		parser_alloc_init(t_data *data, t_cmd **com, t_list **new);
-int			countalloc_args(t_cmd *com, t_data *data, t_list *new, t_letter *line);
+int			countalloc_args(t_cmd *com, t_data *data, t_list *new,
+				t_letter *line);
 int			count_args(t_letter *str);
 void		save_cmd_args(t_data *data, t_cmd *com, int *i);
 t_letter	*quote_hunter(t_letter *str);
@@ -110,6 +111,8 @@ int			check_if_redir(t_cmd *com);
 void		count_redir(t_cmd *com);
 int			arg_cleaner(t_cmd *com, t_redir *redir);
 void		redir_manager(t_cmd *com, t_data *data);
+int			redir_open_files(t_data *data, t_redir redir, int *last, int i);
+void		redir_open_error(t_data *data, t_redir *redir, int i, int n_redir);
 int			dollar_finder(t_list **env_head, t_letter **str, int ret);
 /* Misc utils */
 char		*is_in_env(t_list **env_head, char *str);
