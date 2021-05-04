@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:09:37 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/03 09:39:04 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:42:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	quote_flagger(char c, int quote)
 {

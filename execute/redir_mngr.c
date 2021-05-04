@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:27:15 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:47:44 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	redir_inits(t_data *data, t_cmd *com, t_redir **redir, int *last)
 {

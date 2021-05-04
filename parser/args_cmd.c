@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 11:50:47 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:08:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:45:47 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	redir_filter(t_cmd *com, int *found)
 {

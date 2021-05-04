@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:03:30 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/29 11:53:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:45:36 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	count_args(t_letter *str)
 {

@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/04/30 18:56:21 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:47:32 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	cmd_caller(t_cmd *com, t_data *data)
 {

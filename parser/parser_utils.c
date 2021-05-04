@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 13:29:19 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:06:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:41:51 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	parser_alloc_init(t_data *data, t_cmd **com, t_list **new)
 {

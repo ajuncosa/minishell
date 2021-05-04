@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:11:43 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:27:23 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:47:55 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	check_if_redir(t_cmd *com)
 {

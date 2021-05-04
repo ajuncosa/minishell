@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 12:07:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/30 12:19:22 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:44:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	flag_loop2(t_letter *str, char *flag, int *i)
 {

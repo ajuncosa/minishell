@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 11:38:41 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/03 09:45:05 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:42:43 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*struct_to_str(t_letter *struc, int start, int len)
 {

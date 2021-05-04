@@ -1,25 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/13 15:39:30 by ajuncosa         ###   ########.fr       */
+/*   Created: 2020/12/18 11:28:42 by ajuncosa          #+#    #+#             */
+/*   Updated: 2021/05/04 13:35:16 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	ft_pwd(t_data *data, char **args)
+void	ft_env(t_data *data, char **args)
 {
-	char	*pwd;
-	char	*buf;
+	t_list	*lst;
+	int		i;
 
-	buf = NULL;
-	buf = getcwd(buf, 0);
-	printf("%s\n", buf);
-	free(buf);
+	i = 0;
+	if (args != NULL)
+	{
+		error_msn("env", NULL, "too many arguments");
+		data->ret = 1;
+		return ;
+	}
+	lst = data->env_head;
+	while (lst)
+	{
+		if (((t_env *)lst->content)->value != NULL)
+			printf("%s=%s\n", ((t_env *)lst->content)->id,
+				((t_env *)lst->content)->value);
+		lst = lst->next;
+	}
 	data->ret = 0;
 }

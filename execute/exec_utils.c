@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:06:51 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/03 11:27:16 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:47:18 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	**paths_from_env(t_data *data)
 {

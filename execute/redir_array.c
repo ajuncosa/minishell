@@ -6,11 +6,11 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 13:24:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:24:43 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:47:50 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	create_redir_array(t_cmd *com, t_redir *redir, int i, int j)
 {
