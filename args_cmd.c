@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 11:50:47 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/29 11:51:18 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 13:08:03 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	redir_filter(t_cmd *com, int *found)
 	return (n);
 }
 
-int	replace_arg_array(t_cmd *com, int n, t_letter ***tmp)
+int	replace_arg_array(t_cmd *com, int n, t_letter ***tmp, int found)
 {
 	int	i;
 	int	j;
@@ -46,7 +46,7 @@ int	replace_arg_array(t_cmd *com, int n, t_letter ***tmp)
 	j = 0;
 	while (i < com->n_args)
 	{
-		if (i == n)
+		if (found && i == n)
 		{
 			i++;
 			continue ;
@@ -78,10 +78,10 @@ int	find_cmd(t_cmd *com)
 		tmp = malloc(com->n_args * sizeof(t_letter *));
 	if (!tmp)
 		return (0);
+	if (!replace_arg_array(com, n, &tmp, found))
+		return (0);
 	if (found)
 	{
-		if (!replace_arg_array(com, n, &tmp))
-			return (0);
 		com->n_args -= 1;
 		if (com->n_args == 0)
 		{
