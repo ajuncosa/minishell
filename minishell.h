@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/03 09:40:16 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 12:23:36 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
 int			esc_strlen(t_letter *str);
 t_letter	*esc_dup(t_letter *str);
+int			esc_cmp(t_letter *s1, char *s2);
 int			is_escapable(char c, int quote);
 
 #endif

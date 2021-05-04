@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   esc_utils_libft.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/03 09:44:28 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/03 09:44:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/04 12:17:19 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,18 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 	}
 	new[j].c = '\0';
 	return (new);
+}
+
+int	esc_cmp(t_letter *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i].c || s2[i])
+	{
+		if (s1[i].c != s2[i])
+			return (s1[i].c - s2[i]);
+		i++;
+	}
+	return (0);
 }
