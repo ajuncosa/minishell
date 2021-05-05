@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 12:07:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:44:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 13:28:09 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	flag_loop2(t_letter *str, char *flag, int *i)
+int	end_of_cmd_flagcheck(t_letter *str, char *flag, int *i)
 {
 	if (*flag)
 	{
@@ -27,7 +27,7 @@ int	flag_loop2(t_letter *str, char *flag, int *i)
 	return (1);
 }
 
-int	flag_loop3(t_letter *str, char *flag, int *i)
+int	redir_check(t_letter *str, char *flag, int *i)
 {
 	int	check;
 
@@ -62,12 +62,12 @@ int	flag_loop(t_letter *str, char *flag, int *i)
 	{
 		if ((str[*i].c == ';' || str[*i].c == '|') && !str[*i].esc)
 		{
-			if (!flag_loop2(str, flag, i))
+			if (!end_of_cmd_flagcheck(str, flag, i))
 				return (0);
 		}
 		else if ((str[*i].c == '>' || str[*i].c == '<') && !str[*i].esc)
 		{
-			if (!flag_loop3(str, flag, i))
+			if (!redir_check(str, flag, i))
 				return (0);
 		}
 		else
