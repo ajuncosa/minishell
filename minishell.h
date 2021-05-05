@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 12:11:18 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:55:08 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,11 @@ typedef struct s_data
 	int			ret;
 	int			std_in;
 	int			std_out;
-	char		*user;
 }				t_data;
-
-//char	*g_user;
-//pid_t	g_pid;
 
 /* Main Functions */
 void		header(void);
 void		lst_env(t_data *data);
-void		set_user(t_data *data);
 void		del_oldpwd(t_data *data);
 void		prompt(void);
 /* Signals */

@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/05 12:05:25 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:37:22 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 	pid_t	pid;
 	int		status;
 
-	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -113,7 +112,10 @@ void	cmd_manager(t_data *data)
 			&& ((t_cmd *)lst->content)->sep_1 != '|')
 			redirs_and_exec(data, (t_cmd *)lst->content);
 		if (((t_cmd *)lst->content)->sep_1 == '|')
+		{
+			pipe(fd);
 			handle_pipe_output(data, (t_cmd *)lst->content, fd, &fd_read);
+		}
 		else if (((t_cmd *)lst->content)->sep_0 == '|')
 			handle_pipe_input(data, (t_cmd *)lst->content, &fd_read);
 		lst = lst->next;

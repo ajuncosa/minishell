@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:00:46 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 11:28:44 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:55:03 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,6 @@ void	lst_env(t_data *data)
 		ft_lstadd_back(&data->env_head, new);
 		free(line);
 		i++;
-	}
-}
-
-void	set_user(t_data *data)
-{
-	data->user = ft_strdup(is_in_env(&data->env_head, "USER"));
-	if (!data->user)
-	{
-		data->user = ft_strdup("michael-s");
-		if (!data->user)
-			ft_exit(data, NULL);
 	}
 }
 

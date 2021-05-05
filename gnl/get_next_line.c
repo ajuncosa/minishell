@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 14:01:13 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/27 13:40:28 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:33:30 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,26 @@ int	ft_complete_the_line(int fd, char **stat, char **line)
 	return (0);
 }
 
+void	alloc_stat(char **stat, size_t bytes, int fd, char *buf)
+{
+	char	*tmp;
+
+	buf[bytes] = '\0';
+	if (!stat[fd])
+		stat[fd] = ft_strdup(buf);
+	else
+	{
+		tmp = ft_strjoin(stat[fd], buf);
+		free(stat[fd]);
+		stat[fd] = tmp;
+	}
+}
+
 int	get_next_line(int fd, char **line)
 {
 	char		*buf;
 	size_t		bytes;
 	static char	*stat[4096];
-	char		*tmp;
 
 	buf = malloc(BUFFER_SIZE + 1);
 	if (fd == -1 || !line || !buf
@@ -65,19 +79,13 @@ int	get_next_line(int fd, char **line)
 		return (-1);
 	if (!stat[fd] || ft_strchr_edit(stat[fd], '\n') == -1)
 	{
-		while ((bytes = read(fd, buf, BUFFER_SIZE)) > 0)
+		bytes = read(fd, buf, BUFFER_SIZE);
+		while (bytes > 0)
 		{
-			buf[bytes] = '\0';
-			if (!stat[fd])
-				stat[fd] = ft_strdup(buf);
-			else
-			{
-				tmp = ft_strjoin(stat[fd], buf);
-				free(stat[fd]);
-				stat[fd] = tmp;
-			}
+			alloc_stat(stat, bytes, fd, buf);
 			if (ft_strchr_edit(stat[fd], '\n') != -1)
 				break ;
+			bytes = read(fd, buf, BUFFER_SIZE);
 		}
 	}
 	free(buf);

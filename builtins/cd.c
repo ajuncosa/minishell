@@ -6,13 +6,13 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 11:45:11 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/05 13:16:59 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	change_dir(t_data *data, char *str)
+void	change_envdir(t_data *data, char *str)
 {
 	t_list	*list;
 
@@ -28,22 +28,33 @@ void	change_dir(t_data *data, char *str)
 	}
 }
 
-void	ft_cd(t_data *data, t_cmd *com)
+void	go_home(t_data *data)
 {
 	char	*path;
 	char	*sterr;
 
-	change_dir(data, "OLDPWD");
+	path = is_in_env(&data->env_head, "HOME");
+	if (!path)
+	{
+		error_msn("cd", NULL, "HOME not set");
+		data->ret = 1;
+	}
+	else if (chdir(path) == -1)
+	{
+		sterr = strerror(errno);
+		error_msn("cd", NULL, sterr);
+		data->ret = 0;
+	}
+}
+
+void	ft_cd(t_data *data, t_cmd *com)
+{
+	char	*sterr;
+
+	change_envdir(data, "OLDPWD");
 	if (com->args_str == NULL || !ft_strcmp(com->args_str[0], "~"))
 	{
-		path = ft_strjoin("/Users/", data->user);
-		if (chdir(path) == -1)
-		{
-			sterr = strerror(errno);
-			error_msn("cd", com->args_str[0], sterr);
-		}
-		free(path);
-		data->ret = 0;
+		go_home(data);
 		return ;
 	}
 	if (chdir(com->args_str[0]) == -1)
@@ -53,6 +64,6 @@ void	ft_cd(t_data *data, t_cmd *com)
 		data->ret = 1;
 		return ;
 	}
-	change_dir(data, "PWD");
+	change_envdir(data, "PWD");
 	data->ret = 0;
 }

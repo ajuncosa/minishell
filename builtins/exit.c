@@ -6,7 +6,7 @@
 /*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 11:44:54 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:55:30 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,6 @@ void	ft_exit(t_data *data, t_cmd *com)
 				check_exit_args(data, com);
 		}
 	}
-	if (data->user)
-		free(data->user);
 	if (data->line)
 		free(data->line);
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);
