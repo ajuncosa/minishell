@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_mngr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:47:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:05:35 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,17 @@ void	do_redirs(t_data *data, t_cmd *com, t_redir *redir, int *last)
 
 void	redir_and_execute(t_data *data, t_cmd *com, t_redir *redir, int *last)
 {
-	int	status;
-	int	i;
+	int		status;
+	int		i;
+	pid_t	pid;
 
-	g_pid = fork();
-	if (g_pid == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		do_redirs(data, com, redir, last);
 		exit(data->ret);
 	}
-	else if (g_pid < 0)
+	else if (pid < 0)
 		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);

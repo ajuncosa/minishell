@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:47:12 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:05:30 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 {
 	char	*sterr;
 	int		status;
+	pid_t	pid;
 
-	g_pid = fork();
-	if (g_pid == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		if (execve(com->cmd, argv, data->envp) == -1)
 		{
@@ -54,12 +55,12 @@ void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 		}
 		exit(127);
 	}
-	else if (g_pid < 0)
+	else if (pid < 0)
 	{
 		sterr = strerror(errno);
 		error_msn(NULL, NULL, sterr);
 	}
-	waitpid(g_pid, &status, 0);
+	waitpid(pid, &status, 0);
 	data->ret = WEXITSTATUS(status);
 }
 

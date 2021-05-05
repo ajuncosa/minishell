@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start_shell.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:00:46 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/30 18:49:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 11:28:44 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ void	lst_env(t_data *data)
 
 void	set_user(t_data *data)
 {
-	g_user = ft_strdup(is_in_env(&data->env_head, "USER"));
-	if (!g_user)
+	data->user = ft_strdup(is_in_env(&data->env_head, "USER"));
+	if (!data->user)
 	{
-		g_user = ft_strdup("michael-s");
-		if (!g_user)
+		data->user = ft_strdup("michael-s");
+		if (!data->user)
 			ft_exit(data, NULL);
 	}
 }
@@ -82,11 +82,8 @@ void	del_oldpwd(t_data *data)
 
 void	prompt(void)
 {
-	size_t	user_len;
-
-	user_len = ft_strlen(g_user);
 	write(1, "\033[1;37m", 7);
-	write(1, g_user, user_len);
+	write(1, "notsomini", 9);
 	write(1, "> ", 2);
 	write(1, "\033[0m", 4);
 }

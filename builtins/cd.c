@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/25 12:49:48 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:34:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 11:45:11 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_cd(t_data *data, t_cmd *com)
 	change_dir(data, "OLDPWD");
 	if (com->args_str == NULL || !ft_strcmp(com->args_str[0], "~"))
 	{
-		path = ft_strjoin("/Users/", g_user);
+		path = ft_strjoin("/Users/", data->user);
 		if (chdir(path) == -1)
 		{
 			sterr = strerror(errno);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:29:25 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:11:18 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,11 @@ typedef struct s_data
 	int			ret;
 	int			std_in;
 	int			std_out;
+	char		*user;
 }				t_data;
 
-char	*g_user;
-pid_t	g_pid;
+//char	*g_user;
+//pid_t	g_pid;
 
 /* Main Functions */
 void		header(void);
@@ -73,8 +74,8 @@ void		set_user(t_data *data);
 void		del_oldpwd(t_data *data);
 void		prompt(void);
 /* Signals */
-void		quit(int sig);
-void		ctrl_c(int sig);
+void		signals_dad(int sig);
+void		signals_son(int sig);
 void		ctrl_d(int ctrl, char **str, t_data *data);
 /* Parser */
 void		parser(t_data *data, char *str);

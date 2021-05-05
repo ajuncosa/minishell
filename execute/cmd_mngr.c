@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_mngr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:47:32 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:05:25 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@ void	redirs_and_exec(t_data *data, t_cmd *com)
 
 void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 {
+	pid_t	pid;
 	int		status;
 
 	pipe(fd);
-	g_pid = fork();
-	if (g_pid == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		if (*fd_read)
 		{
@@ -66,7 +67,7 @@ void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 		redirs_and_exec(data, com);
 		exit(data->ret);
 	}
-	else if (g_pid < 0)
+	else if (pid < 0)
 		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);
@@ -80,16 +81,17 @@ void	handle_pipe_input(t_data *data, t_cmd *com, int *fd_read)
 {
 	char	*sterr;
 	int		status;
+	pid_t	pid;	
 
-	g_pid = fork();
-	if (g_pid == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		dup2(*fd_read, STDIN_FILENO);
 		close(*fd_read);
 		redirs_and_exec(data, com);
 		exit(data->ret);
 	}
-	else if (g_pid < 0)
+	else if (pid < 0)
 		fork_errors();
 	wait(&status);
 	data->ret = WEXITSTATUS(status);

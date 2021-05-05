@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:41:37 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:12:27 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,13 @@ void	parser_loop(t_data *data)
 
 void	parser(t_data *data, char *str)
 {
+	signal(SIGINT, signals_son);
+	signal(SIGQUIT, signals_son);
 	data->cmd_head = NULL;
 	if (!transform_line(str, data))
 		return ;
 	parser_loop(data);
 	cmd_manager(data);
-	g_pid = -1;
 	free(data->line);
 	data->line = NULL;
 	ft_lstclear(&data->cmd_head, &del_lst_cmd);

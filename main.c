@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/04/30 18:49:54 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/05 12:16:17 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ void	start_init(t_data *data)
 {
 	data->cmd_head = NULL;
 	data->ret = 0;
-	g_user = NULL;
-	g_pid = -1;
+	data->user = NULL;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -27,8 +26,6 @@ int	main(int argc, char **argv, char **envp)
 	t_data	data;
 
 	data.envp = envp;
-	signal(SIGINT, ctrl_c);
-	signal(SIGQUIT, quit);
 	start_init(&data);
 	header();
 	lst_env(&data);
@@ -36,6 +33,8 @@ int	main(int argc, char **argv, char **envp)
 	del_oldpwd(&data);
 	while (1)
 	{
+		signal(SIGINT, signals_dad);
+		signal(SIGQUIT, signals_dad);
 		data.line = NULL;
 		prompt();
 		ctrl = get_next_line(0, &str);
