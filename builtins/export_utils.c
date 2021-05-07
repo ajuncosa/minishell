@@ -6,17 +6,35 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/30 12:21:59 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:36:08 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/07 14:22:01 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+/*char	**sort_alphabetically(t_list *head, int size)
+{
+	char	**sorted;
+	char	*new;
+	t_list	*lst;
+
+	sorted = malloc();
+	lst = head;
+	while (lst)
+	{
+		lst = lst->next;
+	}
+}*/
+
 void	print_export_list(t_data *data)
 {
 	t_list	*list;
+	//int		size;
+	//char	**
 
 	list = data->env_head;
+/*	size = ft_lstsize(data->env_head);
+	sort_alphabetically(data->env_head, size);*/
 	while (list)
 	{
 		if (((t_env *)list->content)->value)
