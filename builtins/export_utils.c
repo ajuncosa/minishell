@@ -12,29 +12,76 @@
 
 #include "../minishell.h"
 
-/*char	**sort_alphabetically(t_list *head, int size)
+int	copy_list(t_list **sorted, t_list *env_head)
 {
-	char	**sorted;
-	char	*new;
 	t_list	*lst;
+	t_list	*new;
+	t_env	*env;
 
-	sorted = malloc();
-	lst = head;
+	lst = env_head;
 	while (lst)
 	{
+		env = malloc(sizeof(t_env));
+		if (!env)
+			return (0);
+		new = ft_lstnew(env);
+		if (!new)
+			return (0);
+		env->id = ft_strdup(((t_env *)lst->content)->id);
+		if (!env->id)
+			return (0);
+		if (((t_env *)lst->content)->value)
+		{
+			env->value = ft_strdup(((t_env *)lst->content)->value);
+			if (!env->value)
+				return (0);
+		}
+		else
+			env->value = NULL;
+		ft_lstadd_back(sorted, new);
 		lst = lst->next;
 	}
-}*/
+	return (1);
+}
 
-void	print_export_list(t_data *data)
+void	sort_alphabetically(t_list **sorted)
+{
+	t_list	*lst;
+	t_list	*biggest;
+	t_env	*tmp;
+	int		swapped;
+
+	swapped = 1;
+	biggest = NULL;
+	while (swapped)
+	{
+		swapped = 0;
+		lst = *sorted;
+		while (lst->next != biggest)
+		{
+			if (ft_strcmp(((t_env *)lst->content)->id, ((t_env *)(lst->next)->content)->id) > 0)
+			{
+				tmp = lst->content;
+				lst->content = (lst->next)->content;
+				(lst->next)->content = tmp;
+				swapped = 1;
+			}
+			lst = lst->next;
+		}
+		biggest = lst;
+	}
+}
+
+void	print_export_list(t_data *data, t_cmd *com)
 {
 	t_list	*list;
-	//int		size;
-	//char	**
+	t_list	*sorted;
 
-	list = data->env_head;
-/*	size = ft_lstsize(data->env_head);
-	sort_alphabetically(data->env_head, size);*/
+	sorted = NULL;
+	if (!copy_list(&sorted, data->env_head))
+		ft_exit(data, com);
+	sort_alphabetically(&sorted);
+	list = sorted;
 	while (list)
 	{
 		if (((t_env *)list->content)->value)
@@ -44,6 +91,7 @@ void	print_export_list(t_data *data)
 			printf("declare -x %s\n", ((t_env *)list->content)->id);
 		list = list->next;
 	}
+	ft_lstclear(&sorted, del_lst);
 	data->ret = 0;
 }
 

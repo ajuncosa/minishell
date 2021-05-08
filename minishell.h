@@ -92,7 +92,7 @@ void		ft_echo(t_data *data, t_cmd *com);
 void		ft_env(t_data *data, char **args);
 void		ft_pwd(t_data *data, char **args);
 void		ft_export(t_data *data, t_cmd *com);
-void		print_export_list(t_data *data);
+void		print_export_list(t_data *data, t_cmd *com);
 int			export_errors(char *str);
 void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);

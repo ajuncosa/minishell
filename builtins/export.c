@@ -108,7 +108,7 @@ void	ft_export(t_data *data, t_cmd *com)
 	data->ret = 0;
 	if (com->args_str == NULL)
 	{
-		print_export_list(data);
+		print_export_list(data, com);
 		return ;
 	}
 	i = 0;
