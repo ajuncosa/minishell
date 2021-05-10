@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/18 11:27:11 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:34:59 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/10 12:17:10 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	n_option(char **args, int *i)
+int	n_option(char **args, int n_args, int *i)
 {
 	int	n;
 	int	j;
@@ -20,7 +20,7 @@ int	n_option(char **args, int *i)
 
 	n = 0;
 	j = 0;
-	while (!ft_strncmp(args[j], "-n", 2))
+	while (j < n_args && !ft_strncmp(args[j], "-n", 2))
 	{
 		k = 1;
 		while (args[j][k] == 'n')
@@ -52,7 +52,7 @@ void	ft_echo(t_data *data, t_cmd *com)
 		data->ret = 0;
 		return ;
 	}
-	n = n_option(com->args_str, &i);
+	n = n_option(com->args_str, com->n_args, &i);
 	while (i < com->n_args)
 	{
 		write(1, com->args_str[i], ft_strlen(com->args_str[i]));

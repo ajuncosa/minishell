@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/30 12:21:59 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/07 14:22:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/10 12:05:27 by cruiz-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	fill_node(t_env *new_content, t_env *lst_content)
+{
+	new_content->id = ft_strdup(lst_content->id);
+	if (!new_content->id)
+		return (0);
+	if (lst_content->value)
+	{
+		new_content->value = ft_strdup(lst_content->value);
+		if (!new_content->value)
+			return (0);
+	}
+	else
+		new_content->value = NULL;
+	return (1);
+}
 
 int	copy_list(t_list **sorted, t_list *env_head)
 {
@@ -27,17 +43,8 @@ int	copy_list(t_list **sorted, t_list *env_head)
 		new = ft_lstnew(env);
 		if (!new)
 			return (0);
-		env->id = ft_strdup(((t_env *)lst->content)->id);
-		if (!env->id)
+		if (!fill_node(env, (t_env *)lst->content))
 			return (0);
-		if (((t_env *)lst->content)->value)
-		{
-			env->value = ft_strdup(((t_env *)lst->content)->value);
-			if (!env->value)
-				return (0);
-		}
-		else
-			env->value = NULL;
 		ft_lstadd_back(sorted, new);
 		lst = lst->next;
 	}
@@ -59,7 +66,8 @@ void	sort_alphabetically(t_list **sorted)
 		lst = *sorted;
 		while (lst->next != biggest)
 		{
-			if (ft_strcmp(((t_env *)lst->content)->id, ((t_env *)(lst->next)->content)->id) > 0)
+			if (ft_strcmp(((t_env *)lst->content)->id,
+					((t_env *)(lst->next)->content)->id) > 0)
 			{
 				tmp = lst->content;
 				lst->content = (lst->next)->content;
