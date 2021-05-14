@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 12:12:27 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/14 18:00:37 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	parser_loop(t_data *data)
 
 void	parser(t_data *data, char *str)
 {
+	prueba = 0;
 	signal(SIGINT, signals_son);
 	signal(SIGQUIT, signals_son);
 	data->cmd_head = NULL;

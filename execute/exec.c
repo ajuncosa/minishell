@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/05 12:05:30 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/14 17:31:50 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 	}
 	waitpid(pid, &status, 0);
 	data->ret = WEXITSTATUS(status);
+	
 }
 
 void	ft_cmd(t_cmd *com, t_data *data)

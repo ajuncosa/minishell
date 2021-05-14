@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_mngr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/05 12:37:22 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/14 18:11:44 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 	}
 	else if (pid < 0)
 		fork_errors();
-	wait(&status);
-	data->ret = WEXITSTATUS(status);
+	prueba++;
 	if (*fd_read)
 		close(*fd_read);
 	*fd_read = fd[0];
@@ -92,8 +91,8 @@ void	handle_pipe_input(t_data *data, t_cmd *com, int *fd_read)
 	}
 	else if (pid < 0)
 		fork_errors();
-	wait(&status);
-	data->ret = WEXITSTATUS(status);
+	prueba++;
+	ultimopid = pid;
 	close(*fd_read);
 	*fd_read = 0;
 }
@@ -108,6 +107,7 @@ void	cmd_manager(t_data *data)
 	fd_read = 0;
 	while (lst)
 	{
+		ultimopid = 0;
 		if (((t_cmd *)lst->content)->sep_0 != '|'
 			&& ((t_cmd *)lst->content)->sep_1 != '|')
 			redirs_and_exec(data, (t_cmd *)lst->content);
@@ -118,6 +118,24 @@ void	cmd_manager(t_data *data)
 		}
 		else if (((t_cmd *)lst->content)->sep_0 == '|')
 			handle_pipe_input(data, (t_cmd *)lst->content, &fd_read);
+		//printf("ultimopid: %d\n", ultimopid);
+		
+		if (ultimopid && (((t_cmd *)lst->content)->sep_1 == ';' || ((t_cmd *)lst->content)->sep_1 == '0'))
+		{
+			int	status;
+			int i = 0;
+			//printf("cmd: %s, no de waits a hacer: %d\n", ((t_cmd *)lst->content)->cmd, prueba);
+			waitpid(ultimopid, &status, 0);
+			data->ret = WEXITSTATUS(status);
+			//printf("he esperado al ultimopid\n");
+			while (i < prueba - 1)
+			{
+				wait(NULL);
+				//printf("he esperado, %d\n",  WEXITSTATUS(status));
+				i++;
+			}
+			prueba = 0;
+		}
 		lst = lst->next;
 	}
 }
