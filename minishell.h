@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/14 17:55:10 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/14 19:29:57 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,9 @@ typedef struct s_data
 	int			ret;
 	int			std_in;
 	int			std_out;
+	int			n_waits;
+	pid_t		last_pipe_pid;
 }				t_data;
-
-int	prueba;
-pid_t ultimopid;
 
 /* Main Functions */
 void		header(void);

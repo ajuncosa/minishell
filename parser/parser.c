@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/14 18:00:37 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/14 19:22:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	parser_loop(t_data *data)
 
 void	parser(t_data *data, char *str)
 {
-	prueba = 0;
+	data->n_waits = 0;
 	signal(SIGINT, signals_son);
 	signal(SIGQUIT, signals_son);
 	data->cmd_head = NULL;

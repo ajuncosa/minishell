@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/14 18:11:44 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/14 19:34:16 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 	}
 	else if (pid < 0)
 		fork_errors();
-	prueba++;
+	data->n_waits++;
 	if (*fd_read)
 		close(*fd_read);
 	*fd_read = fd[0];
@@ -91,10 +91,27 @@ void	handle_pipe_input(t_data *data, t_cmd *com, int *fd_read)
 	}
 	else if (pid < 0)
 		fork_errors();
-	prueba++;
-	ultimopid = pid;
+	data->n_waits++;
+	data->last_pipe_pid = pid;
 	close(*fd_read);
 	*fd_read = 0;
+}
+
+void	pipes_waits(t_data *data)
+{
+	int	status;
+	int	i;
+
+	i = 0;
+	//printf("cmd: %s, no de waits a hacer: %d\n", ((t_cmd *)lst->content)->cmd, prueba);
+	waitpid(data->last_pipe_pid, &status, 0);
+	data->ret = WEXITSTATUS(status);
+	while (i < data->n_waits - 1)
+	{
+		wait(NULL);
+		i++;
+	}
+	data->n_waits = 0;
 }
 
 void	cmd_manager(t_data *data)
@@ -107,7 +124,7 @@ void	cmd_manager(t_data *data)
 	fd_read = 0;
 	while (lst)
 	{
-		ultimopid = 0;
+		data->last_pipe_pid = 0;
 		if (((t_cmd *)lst->content)->sep_0 != '|'
 			&& ((t_cmd *)lst->content)->sep_1 != '|')
 			redirs_and_exec(data, (t_cmd *)lst->content);
@@ -118,24 +135,9 @@ void	cmd_manager(t_data *data)
 		}
 		else if (((t_cmd *)lst->content)->sep_0 == '|')
 			handle_pipe_input(data, (t_cmd *)lst->content, &fd_read);
-		//printf("ultimopid: %d\n", ultimopid);
-		
-		if (ultimopid && (((t_cmd *)lst->content)->sep_1 == ';' || ((t_cmd *)lst->content)->sep_1 == '0'))
-		{
-			int	status;
-			int i = 0;
-			//printf("cmd: %s, no de waits a hacer: %d\n", ((t_cmd *)lst->content)->cmd, prueba);
-			waitpid(ultimopid, &status, 0);
-			data->ret = WEXITSTATUS(status);
-			//printf("he esperado al ultimopid\n");
-			while (i < prueba - 1)
-			{
-				wait(NULL);
-				//printf("he esperado, %d\n",  WEXITSTATUS(status));
-				i++;
-			}
-			prueba = 0;
-		}
+		if (data->last_pipe_pid && (((t_cmd *)lst->content)->sep_1 == ';'
+				|| ((t_cmd *)lst->content)->sep_1 == '0'))
+			pipes_waits(data);
 		lst = lst->next;
 	}
 }

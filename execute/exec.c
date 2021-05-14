@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 11:34:27 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/14 17:31:50 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/14 19:34:35 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	exec_cmd(t_data *data, t_cmd *com, char **argv)
 	}
 	waitpid(pid, &status, 0);
 	data->ret = WEXITSTATUS(status);
-	
 }
 
 void	ft_cmd(t_cmd *com, t_data *data)
