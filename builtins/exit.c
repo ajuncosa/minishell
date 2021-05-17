@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 11:01:06 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/17 12:48:17 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,33 +48,33 @@ void	del_lst_cmd(void *cmd)
 	free((t_cmd *)cmd);
 }
 
-void	check_exit_args(t_data *data, t_cmd *com)
+int	check_exit_args(t_data *data, t_cmd *com)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
+	if (com->args_str[0][0] == '-')
+	{
+		if (com->args_str[0][1] == '-' && com->args_str[0][2] == '\0')
+			return (1);
+		else if (ft_isdigit(com->args_str[0][1]))
+			i++;
+	}
 	data->ret = ft_atoi(com->args_str[0]);
 	if (data->ret >= 256)
 		data->ret -= 256;
 	else if (data->ret < 0)
 		data->ret += 256;
-	if (com->args_str[0][0] == '-')
-	{
-		if (com->args_str[0][1] == '-' && com->args_str[0][2] == '\0')
-			i = 2;
-		else if (ft_isdigit(com->args_str[0][1]))
-			i = 1;
-	}
-	while (com->args_str[0][i])
+	while (com->args_str[0][++i])
 	{
 		if (!ft_isdigit(com->args_str[0][i]))
 		{
 			printf("exit: %s: numeric argument required\n", com->args_str[0]);
 			data->ret = 255;
-			break ;
+			return (0);
 		}
-		i++;
 	}
+	return (1);
 }
 
 void	ft_exit(t_data *data, t_cmd *com)
@@ -85,15 +85,16 @@ void	ft_exit(t_data *data, t_cmd *com)
 	if (com)
 	{
 		if (!ft_strcmp(com->cmd, "exit"))
-		{	
-			if (com->n_args > 1)
-			{
-				printf("exit: too many arguments\n"); //FIXME: primero comprueba si es númerico y luego cuántos hay
-				data->ret = 1;
-				return ;
-			}
+		{
 			if (com->n_args > 0)
-				check_exit_args(data, com);
+			{
+				if (check_exit_args(data, com) && com->n_args > 1)
+				{
+					printf("exit: too many arguments\n");
+					data->ret = 1;
+					return ;
+				}
+			}
 		}
 	}
 	if (data->line)
