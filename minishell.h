@@ -6,13 +6,14 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 11:10:43 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/17 13:43:07 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdio.h>
+# include <string.h>
 # include <unistd.h>
 # include <errno.h>
 # include <dirent.h>
