@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 12:55:30 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/17 11:01:06 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	ft_exit(t_data *data, t_cmd *com)
 		{	
 			if (com->n_args > 1)
 			{
-				printf("exit: too many arguments\n");
+				printf("exit: too many arguments\n"); //FIXME: primero comprueba si es númerico y luego cuántos hay
 				data->ret = 1;
 				return ;
 			}

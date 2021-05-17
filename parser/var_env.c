@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 13:30:58 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/17 10:56:11 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/17 11:02:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ int	dollar_finder(t_list **env_head, t_letter **str, int ret)
 		if ((*str)[start].c == '$' && !(*str)[start].esc)
 		{
 			start++;
-			if ((!ft_isalnum((*str)[start].c) && (*str)[start].c != '_' && (*str)[start].c != '?') || (*str)[start].esc)
+			if ((!ft_isalnum((*str)[start].c) && (*str)[start].c != '_'
+					&& (*str)[start].c != '?') || (*str)[start].esc)
 				continue ;
 			r = find_value(&(*str)[start], &value, ret, env_head);
 			if (r == -1)

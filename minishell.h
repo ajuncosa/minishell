@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/14 19:29:57 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/17 11:10:43 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int			find_cmd(t_cmd *com);
 int			find_arg_seps(t_data *data, t_cmd *com, int i, int sep);
 /* Commands */
 void		cmd_manager(t_data *data);
+void		redirs_and_exec(t_data *data, t_cmd *com);
 int			create_args_str(t_cmd *com);
 void		cmd_caller(t_cmd *com, t_data *data);
 void		ft_echo(t_data *data, t_cmd *com);
@@ -100,6 +101,10 @@ void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);
 void		ft_cmd(t_cmd *com, t_data *data);
 char		*ft_pathfinder(char *cmd, t_data *data);
+/* Pipes */
+void		handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read);
+void		handle_pipe_input(t_data *data, t_cmd *com, int *fd_read);
+void		pipes_waits(t_data *data);
 /* Exit */
 void		ft_exit(t_data *data, t_cmd *com);
 void		del_lst(void *env);
