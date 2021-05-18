@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/29 12:07:52 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 13:28:09 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/18 14:18:35 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	redir_check(t_letter *str, char *flag, int *i)
 {
 	int	check;
 
-	if (*flag)
+	if (*flag == 'r')
 	{
 		printf("syntax error near unexpected token `%c\'\n", str[*i].c);
 		return (0);
