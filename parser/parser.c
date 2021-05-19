@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/19 11:53:05 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 11:31:18 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/19 12:17:05 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	transform_line(char *str, t_data *data)
 	len = esc_size(str);
 	if (len == -1)
 	{
-		data->ret = 0;
+		data->ret = 1;
 		return (0);
 	}
 	data->line = line_to_struct(str, len);
