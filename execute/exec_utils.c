@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:06:51 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:47:18 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/19 16:30:40 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,17 @@ char	*ft_pathfinder(char *cmd, t_data *data)
 		free_str_array(paths);
 	}
 	return (valid_path);
+}
+
+void	free_envp_array(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		free(envp[i]);
+		i++;
+	}
+	free(envp);
 }

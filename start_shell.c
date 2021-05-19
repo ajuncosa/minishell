@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start_shell.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:00:46 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/05 12:55:03 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/19 14:12:04 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	header(void)
 	printf("_)\033[0m\n\n");
 }
 
-void	lst_env(t_data *data)
+void	lst_env(t_data *data, char **envp)
 {
 	int		i;
 	t_list	*new;
@@ -33,7 +33,7 @@ void	lst_env(t_data *data)
 
 	i = 0;
 	data->env_head = NULL;
-	while (data->envp[i])
+	while (envp[i])
 	{
 		env = malloc(sizeof(t_env));
 		if (!env)
@@ -41,7 +41,7 @@ void	lst_env(t_data *data)
 		new = ft_lstnew(env);
 		if (!new)
 			ft_exit(data, NULL);
-		line = ft_split(data->envp[i], '=');
+		line = ft_split(envp[i], '=');
 		if (!line)
 			ft_exit(data, NULL);
 		env->id = line[0];

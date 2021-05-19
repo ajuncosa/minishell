@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 13:43:07 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/19 16:31:02 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct s_redir
 
 typedef struct s_data
 {
-	char		**envp;
 	t_list		*env_head;
 	t_list		*cmd_head;
 	t_letter	*line;
@@ -68,7 +67,7 @@ typedef struct s_data
 
 /* Main Functions */
 void		header(void);
-void		lst_env(t_data *data);
+void		lst_env(t_data *data, char **envp);
 void		del_oldpwd(t_data *data);
 void		prompt(void);
 /* Signals */
@@ -101,6 +100,7 @@ int			export_errors(char *str);
 void		ft_unset(t_data *data, t_cmd *com);
 void		ft_cd(t_data *data, t_cmd *com);
 void		ft_cmd(t_cmd *com, t_data *data);
+void		free_envp_array(char **envp);
 char		*ft_pathfinder(char *cmd, t_data *data);
 /* Pipes */
 void		handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read);

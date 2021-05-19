@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/14 13:58:55 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/19 16:18:28 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,10 @@ int	main(int argc, char **argv, char **envp)
 	char	*str;
 	t_data	data;
 
-	data.envp = envp;
 	data.cmd_head = NULL;
 	data.ret = 0;
 	header();
-	lst_env(&data);
+	lst_env(&data, envp);
 	del_oldpwd(&data);
 	while (1)
 	{
