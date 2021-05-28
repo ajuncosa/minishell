@@ -6,13 +6,13 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 13:14:49 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:36:01 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 14:58:31 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	create_new_env(t_data *data, t_cmd *com, char *id, char **value)
+int	create_new_env(t_data *data, char *id, char **value)
 {
 	t_list	*new;
 	t_env	*env;
@@ -51,7 +51,7 @@ void	no_equal_sign(t_data *data, t_cmd *com, char *arg)
 		list = list->next;
 	}
 	if (!flag)
-		if (!create_new_env(data, com, arg, NULL))
+		if (!create_new_env(data, arg, NULL))
 			ft_exit(data, com);
 }
 
@@ -96,7 +96,7 @@ void	yes_equal_sign(t_data *data, t_cmd *com, char *arg)
 		list = list->next;
 	}
 	if (!flag)
-		if (!create_new_env(data, com, id, &value))
+		if (!create_new_env(data, id, &value))
 			ft_exit(data, com);
 	free(id);
 }

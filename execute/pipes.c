@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/17 11:07:29 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 11:55:46 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:04:37 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	signals_fork(int sig)
 void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid == 0)
@@ -50,8 +49,6 @@ void	handle_pipe_output(t_data *data, t_cmd *com, int *fd, int *fd_read)
 
 void	handle_pipe_input(t_data *data, t_cmd *com, int *fd_read)
 {
-	char	*sterr;
-	int		status;
 	pid_t	pid;	
 
 	pid = fork();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_mngr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cruiz-de <cruiz-de@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 11:57:40 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/05 12:05:35 by cruiz-de         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:03:46 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	redir_manager(t_cmd *com, t_data *data)
 	i = 0;
 	while (i < com->n_redir)
 	{
-		if (!redir_open_files(data, redir[i], last, i))
+		if (!redir_open_files(redir[i], last, i))
 		{
 			redir_open_error(data, redir, i, com->n_redir);
 			return ;

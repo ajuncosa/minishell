@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/03 09:44:28 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:42:51 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 14:51:16 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_letter	*esc_join(t_letter *s1, t_letter *s2)
 	return (new);
 }
 
-t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
+t_letter	*esc_substr(t_letter *str, int start, size_t len)
 {
 	size_t		i;
 	size_t		j;
@@ -72,15 +72,15 @@ t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len)
 
 	if (!str)
 		return (NULL);
+	new = malloc((len + 1) * sizeof(t_letter));
+	if (!new)
+		return (NULL);
 	if (str[0].c == '\0' || start > esc_strlen(str))
 	{
 		new[0].c = '\0';
 		new[0].esc = 0;
 		return (new);
 	}
-	new = malloc((len + 1) * sizeof(t_letter));
-	if (!new)
-		return (NULL);
 	i = start;
 	j = 0;
 	while (i < (len + start))

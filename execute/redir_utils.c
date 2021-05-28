@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:11:43 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/04 13:47:55 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:03:13 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,11 @@ void	redir_open_error(t_data *data, t_redir *redir, int i, int n_redir)
 	data->ret = 1;
 }
 
-int	redir_open_files(t_data *data, t_redir redir, int *last, int i)
+int	redir_open_files(t_redir redir, int *last, int i)
 {
 	int	fd;
 
+	fd = 0;
 	if (!ft_strcmp(redir.type, ">"))
 	{
 		last[1] = i;

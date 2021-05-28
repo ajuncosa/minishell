@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 12:05:03 by cruiz-de          #+#    #+#             */
-/*   Updated: 2021/05/17 11:44:03 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:01:00 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	cmd_caller(t_cmd *com, t_data *data)
 	if (!ft_strcmp(com->cmd, "echo"))
 		ft_echo(data, com);
 	else if (!ft_strcmp(com->cmd, "pwd"))
-		ft_pwd(data, com->args_str);
+		ft_pwd(data);
 	else if (!ft_strcmp(com->cmd, "export"))
 		ft_export(data, com);
 	else if (!ft_strcmp(com->cmd, "cd"))

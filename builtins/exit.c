@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/21 12:47:45 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/17 12:48:17 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 14:54:09 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,6 @@ int	check_exit_args(t_data *data, t_cmd *com)
 
 void	ft_exit(t_data *data, t_cmd *com)
 {
-	int	i;
-
 	printf("exit\n");
 	if (com)
 	{

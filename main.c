@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:03 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/19 16:18:28 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:06:53 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	main(int argc, char **argv, char **envp)
 	char	*str;
 	t_data	data;
 
+	if (argc > 1 || argv[1])
+		return (1);
 	data.cmd_head = NULL;
 	data.ret = 0;
 	header();

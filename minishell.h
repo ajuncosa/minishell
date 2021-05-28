@@ -6,7 +6,7 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 13:36:50 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/19 16:31:02 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:03:39 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int			create_args_str(t_cmd *com);
 void		cmd_caller(t_cmd *com, t_data *data);
 void		ft_echo(t_data *data, t_cmd *com);
 void		ft_env(t_data *data, char **args);
-void		ft_pwd(t_data *data, char **args);
+void		ft_pwd(t_data *data);
 void		ft_export(t_data *data, t_cmd *com);
 void		print_export_list(t_data *data, t_cmd *com);
 int			export_errors(char *str);
@@ -115,7 +115,7 @@ int			check_if_redir(t_cmd *com);
 void		count_redir(t_cmd *com);
 int			arg_cleaner(t_cmd *com, t_redir *redir);
 void		redir_manager(t_cmd *com, t_data *data);
-int			redir_open_files(t_data *data, t_redir redir, int *last, int i);
+int			redir_open_files(t_redir redir, int *last, int i);
 void		redir_open_error(t_data *data, t_redir *redir, int i, int n_redir);
 int			dollar_finder(t_list **env_head, t_letter **str, int ret);
 /* Misc utils */
@@ -130,7 +130,7 @@ int			esc_size(char *str);
 t_letter	*line_to_struct(char *str, int len);
 char		*struct_to_str(t_letter *struc, int start, int len);
 t_letter	*str_to_struct(char *str);
-t_letter	*esc_substr(t_letter *str, unsigned int start, size_t len);
+t_letter	*esc_substr(t_letter *str, int start, size_t len);
 t_letter	*esc_join(t_letter *s1, t_letter *s2);
 int			esc_strlen(t_letter *str);
 t_letter	*esc_dup(t_letter *str);

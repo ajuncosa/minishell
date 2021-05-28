@@ -9,8 +9,6 @@ CC		= gcc
 RM		= rm -f
 CFLAGS	= -Wall -Werror -Wextra
 SANITIZE = -g -fsanitize=address
-%.o: %.c
-	${CC} -c $< -o $@
 
 ${NAME}:	${OBJS}
 				make bonus -C libft/

@@ -6,15 +6,14 @@
 /*   By: ajuncosa <ajuncosa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 12:51:16 by ajuncosa          #+#    #+#             */
-/*   Updated: 2021/05/04 13:35:40 by ajuncosa         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:00:09 by ajuncosa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_pwd(t_data *data, char **args)
+void	ft_pwd(t_data *data)
 {
-	char	*pwd;
 	char	*buf;
 
 	buf = NULL;
